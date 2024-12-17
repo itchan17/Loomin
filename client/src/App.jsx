@@ -5,7 +5,7 @@ function App() {
 
   return (
     <div className="h-screen border flex justify-center items-center">
-      <h1 className="text-3xl font-bold">Loomin</h1>
+      <h1 className="text-3xl font-bold">Loomin branch test</h1>
     </div>
   );
 }
