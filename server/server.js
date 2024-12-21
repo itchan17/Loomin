@@ -7,6 +7,7 @@ if (process.env.NODE_ENV != "production") {
 const express = require("express");
 const connectToDb = require("./config/connectToDb.js");
 const routes = require("./routes/routes.js");
+const cookieParser = require("cookie-parser");
 
 // Connect to db
 connectToDb();
@@ -16,6 +17,7 @@ const app = express();
 
 //Configure express app
 app.use(express.json());
+app.use(cookieParser());
 
 //Routes
 app.use(routes);

@@ -24,6 +24,22 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 6,
     },
+    dateOfBirth: Date,
+    bio: String,
+    profile_picture: String,
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    verified: Boolean,
   },
   { timestamps: true }
 );
