@@ -5,17 +5,20 @@ if (process.env.NODE_ENV != "production") {
 
 // Import dependencies
 const express = require("express");
-// const connectToDb = require("./config/connectToDb.js");
+const connectToDb = require("./config/connectToDb.js");
+const routes = require("./routes/routes.js");
 
 // Connect to db
-// connectToDb();
+connectToDb();
 
 // Create an express app
 const app = express();
 
-app.get("/", (req, res) => {
-  res.json({ message: "Hello World" });
-});
+//Configure express app
+app.use(express.json());
+
+//Routes
+app.use(routes);
 
 // Start server
 app.listen(process.env.PORT);

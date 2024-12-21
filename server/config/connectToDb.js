@@ -1,8 +1,3 @@
-//Load env variables
-if (process.env.NODE_ENV != "production") {
-  require("dotenv").config();
-}
-
 // Import depencies
 const mongoose = require("mongoose");
 
@@ -11,7 +6,7 @@ const connectToDb = () => {
   mongoose
     .connect(process.env.DB_URL)
     .then(() => {
-      console.log("Connected to DB");
+      console.log("Connected to MongoDB");
     })
     .catch((e) => {
       console.log(e);
