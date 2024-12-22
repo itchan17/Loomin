@@ -34,9 +34,9 @@ const SignupPage = ({ onSwitch }) => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-md text-center overflow-hidden mx-4">
         {/* Top half-circle gradient */}
-        <div className="relative bg-gradient-to-t from-[#FF6F61] to-[#FFD23F] h-32 rounded-b-[50%] text-[#1A1A1A] flex flex-col justify-center">
+        <div className="relative bg-gradient-to-t from-[#FF6F61] to-[#FFD23F] h-32 rounded-b-[50%] text-[#1A1A1A] flex flex-col justify-center pt-6">
           <h1 className="text-2xl font-bold mb-0">SIGN UP</h1>
-          <p className="text-sm tracking-widest uppercase text-white mt-2">
+          <p className="text-sm tracking-widest uppercase text-white mt-1">
             TO CONTINUE
           </p>
         </div>
@@ -117,10 +117,10 @@ const SignupPage = ({ onSwitch }) => {
             )}
           </div>
 
-          {/* Rectangle button */}
+          {/* Slightly oval button */}
           <button
             type="submit"
-            className="w-6/12 mx-auto bg-white text-[#1A1A1A] font-bold py-2 rounded-md border border-gray-300 shadow-md hover:shadow-lg transition"
+            className="w-6/12 mx-auto bg-white text-[#1A1A1A] font-bold py-3 rounded-full border border-gray-300 shadow-md hover:shadow-lg transition"
           >
             SIGN UP
           </button>
@@ -130,7 +130,7 @@ const SignupPage = ({ onSwitch }) => {
         <p className="mt-4 mb-6 text-sm text-[#1A1A1A]">
           Already have an account?{" "}
           <span
-            className="text-orange-500 cursor-pointer hover:underline"
+            className="text-[#FF6F61] cursor-pointer hover:underline"
             onClick={() => onSwitch("login")}
           >
             Log in
