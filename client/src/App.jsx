@@ -1,11 +1,22 @@
 import React, { useState } from "react";
 import SignupPage from "./pages/SignupPage.jsx";
+import './global.css';
+import LeftSidebar from './components/leftsidebar'
+import Header from './components/header';
+import RightSideBar from './components/rightsidebar';
+import Timeline from './components/timeline';
 
-const LoginPage = ({ onSwitch }) => {
+const App = ({ onSwitch }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+      setIsSidebarOpen(!isSidebarOpen);
+  };
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
@@ -115,9 +126,20 @@ const LoginPage = ({ onSwitch }) => {
       </div>
     </div>
     <SignupPage />
+
+    <div className="flex flex-col h-screen w-full overflow-hidden">
+            <Header toggleSidebar={toggleSidebar} />
+            <div className="flex flex-1 h-screen overflow-hidden">
+                <LeftSidebar isOpen={isSidebarOpen} />
+                <main className="flex-auto overflow-auto bg-gray-200">
+                    <Timeline />
+                </main>
+                <RightSideBar />
+            </div>
+        </div>
     </>
     
   );
 };
 
-export default LoginPage;
+export default App;
