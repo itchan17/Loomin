@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import SignupPage from "./pages/SignupPage.jsx";
 
 const LoginPage = ({ onSwitch }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -28,6 +29,7 @@ const LoginPage = ({ onSwitch }) => {
   };
 
   return (
+    <>
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-md text-center overflow-hidden mx-4">
         {/* Header with Half-Moon Gradient */}
@@ -112,6 +114,9 @@ const LoginPage = ({ onSwitch }) => {
         </p>
       </div>
     </div>
+    <SignupPage />
+    </>
+    
   );
 };
 
