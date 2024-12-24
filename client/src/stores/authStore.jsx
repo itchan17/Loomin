@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const usersStore = create((set) => ({
+const authStore = create((set) => ({
   loginForm: {
     email: "",
     password: "",
@@ -76,8 +76,8 @@ const usersStore = create((set) => ({
     }));
   },
 
-  signup: async (req, res) => {
-    const { signupForm, errorMessage } = usersStore.getState();
+  signup: async () => {
+    const { signupForm, errorMessage } = authStore.getState();
 
     const updateErrorMessage = (field, message) => {
       set((state) => ({
@@ -142,8 +142,8 @@ const usersStore = create((set) => ({
     }
   },
 
-  login: async (req, res) => {
-    const { loginForm, errorMessage } = usersStore.getState();
+  login: async () => {
+    const { loginForm, errorMessage } = authStore.getState();
 
     const updateErrorMessage = (field, message) => {
       set((state) => ({
@@ -199,7 +199,7 @@ const usersStore = create((set) => ({
     }
   },
 
-  checkAuth: async (req, res) => {
+  checkAuth: async () => {
     try {
       // Send the user credentials
       await axios.get("/check-auth");
@@ -212,4 +212,4 @@ const usersStore = create((set) => ({
   },
 }));
 
-export default usersStore;
+export default authStore;

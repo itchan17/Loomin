@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -23,14 +23,7 @@ const App = () => {
           }
         />
         <Route path="/signup" element={<SignupPage />} />
-        <Route
-          path="/login"
-          element={
-            <CheckAuth>
-              <LoginPage />
-            </CheckAuth>
-          }
-        />
+        <Route path="/login" element={<LoginPage />} />
       </Routes>
     </Router>
   );

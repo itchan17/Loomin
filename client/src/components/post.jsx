@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import placeholder from "../assets/placeholder.png";
 import userImage from "../assets/shrek.jpg";
 
-const Post = ({ username, userImage, postImage, caption }) => {
+const Post = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [showHeart, setShowHeart] = useState(false);
   const [showComments, setShowComments] = useState(false);
@@ -39,23 +39,25 @@ const Post = ({ username, userImage, postImage, caption }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-md mb-6 w-full">
+    <div className="bg-white rounded-2xl shadow-md mb-6 w-full" key={post._id}>
       <div className="flex items-center p-4">
         <img
-          src={userImage}
-          alt={username}
+          src={post.creator.profile_picture}
+          alt={`${post.creator.first_name} ${post.creator.last_name}`}
           className="w-10 h-10 rounded-full"
         />
-        <span className="ml-3 font-semibold">{username}</span>
+        <span className="ml-3 font-semibold">{`${post.creator.first_name} ${post.creator.last_name}`}</span>
       </div>
-      <p className="mt-2 pl-8 mb-2 text-semibold antialiased">{caption}</p>
+      <p className="mt-2 pl-8 mb-2 text-semibold antialiased">{post.content}</p>
 
       <div className="relative " onDoubleClick={handleDoubleTap}>
-        <img
-          src={placeholder}
-          alt="Post content"
-          className="w-11/12 mx-7 rounded-2xl justify-center"
-        />
+        {post.images[0] ? (
+          <img
+            src={post.images[0]}
+            alt="Post content"
+            className="w-11/12 mx-7 rounded-2xl justify-center"
+          />
+        ) : null}
 
         <AnimatePresence>
           {showHeart && (

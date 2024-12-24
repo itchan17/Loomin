@@ -10,7 +10,7 @@ const CheckAuth = (props) => {
     if (store.isLoggedIn === null) {
       store.checkAuth();
     }
-  }, [navigate]);
+  }, []);
 
   if (store.isLoggedIn === null) {
     return navigate("/login");

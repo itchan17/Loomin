@@ -22,11 +22,26 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      minlength: 6,
+      minlength: 8,
     },
-    dateOfBirth: Date,
-    bio: String,
-    profile_picture: String,
+    date_of_birth: {
+      type: Date,
+      required: false,
+    },
+    bio: {
+      type: String,
+      required: false,
+    },
+    profile_picture: {
+      type: String,
+      required: false,
+    },
+    posts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post",
+      },
+    ],
     followers: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -39,7 +54,10 @@ const userSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    verified: Boolean,
+    verified: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
