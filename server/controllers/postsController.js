@@ -1,14 +1,23 @@
 const Post = require("../models/post.js");
+const User = require("../models/user.js");
 
 const createPost = async (req, res) => {
   const { content, images } = req.body;
 
   // Get the creator of the post
   const creator = req.user._id;
-
+  console.log(req.body);
   try {
     // Create post
-    const post = await Post.create({ creator, content, images });
+    const newPost = await Post.create({ creator, content, images });
+
+    // Add the new comment to post's comments array
+    const user = await User.findOneAndUpdate(
+      { _id: creator },
+      { $push: { posts: newPost._id } }
+    );
+    const post = await Post.findById({ _id: newPost._id }).populate("creator");
+
     res.status(200).json({ post, success: "Post created successfully." });
   } catch (error) {
     console.log(error);
@@ -49,7 +58,7 @@ const deletePost = async (req, res) => {
 const fetchPost = async (req, res) => {
   try {
     // Fetch all the post
-    const post = await Post.find();
+    const post = await Post.find().populate("creator").sort({ createdAt: -1 });
 
     // Send post to the client
     res.status(200).json({ post });
