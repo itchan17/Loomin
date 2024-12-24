@@ -1,33 +1,26 @@
 import React, { useState } from "react";
+import authStore from "../stores/authStore";
+import { useNavigate } from "react-router-dom";
 
 const SignupPage = ({ onSwitch }) => {
+  const store = authStore();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [errors, setErrors] = useState({ password: "", confirmPassword: "" });
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () =>
     setShowConfirmPassword(!showConfirmPassword);
 
-  const validatePasswords = () => {
-    const newErrors = { password: "", confirmPassword: "" };
-    if (password.length < 8) {
-      newErrors.password = "Password should be at least 8 characters.";
-    }
-    if (password !== confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match.";
-    }
-    setErrors(newErrors);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await store.signup();
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    validatePasswords();
-    if (!errors.password && !errors.confirmPassword) {
-      // Handle form submission logic
-    }
+  const handleLoginClick = () => {
+    store.clearErrors();
+    store.clearForm();
+    navigate("/login");
   };
 
   return (
@@ -45,28 +38,71 @@ const SignupPage = ({ onSwitch }) => {
           className="flex flex-col px-6 pt-6 space-y-4"
           onSubmit={handleSubmit}
         >
-          {["First Name", "Last Name", "Email"].map((field) => (
-            <div className="relative" key={field}>
-              <input
-                type={field === "Email" ? "email" : "text"}
-                required
-                className="peer block w-10/12 mx-auto px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
-                placeholder=" "
-              />
-              <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
-                {field}
-              </label>
-            </div>
-          ))}
+          <div className="relative">
+            <input
+              type="text"
+              name="firstName"
+              value={store.signupForm.firstName}
+              onChange={store.updateSignupField}
+              className="peer block w-10/12 mx-auto px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
+              placeholder=" "
+            />
+            <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
+              First Name
+            </label>
+            {store.errorMessage.firstName && (
+              <p className="text-sm text-red-500 mt-1">
+                {store.errorMessage.firstName}
+              </p>
+            )}
+          </div>
+
+          <div className="relative">
+            <input
+              type="text"
+              name="lastName"
+              value={store.signupForm.lastName}
+              onChange={store.updateSignupField}
+              className="peer block w-10/12 mx-auto px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
+              placeholder=" "
+            />
+            <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
+              Last Name
+            </label>
+            {store.errorMessage.lastName && (
+              <p className="text-sm text-red-500 mt-1">
+                {store.errorMessage.lastName}
+              </p>
+            )}
+          </div>
+
+          <div className="relative">
+            <input
+              type="email"
+              name="email"
+              value={store.signupForm.email}
+              onChange={store.updateSignupField}
+              className="peer block w-10/12 mx-auto px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
+              placeholder=" "
+            />
+            <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
+              Email
+            </label>
+            {store.errorMessage.email && (
+              <p className="text-sm text-red-500 mt-1">
+                {store.errorMessage.email}
+              </p>
+            )}
+          </div>
 
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
-              required
+              name="password"
+              value={store.signupForm.password}
+              onChange={store.updateSignupField}
               className="peer block w-10/12 mx-auto pr-12 pl-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
               placeholder=" "
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
             />
             <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
               Password
@@ -82,19 +118,21 @@ const SignupPage = ({ onSwitch }) => {
                 className="w-5 h-5"
               />
             </button>
-            {errors.password && (
-              <p className="text-sm text-red-500 mt-1">{errors.password}</p>
+            {store.errorMessage.password && (
+              <p className="text-sm text-red-500 mt-1">
+                {store.errorMessage.password}
+              </p>
             )}
           </div>
 
           <div className="relative">
             <input
               type={showConfirmPassword ? "text" : "password"}
-              required
+              value={store.signupForm.confirmPassword}
+              name="confirmPassword"
+              onChange={store.updateSignupField}
               className="peer block w-10/12 mx-auto pr-12 pl-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
               placeholder=" "
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
             />
             <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
               Confirm Password
@@ -110,9 +148,9 @@ const SignupPage = ({ onSwitch }) => {
                 className="w-5 h-5"
               />
             </button>
-            {errors.confirmPassword && (
+            {store.errorMessage.confirmPassword && (
               <p className="text-sm text-red-500 mt-1">
-                {errors.confirmPassword}
+                {store.errorMessage.confirmPassword}
               </p>
             )}
           </div>
@@ -131,7 +169,7 @@ const SignupPage = ({ onSwitch }) => {
           Already have an account?{" "}
           <span
             className="text-[#FF6F61] cursor-pointer hover:underline"
-            onClick={() => onSwitch("login")}
+            onClick={handleLoginClick}
           >
             Log in
           </span>

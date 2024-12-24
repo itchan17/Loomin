@@ -17,7 +17,7 @@ router.get("/logout", authMiddleware, usersController.logout);
 router.post("/create-post", authMiddleware, postsController.createPost);
 router.put("/posts/:id", authMiddleware, postsController.editPost);
 router.delete("/posts/:id", authMiddleware, postsController.deletePost);
-router.get("/", authMiddleware, postsController.fetchPost);
+router.get("/posts", authMiddleware, postsController.fetchPost);
 
 // Comment routes
 router.post(

@@ -8,6 +8,7 @@ const express = require("express");
 const connectToDb = require("./config/connectToDb.js");
 const routes = require("./routes/routes.js");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 // Connect to db
 connectToDb();
@@ -18,6 +19,12 @@ const app = express();
 //Configure express app
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 
 //Routes
 app.use(routes);
