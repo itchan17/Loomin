@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import placeholder from "../assets/placeholder.png";
-import userImage from "../assets/shrek.jpg";
-
+import commentStore from "../stores/commentStore";
 const Post = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [showHeart, setShowHeart] = useState(false);
@@ -11,7 +9,7 @@ const Post = ({ post }) => {
     { id: 1, username: "user12345", text: "Testing lang" },
     { id: 2, username: "user54321", text: "oks!" },
   ]);
-  const [newComment, setNewComment] = useState("");
+  const comment_store = commentStore();
 
   const handleLike = () => {
     setIsLiked(!isLiked);
@@ -27,17 +25,35 @@ const Post = ({ post }) => {
     setTimeout(() => setShowHeart(false), 1000);
   };
 
-  const handleAddComment = (e) => {
-    e.preventDefault();
-    if (newComment.trim()) {
-      setComments([
-        ...comments,
-        { id: comments.length + 1, username: "currentUser", text: newComment },
-      ]);
-      setNewComment("");
+  const toggleCommentBtn = () => {
+    setShowComments(!showComments);
+    if (!showComments) {
+      // console.log(`Fetch Comment`);
+      comment_store.fetchComments(post._id);
     }
   };
 
+  const displayComments = (comments, postId) => {
+    // First check if comments and postId exist
+    if (!comments || !comments[postId]) {
+      return <div>Loading...</div>;
+    }
+
+    // Then check the length
+    if (comments[postId].length === 0) {
+      return <div>No comments.</div>;
+    }
+
+    // If we have comments, map and display them
+    return comments[postId].map((comment) => (
+      <div key={comment._id} className="mb-2">
+        <span className="font-semibold mr-2">
+          {`${comment.user_id.first_name} ${comment.user_id.last_name}`}:
+        </span>
+        {comment.comment}
+      </div>
+    ));
+  };
   return (
     <div className="bg-white rounded-2xl shadow-md mb-6 w-full" key={post._id}>
       <div className="flex items-center p-4">
@@ -88,28 +104,30 @@ const Post = ({ post }) => {
               } text-2xl`}
             ></i>
           </button>
-          <button onClick={() => setShowComments(!showComments)}>
+          <button onClick={toggleCommentBtn}>
             <i className="bx bx-comment text-2xl"></i>
           </button>
         </div>
       </div>
-
+      {/* Check if showComments is true, then display the comments the comment text field */}
       {showComments && (
         <div className="px-4 pb-4">
           <div className="max-h-40 overflow-y-auto mb-4">
-            {comments.map((comment) => (
-              <div key={comment.id} className="mb-2">
-                <span className="font-semibold mr-2">{comment.username}</span>
-                {comment.text}
-              </div>
-            ))}
+            {displayComments(comment_store.comments, post._id)}
           </div>
-
-          <form onSubmit={handleAddComment} className="flex gap-2">
+          <form
+            onSubmit={(e) => comment_store.createComment(e, post._id)}
+            className="flex gap-2"
+          >
             <input
+              key={post._id}
               type="text"
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
+              value={
+                comment_store.targetPost === post._id
+                  ? comment_store.comment
+                  : ""
+              } // Check if the input field is the target if not leave it empty
+              onChange={(e) => comment_store.updateCommentField(e, post._id)}
               placeholder="Add comment"
               className="flex-1 px-3 py-2 border rounded-xl focus:outline-none focus:border-loomin-yellow"
             />

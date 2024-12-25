@@ -17,6 +17,9 @@ const Timeline = () => {
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
+
+  const displayPosts = () => {};
+
   return (
     <div className="bg-white-500">
       <div class="mb-2 flex items-center justify-center pr-12">
@@ -41,14 +44,15 @@ const Timeline = () => {
           </div>
         </div>
       )}
-      {store.posts &&
-        store.posts.map((post) => {
-          return (
-            <div className="max-w-2xl mx-auto">
-              <Post post={post} key={post._id} />
-            </div>
-          );
-        })}
+      {store.posts
+        ? store.posts.map((post) => {
+            return (
+              <div className="max-w-2xl mx-auto">
+                <Post post={post} key={post._id} />
+              </div>
+            );
+          })
+        : "No post yet"}
     </div>
   );
 };

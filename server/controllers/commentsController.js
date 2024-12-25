@@ -20,8 +20,12 @@ const createComment = async (req, res) => {
       { $push: { comments: newComment._id } }
     );
 
+    const createdComment = await Comment.findById({
+      _id: newComment._id,
+    }).populate("user_id");
+
     console.log(post);
-    res.status(200).json({ newComment });
+    res.status(200).json({ createdComment });
   } catch (error) {
     console.log(error);
     res.status(500);
@@ -30,10 +34,15 @@ const createComment = async (req, res) => {
 
 const fetchPostComment = async (req, res) => {
   const postId = req.params.id;
+  try {
+    const comments = await Comment.find({ post_id: postId }).populate(
+      "user_id"
+    );
 
-  const post = await Post.findById(postId).populate("comments");
-
-  res.json({ post });
+    res.json({ comments });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 module.exports = { createComment, fetchPostComment };
