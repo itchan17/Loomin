@@ -2,6 +2,31 @@ import { useState } from "react";
 import React from 'react';
 import '../global.css';
 import logo from '../assets/loomin.png'
+import Swal from 'sweetalert2'
+
+
+const logoutAlert = () => {
+    return Swal.fire({
+      title: "Logout?",
+      text: "Are you sure you want to logout?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#FF6F61",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Log out",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Logged out!",
+          text: "You have been logged out successfully.",
+          icon: "success",
+            confirmButtonColor: "#FF6F61",
+            confirmButtonText: "Okay",
+        });
+      }
+    });
+  };
+
 
 const Header = ({ toggleSidebar }) => {
 
@@ -47,7 +72,8 @@ const Header = ({ toggleSidebar }) => {
                 </div>
             </div>
             <div className="flex items-center ml-auto">
-                <button className="bx bx-log-out text-2xl text-white rotate-180 hover:bg-orange-700 px-5 py-2 rounded-full cursor-pointer"></button>
+                <button  onClick={logoutAlert} className="bx bx-log-out text-2xl text-white rotate-180 hover:bg-orange-700 px-5 py-2 rounded-full cursor-pointer">
+                </button>
                 </div>
         </header>
     )

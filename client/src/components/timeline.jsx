@@ -29,10 +29,10 @@ const Timeline = () => {
         <button
           onClick={toggleModal}
           className="bg-gradient-to-r from-loomin-yellow to-loomin-orange
-            text-white font-bold py-1 px-6 rounded-2xl hover:scale-110 transform transition-transform
-            font-sans"
+            text-white font-bold py-1 px-4 rounded-2xl hover:scale-110 transform transition-transform
+      "
         >
-          <i className="bx bx-plus mr-auto gap-8"></i>
+          <i className="bx bx-plus font-sans"></i>
           Post
         </button>
       </div>

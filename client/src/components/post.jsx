@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import commentStore from "../stores/commentStore";
+import Dropdown from "./dropdown";
+
 const Post = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [showHeart, setShowHeart] = useState(false);
@@ -45,14 +47,27 @@ const Post = ({ post }) => {
     }
 
     // If we have comments, map and display them
-    return comments[postId].map((comment) => (
-      <div key={comment._id} className="mb-2">
-        <span className="font-semibold mr-2">
-          {`${comment.user_id.first_name} ${comment.user_id.last_name}`}:
-        </span>
-        {comment.comment}
+    return comments[post._id]?.map((comment) => (
+      <div key={comment._id} className="flex items-start space-x-3 mb-2">
+        <img
+          src={post.creator.profile_picture}
+          alt={`${post.creator.first_name} ${post.creator.last_name}`}
+          className="w-10 h-10 rounded-full flex-shrink-0"
+        />
+        <div className="flex-1 flex flex-col">
+          <span className="font-semibold mr-2">
+            {`${comment.user_id.first_name} ${comment.user_id.last_name}`}
+          </span>
+          <span className='text-gray-500'>{comment.comment}</span>
+          <div className="flex gap-6">
+          <p className="font-thin text-sm text-gray-400">11m</p>
+          <a href className="font-thin text-sm text-gray-400 underline cursor-pointer">Edit</a>
+          <a href className="font-thin text-sm text-gray-400 underline cursor-pointer">Delete</a>
+            </div>
+        </div>
       </div>
     ));
+    
   };
   return (
     <div className="bg-white rounded-2xl shadow-md mb-6 w-full" key={post._id}>
@@ -63,6 +78,7 @@ const Post = ({ post }) => {
           className="w-10 h-10 rounded-full"
         />
         <span className="ml-3 font-semibold">{`${post.creator.first_name} ${post.creator.last_name}`}</span>
+        <Dropdown></Dropdown>
       </div>
       <p className="mt-2 pl-8 mb-2 text-semibold antialiased">{post.content}</p>
 
@@ -99,9 +115,8 @@ const Post = ({ post }) => {
         <div className="flex gap-4">
           <button onClick={handleLike}>
             <i
-              className={`bx ${
-                isLiked ? "bxs-heart text-red-500" : "bx-heart"
-              } text-2xl`}
+              className={`bx ${isLiked ? "bxs-heart text-red-500" : "bx-heart"
+                } text-2xl`}
             ></i>
           </button>
           <button onClick={toggleCommentBtn}>
@@ -112,7 +127,7 @@ const Post = ({ post }) => {
       {/* Check if showComments is true, then display the comments the comment text field */}
       {showComments && (
         <div className="px-4 pb-4">
-          <div className="max-h-40 overflow-y-auto mb-4">
+          <div className="col-span-1 max-h-40 overflow-y-auto mb-4">
             {displayComments(comment_store.comments, post._id)}
           </div>
           <form

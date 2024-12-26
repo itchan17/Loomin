@@ -2,8 +2,39 @@ import User from "../assets/shrek.jpg";
 import React from "react";
 import postStore from "../stores/postStore";
 import userStore from "../stores/userStore";
+import { useFilePicker } from 'use-file-picker';
+import {
+  FileAmountLimitValidator,
+  FileTypeValidator,
+  FileSizeValidator,
+  ImageDimensionsValidator,
+} from 'use-file-picker/validators';
+
+
+
+
 
 const Createpost = ({ onClose }) => {
+  const { openFilePicker, filesContent, loading, errors } = useFilePicker({
+    readAs: 'DataURL',
+    accept: 'image/*',
+    multiple: true,
+    validators: [
+      new FileAmountLimitValidator({ max: 1 }),
+      new FileTypeValidator(['jpg', 'png']),
+      new FileSizeValidator({ maxFileSize: 50 * 1024 * 1024 /* 50 MB */ }),
+      new ImageDimensionsValidator({
+        maxHeight: 900,
+        maxWidth: 1600,
+        minHeight: 600,
+        minWidth: 768,
+      }),
+    ],
+  });
+
+  if (loading) return <div>Loading...</div>;
+  if (errors.length) return <div>Error...</div>;
+
   const store = postStore();
   const user = userStore();
 
@@ -39,13 +70,14 @@ const Createpost = ({ onClose }) => {
               placeholder="It's Shrekin time"
               className="w-full text-xl resize-none outline-none h-32"
             ></textarea>
+
           </div>
         </div>
 
         <div class="flex items-center text-loomin-orange justify-between py-2 px-4 mr-auto border-t">
           <div class="flex text-2xl pl-0.5">
             <div class="flex items-center justify-center p-3 hover:bg-orange-100 rounded-full cursor-pointer">
-              <button className="bx bxs-image"></button>
+              <button onClick={() => openFilePicker()} className="bx bxs-image"></button>
             </div>
             <div class="flex items-center justify-center p-3 hover:bg-orange-100 rounded-full cursor-pointer">
               <button className="bx bxs-happy"></button>
