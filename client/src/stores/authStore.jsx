@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const authStore = create((set) => ({
+const useAuthStore = create((set) => ({
   loginForm: {
     email: "",
     password: "",
@@ -77,7 +77,7 @@ const authStore = create((set) => ({
   },
 
   signup: async () => {
-    const { signupForm, errorMessage } = authStore.getState();
+    const { signupForm, errorMessage } = useAuthStore.getState();
 
     const updateErrorMessage = (field, message) => {
       set((state) => ({
@@ -116,34 +116,37 @@ const authStore = create((set) => ({
     } else {
       if (signupForm.confirmPassword !== signupForm.password) {
         updateErrorMessage("confirmPassword", "Password did not match");
-      } else updateErrorMessage("confirmPassword", "");
-    }
+      } else {
+        updateErrorMessage("confirmPassword", "");
 
-    try {
-      const res = await axios.post("/signup", {
-        first_name: signupForm.firstName,
-        last_name: signupForm.lastName,
-        email: signupForm.email,
-        password: signupForm.password,
-      });
-      set({
-        signupForm: {
-          firstName: "",
-          lastName: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-        },
-      });
-    } catch (error) {
-      if (error.response.request.status === 409) {
-        updateErrorMessage("email", error.response.data.message);
+        // If all valid input create the user
+        try {
+          const res = await axios.post("/signup", {
+            first_name: signupForm.firstName,
+            last_name: signupForm.lastName,
+            email: signupForm.email,
+            password: signupForm.password,
+          });
+          set({
+            signupForm: {
+              firstName: "",
+              lastName: "",
+              email: "",
+              password: "",
+              confirmPassword: "",
+            },
+          });
+        } catch (error) {
+          if (error.response.request.status === 409) {
+            updateErrorMessage("email", error.response.data.message);
+          }
+        }
       }
     }
   },
 
   login: async () => {
-    const { loginForm, errorMessage } = authStore.getState();
+    const { loginForm, errorMessage } = useAuthStore.getState();
 
     const updateErrorMessage = (field, message) => {
       set((state) => ({
@@ -212,4 +215,4 @@ const authStore = create((set) => ({
   },
 }));
 
-export default authStore;
+export default useAuthStore;

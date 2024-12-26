@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import axios from "axios";
-import userStore from "./userStore";
+import useUserStore from "./UserStore";
 
-const postStore = create((set) => ({
+const usePostStore = create((set) => ({
   posts: null,
 
   createForm: {
@@ -22,11 +22,12 @@ const postStore = create((set) => ({
 
   fetchPosts: async () => {
     const posts = await axios.get("/posts");
+    console.log(posts.data.post);
     set({ posts: posts.data.post });
   },
 
   createPost: async () => {
-    const { createForm, posts } = postStore.getState();
+    const { createForm, posts } = usePostStore.getState();
     const res = await axios.post("/create-post", createForm);
     console.log(res);
     set({
@@ -36,9 +37,14 @@ const postStore = create((set) => ({
       },
     });
 
-    const user = userStore.getState();
-    user.fetchLoggedInUser();
+    // Update the postsCount state
+    const currentPostsCount = Number(useUserStore.getState().postsCount);
+
+    // Set the new state value
+    useUserStore.setState({
+      postsCount: currentPostsCount + 1,
+    });
   },
 }));
 
-export default postStore;
+export default usePostStore;

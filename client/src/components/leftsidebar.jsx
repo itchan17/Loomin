@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from "react";
-import userImage from "../assets/shrek.jpg";
 import feedIcon from "../assets/home.svg";
 import profileIcon from "../assets/userIcon.svg";
 import notificationIcon from "../assets/notification.svg";
-import userStore from "../stores/userStore";
+import useUserStore from "../stores/UserStore";
 
 const Leftsidebar = ({ isOpen }) => {
-  const store = userStore();
+  // States
+  const loggedInUser = useUserStore((state) => state.loggedInUser);
+  const loggedInUserName = useUserStore((state) => state.loggedInUserName);
+  const postsCount = useUserStore((state) => state.postsCount);
+  const followingCount = useUserStore((state) => state.followingCount);
+  const followersCount = useUserStore((state) => state.followersCount);
+
+  // State functions
+  const fetchLoggedInUser = useUserStore((state) => state.fetchLoggedInUser);
 
   useEffect(() => {
-    store.fetchLoggedInUser();
+    fetchLoggedInUser();
   }, []);
 
   return (
@@ -22,23 +29,23 @@ const Leftsidebar = ({ isOpen }) => {
       <div className="flex flex-col items-center p-6">
         <div className="flex items-center gap-4 mb-4">
           <img
-            src={store.loggedInUser.profile_picture}
+            src={loggedInUser.profile_picture}
             alt="User"
             className="w-24 h-24 rounded-full"
           />
-          <span className="username">{store.loggedInUserName}</span>
+          <span className="username">{loggedInUserName}</span>
         </div>
         <div className="flex justify-between gap-4 px-2 w-full">
           <div className=" flex flex-col items-center">
-            <span className="font-bold text-lg">{store.postsCount}</span>
+            <span className="font-bold text-lg">{postsCount}</span>
             <span className="text-sm text-gray-600">Looms</span>
           </div>
           <div className="flex flex-col items-center">
-            <span className="font-bold text-lg">{store.followersCount}</span>
+            <span className="font-bold text-lg">{followersCount}</span>
             <span className="text-sm text-gray-600">Followers</span>
           </div>
           <div className="flex flex-col items-center">
-            <span className="font-bold text-lg">{store.followingCount}</span>
+            <span className="font-bold text-lg">{followingCount}</span>
             <span className="text-sm text-gray-600">Following</span>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const commenStore = create((set) => ({
+const useCommentStore = create((set) => ({
   comments: null,
 
   comment: "",
@@ -23,7 +23,7 @@ const commenStore = create((set) => ({
 
   // Fetch the comment based on teh selected post
   fetchComments: async (postId) => {
-    const { comments } = commenStore.getState();
+    const { comments } = useCommentStore.getState();
 
     const res = await axios.get(`/posts/${postId}/comments`);
 
@@ -31,13 +31,13 @@ const commenStore = create((set) => ({
     if (comments === null) {
       set({ comments: { [postId]: res.data.comments } });
     }
-    // If not add the comments of new selected post, the previous comments
+    // If not, add the comments of new selected post, the previous comments
     set({ comments: { ...comments, [postId]: res.data.comments } });
   },
 
   createComment: async (e, postId) => {
     e.preventDefault();
-    const { comment, comments } = commenStore.getState();
+    const { comment, comments } = useCommentStore.getState();
     try {
       // This will return the new comment with populated user data
       const res = await axios.post(`posts/${postId}/comments`, { comment });
@@ -56,4 +56,4 @@ const commenStore = create((set) => ({
   },
 }));
 
-export default commenStore;
+export default useCommentStore;

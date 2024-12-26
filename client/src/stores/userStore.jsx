@@ -2,7 +2,7 @@ import { create } from "zustand";
 import axios from "axios";
 import numeral from "numeral";
 
-const userStore = create((set) => ({
+const useUserStore = create((set) => ({
   loggedInUser: {},
   loggedInUserName: null,
   followersCount: null,
@@ -36,4 +36,4 @@ const userStore = create((set) => ({
   },
 }));
 
-export default userStore;
+export default useUserStore;
