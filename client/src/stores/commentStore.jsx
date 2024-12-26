@@ -35,8 +35,7 @@ const useCommentStore = create((set) => ({
     set({ comments: { ...comments, [postId]: res.data.comments } });
   },
 
-  createComment: async (e, postId) => {
-    e.preventDefault();
+  createComment: async (postId) => {
     const { comment, comments } = useCommentStore.getState();
     try {
       // This will return the new comment with populated user data
@@ -51,7 +50,7 @@ const useCommentStore = create((set) => ({
         comment: "",
       });
     } catch (error) {
-      console.log(error);
+      throw new Error("Creating comment failed");
     }
   },
 }));

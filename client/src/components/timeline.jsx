@@ -44,8 +44,8 @@ const Timeline = () => {
 
   return (
     <div className="bg-white-500">
-      <div class="mb-2 flex items-center justify-center pr-12">
-        <h5 class="text-slate-800 text-4xl pl-12 font-bold mr-auto py-4  antialiased">
+      <div className="mb-2 flex items-center justify-center pr-12">
+        <h5 className="text-slate-800 text-4xl pl-12 font-bold mr-auto py-4  antialiased">
           Home
         </h5>
         <button

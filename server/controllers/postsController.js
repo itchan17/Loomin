@@ -71,7 +71,6 @@ const fetchPost = async (req, res) => {
 const likeUnlikePost = async (req, res) => {
   const postId = req.params.id;
   const userId = req.user._id;
-  console.log(typeof userId);
   try {
     const post = await Post.findById({ _id: postId });
 

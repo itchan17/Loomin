@@ -21,29 +21,42 @@ const usePostStore = create((set) => ({
   },
 
   fetchPosts: async () => {
-    const posts = await axios.get("/posts");
-    console.log(posts.data.post);
-    set({ posts: posts.data.post });
+    try {
+      const posts = await axios.get("/posts");
+
+      set({ posts: posts.data.post, likesCount: posts.data.post.length });
+    } catch (error) {
+      console.log(error);
+    }
   },
 
   createPost: async () => {
     const { createForm, posts } = usePostStore.getState();
-    const res = await axios.post("/create-post", createForm);
-    console.log(res);
-    set({
-      posts: [res.data.post, ...posts],
-      createForm: {
-        content: "",
-      },
-    });
+    try {
+      const res = await axios.post("/create-post", createForm);
+      set({
+        posts: [res.data.post, ...posts],
+        createForm: {
+          content: "",
+        },
+      });
 
-    // Update the postsCount state
-    const currentPostsCount = Number(useUserStore.getState().postsCount);
+      // Update the postsCount state
+      const currentPostsCount = Number(useUserStore.getState().postsCount);
 
-    // Set the new state value
-    useUserStore.setState({
-      postsCount: currentPostsCount + 1,
-    });
+      // Set the new state value
+      useUserStore.setState({
+        postsCount: currentPostsCount + 1,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  likeUnlikePost: async (postId) => {
+    try {
+      await axios.post(`posts/${postId}/like`);
+    } catch (error) {}
   },
 }));
 

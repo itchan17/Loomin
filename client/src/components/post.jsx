@@ -1,35 +1,101 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import useCommentStore from "../stores/CommentStore";
+import useUserStore from "../stores/UserStore";
+import usePostStore from "../stores/PostStore";
+import numeral from "numeral";
+import testImage from "../assets/placeholder.png";
+
 const Post = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [showHeart, setShowHeart] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [likesCount, setLikesCount] = useState(0);
+  const [commentsCount, setCommentsCount] = useState(0);
+
+  //User state
+  const loggedInUser = useUserStore((state) => state.loggedInUser);
 
   // Comment states
   const comments = useCommentStore((state) => state.comments);
   const comment = useCommentStore((state) => state.comment);
   const targetPost = useCommentStore((state) => state.targetPost);
 
-  // State functions
+  // Comment state functions
   const createComment = useCommentStore((state) => state.createComment);
   const fetchComments = useCommentStore((state) => state.fetchComments);
   const updateCommentField = useCommentStore(
     (state) => state.updateCommentField
   );
 
+  // Post state functions
+  const likeUnlikePost = usePostStore((state) => state.likeUnlikePost);
+
+  useEffect(() => {
+    setLikesCount(post.likes.length);
+    setCommentsCount(post.comments.length);
+    checkIfLiked();
+  }, []);
+
+  // Check if the user liked the post then set isLiked to true the component renders
+  const checkIfLiked = () => {
+    if (post.likes.includes(loggedInUser._id)) {
+      setIsLiked(true);
+    }
+  };
+  // Format the number
+  const formatNumber = (count) => {
+    return count > 1000
+      ? numeral(count).format("0.0a")
+      : numeral(count).format("0a");
+  };
+
   const handleLike = () => {
-    setIsLiked(!isLiked);
-    setShowHeart(true);
-    setTimeout(() => {
-      setShowHeart(false);
-    }, 1000);
+    if (!isLiked) {
+      setIsLiked(!isLiked);
+      setShowHeart(true);
+      setTimeout(() => {
+        setShowHeart(false);
+      }, 1000);
+
+      // Function for liking and unliking
+      likeUnlikePost(post._id);
+
+      // Add 1 to the likesCount state
+      setLikesCount(likesCount + 1);
+    } else {
+      setIsLiked(!isLiked);
+
+      // Function for liking and unliking
+      likeUnlikePost(post._id);
+
+      // Reduce 1 to the likesCount state
+      setLikesCount(likesCount - 1);
+    }
   };
 
   const handleDoubleTap = () => {
-    setIsLiked(true);
-    setShowHeart(true);
-    setTimeout(() => setShowHeart(false), 1000);
+    if (!isLiked) {
+      setIsLiked(!isLiked);
+      setShowHeart(true);
+      setTimeout(() => {
+        setShowHeart(false);
+      }, 1000);
+
+      // Function for liking and unliking
+      likeUnlikePost(post._id);
+
+      // Add 1 to the likesCount state
+      setLikesCount(likesCount + 1);
+    } else {
+      setIsLiked(!isLiked);
+
+      // Function for liking and unliking
+      likeUnlikePost(post._id);
+
+      // Reduce 1 to the likesCount state
+      setLikesCount(likesCount - 1);
+    }
   };
 
   const toggleCommentBtn = () => {
@@ -38,6 +104,13 @@ const Post = ({ post }) => {
       // console.log(`Fetch Comment`);
       fetchComments(post._id);
     }
+  };
+
+  const handleCreateComment = async (e) => {
+    e.preventDefault();
+
+    await createComment(post._id);
+    setCommentsCount(commentsCount + 1);
   };
 
   const displayComments = () => {
@@ -74,9 +147,9 @@ const Post = ({ post }) => {
       <p className="mt-2 pl-8 mb-2 text-semibold antialiased">{post.content}</p>
 
       <div className="relative " onDoubleClick={handleDoubleTap}>
-        {post.images[0] ? (
+        {testImage ? (
           <img
-            src={post.images[0]}
+            src={testImage}
             alt="Post content"
             className="w-11/12 mx-7 rounded-2xl justify-center"
           />
@@ -104,16 +177,26 @@ const Post = ({ post }) => {
 
       <div className="p-4 pl-8">
         <div className="flex gap-4">
-          <button onClick={handleLike}>
-            <i
-              className={`bx ${
-                isLiked ? "bxs-heart text-red-500" : "bx-heart"
-              } text-2xl`}
-            ></i>
-          </button>
-          <button onClick={toggleCommentBtn}>
-            <i className="bx bx-comment text-2xl"></i>
-          </button>
+          <div className="flex items-center gap-1">
+            <button onClick={handleLike}>
+              <i
+                className={`bx ${
+                  isLiked ? "bxs-heart text-red-500" : "bx-heart"
+                } text-2xl`}
+              ></i>
+            </button>
+            {likesCount > 0 ? <span>{formatNumber(likesCount)}</span> : ""}
+          </div>
+          <div className="flex items-center gap-1">
+            <button onClick={toggleCommentBtn}>
+              <i className="bx bx-comment text-2xl"></i>
+            </button>
+            {commentsCount > 0 ? (
+              <span>{formatNumber(commentsCount)}</span>
+            ) : (
+              ""
+            )}
+          </div>
         </div>
       </div>
       {/* Check if showComments is true, then display the comments the comment text field */}
@@ -122,10 +205,7 @@ const Post = ({ post }) => {
           <div className="max-h-40 overflow-y-auto mb-4">
             {displayComments()}
           </div>
-          <form
-            onSubmit={(e) => createComment(e, post._id)}
-            className="flex gap-2"
-          >
+          <form onSubmit={handleCreateComment} className="flex gap-2">
             <input
               key={post._id}
               type="text"

@@ -3,6 +3,7 @@ import feedIcon from "../assets/home.svg";
 import profileIcon from "../assets/userIcon.svg";
 import notificationIcon from "../assets/notification.svg";
 import useUserStore from "../stores/UserStore";
+import numeral from "numeral";
 
 const Leftsidebar = ({ isOpen }) => {
   // States
@@ -14,6 +15,13 @@ const Leftsidebar = ({ isOpen }) => {
 
   // State functions
   const fetchLoggedInUser = useUserStore((state) => state.fetchLoggedInUser);
+
+  // Format the number
+  const formatNumber = (count) => {
+    return count > 1000
+      ? numeral(count).format("0.0a")
+      : numeral(count).format("0a");
+  };
 
   useEffect(() => {
     fetchLoggedInUser();
@@ -37,20 +45,26 @@ const Leftsidebar = ({ isOpen }) => {
         </div>
         <div className="flex justify-between gap-4 px-2 w-full">
           <div className=" flex flex-col items-center">
-            <span className="font-bold text-lg">{postsCount}</span>
+            <span className="font-bold text-lg">
+              {formatNumber(postsCount)}
+            </span>
             <span className="text-sm text-gray-600">Looms</span>
           </div>
           <div className="flex flex-col items-center">
-            <span className="font-bold text-lg">{followersCount}</span>
+            <span className="font-bold text-lg">
+              {formatNumber(followersCount)}
+            </span>
             <span className="text-sm text-gray-600">Followers</span>
           </div>
           <div className="flex flex-col items-center">
-            <span className="font-bold text-lg">{followingCount}</span>
+            <span className="font-bold text-lg">
+              {formatNumber(followingCount)}
+            </span>
             <span className="text-sm text-gray-600">Following</span>
           </div>
         </div>
         <nav className="mt-8 w-full flex flex-col gap-4">
-          <hr class="h-px my-1` text-emerald-500"></hr>
+          <hr className="h-px my-1` text-emerald-500"></hr>
           <div className="flex items-center gap-4 px-4 py-2 rounded-lg hover:bg-gradient-to-r hover:from-[#FFD23F] hover:to-[#FF6F61] hover:text-white">
             <img src={feedIcon} alt="Feed" className="w-6 h-6" />
             <span>Home</span>
