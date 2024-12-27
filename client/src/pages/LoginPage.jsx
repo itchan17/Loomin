@@ -1,27 +1,39 @@
 import React, { useState } from "react";
-import authStore from "../stores/authStore";
+import useAuthStore from "../stores/AuthStore";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = ({ onSwitch }) => {
   const navigate = useNavigate();
-  const store = authStore();
 
+  // States
+  const loginForm = useAuthStore((state) => state.loginForm);
+  const errorMessage = useAuthStore((state) => state.errorMessage);
+
+  // State functions
+  const updateLoginField = useAuthStore((state) => state.updateLoginField);
+  const login = useAuthStore((state) => state.login);
+  const clearErrors = useAuthStore((state) => state.clearErrors);
+  const clearForm = useAuthStore((state) => state.clearForm);
+
+  // Local state
   const [showPassword, setShowPassword] = useState(false);
 
   // Toggle password visbility
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await store.login();
+    await login();
 
     navigate("/");
   };
 
+  // Handles navigation to signup page
   const handleSignUpClick = () => {
-    store.clearErrors();
-    store.clearForm();
+    clearErrors();
+    clearForm();
     navigate("/signup");
   };
 
@@ -47,16 +59,14 @@ const LoginPage = ({ onSwitch }) => {
               name="email"
               className="peer block w-10/12 mx-auto px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
               placeholder=" "
-              value={store.loginForm.email}
-              onChange={store.updateLoginField}
+              value={loginForm.email}
+              onChange={updateLoginField}
             />
             <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
               Email
             </label>
-            {store.errorMessage.email && (
-              <p className="text-sm text-red-500 mt-1">
-                {store.errorMessage.email}
-              </p>
+            {errorMessage.email && (
+              <p className="text-sm text-red-500 mt-1">{errorMessage.email}</p>
             )}
           </div>
 
@@ -66,8 +76,8 @@ const LoginPage = ({ onSwitch }) => {
               name="password"
               className="peer block w-10/12 mx-auto pr-12 pl-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
               placeholder=" "
-              value={store.loginForm.password}
-              onChange={store.updateLoginField}
+              value={loginForm.password}
+              onChange={updateLoginField}
             />
             <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
               Password
@@ -83,9 +93,9 @@ const LoginPage = ({ onSwitch }) => {
                 className="w-5 h-5"
               />
             </button>
-            {store.errorMessage.password && (
+            {errorMessage.password && (
               <p className="text-sm text-red-500 mt-1">
-                {store.errorMessage.password}
+                {errorMessage.password}
               </p>
             )}
           </div>

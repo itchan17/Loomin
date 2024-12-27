@@ -1,9 +1,9 @@
-import authStore from "../stores/authStore";
+import useAuthStore from "../stores/AuthStore";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const CheckAuth = (props) => {
-  const store = authStore();
+  const store = useAuthStore();
   const navigate = useNavigate();
 
   useEffect(() => {

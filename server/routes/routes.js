@@ -20,6 +20,9 @@ router.put("/posts/:id", authMiddleware, postsController.editPost);
 router.delete("/posts/:id", authMiddleware, postsController.deletePost);
 router.get("/posts", authMiddleware, postsController.fetchPost);
 
+// Like / Unlike post route
+router.post("/posts/:id/like", authMiddleware, postsController.likeUnlikePost);
+
 // Comment routes
 router.post(
   "/posts/:id/comments",

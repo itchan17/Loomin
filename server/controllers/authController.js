@@ -13,7 +13,7 @@ const signup = async (req, res) => {
     date_of_birth,
     profile_picture,
   } = req.body;
-  console.log(req.body);
+
   // Encrypt password
   const hashedPassword = bcrypt.hashSync(password);
 
