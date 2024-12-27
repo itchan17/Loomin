@@ -4,26 +4,48 @@ import Createpost from "./createpost";
 import Post from "./post";
 import placeholder from "../assets/placeholder.png";
 import user3 from "../assets/gengar.png";
-import postStore from "../stores/postStore";
+import usePostStore from "../stores/PostStore";
 
 const Timeline = () => {
-  const store = postStore();
+  // States
+  const posts = usePostStore((state) => state.posts);
+
+  // State functions
+  const fetchPosts = usePostStore((state) => state.fetchPosts);
+
+  // Local states
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    store.fetchPosts();
+    fetchPosts();
   }, []);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
+  const displayPosts = () => {
+    // Check if posts has value
+    if (!posts) {
+      return <div>Loading...</div>;
+    }
 
-  const displayPosts = () => {};
+    // Check if array is empty
+    if (posts.length === 0) {
+      return <div>No posts yet</div>;
+    }
+
+    // Display the posts
+    return posts.map((post) => (
+      <div className="max-w-2xl mx-auto " key={post._id}>
+        <Post post={post} />
+      </div>
+    ));
+  };
 
   return (
     <div className="bg-white-500">
-      <div class="mb-2 flex items-center justify-center pr-12">
-        <h5 class="text-slate-800 text-4xl pl-12 font-bold mr-auto py-4  antialiased">
+      <div className="mb-2 flex items-center justify-center pr-12">
+        <h5 className="text-slate-800 text-4xl pl-12 font-bold mr-auto py-4  antialiased">
           Home
         </h5>
         <button
@@ -44,15 +66,7 @@ const Timeline = () => {
           </div>
         </div>
       )}
-      {store.posts
-        ? store.posts.map((post) => {
-            return (
-              <div className="max-w-2xl mx-auto">
-                <Post post={post} key={post._id} />
-              </div>
-            );
-          })
-        : "No post yet"}
+      {displayPosts()}
     </div>
   );
 };

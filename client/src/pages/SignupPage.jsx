@@ -1,10 +1,21 @@
 import React, { useState } from "react";
-import authStore from "../stores/authStore";
+import useAuthStore from "../stores/AuthStore";
 import { useNavigate } from "react-router-dom";
 
 const SignupPage = ({ onSwitch }) => {
-  const store = authStore();
   const navigate = useNavigate();
+
+  // States
+  const signupForm = useAuthStore((state) => state.signupForm);
+  const errorMessage = useAuthStore((state) => state.errorMessage);
+
+  // State functions
+  const signup = useAuthStore((state) => state.signup);
+  const updateSignupField = useAuthStore((state) => state.updateSignupField);
+  const clearErrors = useAuthStore((state) => state.clearErrors);
+  const clearForm = useAuthStore((state) => state.clearForm);
+
+  // Local state
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -12,14 +23,16 @@ const SignupPage = ({ onSwitch }) => {
   const toggleConfirmPasswordVisibility = () =>
     setShowConfirmPassword(!showConfirmPassword);
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await store.signup();
+    await signup();
   };
 
+  // Navigate to login page
   const handleLoginClick = () => {
-    store.clearErrors();
-    store.clearForm();
+    clearErrors();
+    clearForm();
     navigate("/login");
   };
 
@@ -42,17 +55,17 @@ const SignupPage = ({ onSwitch }) => {
             <input
               type="text"
               name="firstName"
-              value={store.signupForm.firstName}
-              onChange={store.updateSignupField}
+              value={signupForm.firstName}
+              onChange={updateSignupField}
               className="peer block w-10/12 mx-auto px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
               placeholder=" "
             />
             <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
               First Name
             </label>
-            {store.errorMessage.firstName && (
+            {errorMessage.firstName && (
               <p className="text-sm text-red-500 mt-1">
-                {store.errorMessage.firstName}
+                {errorMessage.firstName}
               </p>
             )}
           </div>
@@ -61,17 +74,17 @@ const SignupPage = ({ onSwitch }) => {
             <input
               type="text"
               name="lastName"
-              value={store.signupForm.lastName}
-              onChange={store.updateSignupField}
+              value={signupForm.lastName}
+              onChange={updateSignupField}
               className="peer block w-10/12 mx-auto px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
               placeholder=" "
             />
             <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
               Last Name
             </label>
-            {store.errorMessage.lastName && (
+            {errorMessage.lastName && (
               <p className="text-sm text-red-500 mt-1">
-                {store.errorMessage.lastName}
+                {errorMessage.lastName}
               </p>
             )}
           </div>
@@ -80,18 +93,16 @@ const SignupPage = ({ onSwitch }) => {
             <input
               type="email"
               name="email"
-              value={store.signupForm.email}
-              onChange={store.updateSignupField}
+              value={signupForm.email}
+              onChange={updateSignupField}
               className="peer block w-10/12 mx-auto px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
               placeholder=" "
             />
             <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
               Email
             </label>
-            {store.errorMessage.email && (
-              <p className="text-sm text-red-500 mt-1">
-                {store.errorMessage.email}
-              </p>
+            {errorMessage.email && (
+              <p className="text-sm text-red-500 mt-1">{errorMessage.email}</p>
             )}
           </div>
 
@@ -99,8 +110,8 @@ const SignupPage = ({ onSwitch }) => {
             <input
               type={showPassword ? "text" : "password"}
               name="password"
-              value={store.signupForm.password}
-              onChange={store.updateSignupField}
+              value={signupForm.password}
+              onChange={updateSignupField}
               className="peer block w-10/12 mx-auto pr-12 pl-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
               placeholder=" "
             />
@@ -118,9 +129,9 @@ const SignupPage = ({ onSwitch }) => {
                 className="w-5 h-5"
               />
             </button>
-            {store.errorMessage.password && (
+            {errorMessage.password && (
               <p className="text-sm text-red-500 mt-1">
-                {store.errorMessage.password}
+                {errorMessage.password}
               </p>
             )}
           </div>
@@ -128,9 +139,9 @@ const SignupPage = ({ onSwitch }) => {
           <div className="relative">
             <input
               type={showConfirmPassword ? "text" : "password"}
-              value={store.signupForm.confirmPassword}
+              value={signupForm.confirmPassword}
               name="confirmPassword"
-              onChange={store.updateSignupField}
+              onChange={updateSignupField}
               className="peer block w-10/12 mx-auto pr-12 pl-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
               placeholder=" "
             />
@@ -148,9 +159,9 @@ const SignupPage = ({ onSwitch }) => {
                 className="w-5 h-5"
               />
             </button>
-            {store.errorMessage.confirmPassword && (
+            {errorMessage.confirmPassword && (
               <p className="text-sm text-red-500 mt-1">
-                {store.errorMessage.confirmPassword}
+                {errorMessage.confirmPassword}
               </p>
             )}
           </div>

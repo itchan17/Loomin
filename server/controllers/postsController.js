@@ -68,4 +68,33 @@ const fetchPost = async (req, res) => {
   }
 };
 
-module.exports = { createPost, editPost, deletePost, fetchPost };
+const likeUnlikePost = async (req, res) => {
+  const postId = req.params.id;
+  const userId = req.user._id;
+  try {
+    const post = await Post.findById({ _id: postId });
+
+    if (post.likes.includes(userId)) {
+      post.likes = post.likes.filter(
+        (user) => user.toString() !== userId.toString()
+      );
+      await post.save();
+      res.sendStatus(200);
+    } else {
+      post.likes.push(userId);
+      await post.save();
+      res.sendStatus(200);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "An internal server error occurred" });
+  }
+};
+
+module.exports = {
+  createPost,
+  editPost,
+  deletePost,
+  fetchPost,
+  likeUnlikePost,
+};

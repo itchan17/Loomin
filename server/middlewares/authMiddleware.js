@@ -13,7 +13,7 @@ const authMiddleware = async (req, res, next) => {
     // Decode token
     const data = jwt.verify(token, process.env.JWT_KEY);
 
-    // // Check for expiration
+    // Check for expiration
     if (Date.now() > data.exp) return res.sendStatus(401);
 
     // Find user

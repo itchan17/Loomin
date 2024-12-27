@@ -1,48 +1,127 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import commentStore from "../stores/commentStore";
 import Dropdown from "./dropdown";
+import useCommentStore from "../stores/CommentStore";
+import useUserStore from "../stores/UserStore";
+import usePostStore from "../stores/PostStore";
+import numeral from "numeral";
+import testImage from "../assets/placeholder.png";
 
 const Post = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [showHeart, setShowHeart] = useState(false);
   const [showComments, setShowComments] = useState(false);
-  const [comments, setComments] = useState([
-    { id: 1, username: "user12345", text: "Testing lang" },
-    { id: 2, username: "user54321", text: "oks!" },
-  ]);
-  const comment_store = commentStore();
+  const [likesCount, setLikesCount] = useState(0);
+  const [commentsCount, setCommentsCount] = useState(0);
+
+  //User state
+  const loggedInUser = useUserStore((state) => state.loggedInUser);
+
+  // Comment states
+  const comments = useCommentStore((state) => state.comments);
+  const comment = useCommentStore((state) => state.comment);
+  const targetPost = useCommentStore((state) => state.targetPost);
+
+  // Comment state functions
+  const createComment = useCommentStore((state) => state.createComment);
+  const fetchComments = useCommentStore((state) => state.fetchComments);
+  const updateCommentField = useCommentStore(
+    (state) => state.updateCommentField
+  );
+
+  // Post state functions
+  const likeUnlikePost = usePostStore((state) => state.likeUnlikePost);
+
+  useEffect(() => {
+    setLikesCount(post.likes.length);
+    setCommentsCount(post.comments.length);
+    checkIfLiked();
+  }, []);
+
+  // Check if the user liked the post then set isLiked to true the component renders
+  const checkIfLiked = () => {
+    if (post.likes.includes(loggedInUser._id)) {
+      setIsLiked(true);
+    }
+  };
+  // Format the number
+  const formatNumber = (count) => {
+    return count > 1000
+      ? numeral(count).format("0.0a")
+      : numeral(count).format("0a");
+  };
 
   const handleLike = () => {
-    setIsLiked(!isLiked);
-    setShowHeart(true);
-    setTimeout(() => {
-      setShowHeart(false);
-    }, 1000);
+    if (!isLiked) {
+      setIsLiked(!isLiked);
+      setShowHeart(true);
+      setTimeout(() => {
+        setShowHeart(false);
+      }, 1000);
+
+      // Function for liking and unliking
+      likeUnlikePost(post._id);
+
+      // Add 1 to the likesCount state
+      setLikesCount(likesCount + 1);
+    } else {
+      setIsLiked(!isLiked);
+
+      // Function for liking and unliking
+      likeUnlikePost(post._id);
+
+      // Reduce 1 to the likesCount state
+      setLikesCount(likesCount - 1);
+    }
   };
 
   const handleDoubleTap = () => {
-    setIsLiked(true);
-    setShowHeart(true);
-    setTimeout(() => setShowHeart(false), 1000);
+    if (!isLiked) {
+      setIsLiked(!isLiked);
+      setShowHeart(true);
+      setTimeout(() => {
+        setShowHeart(false);
+      }, 1000);
+
+      // Function for liking and unliking
+      likeUnlikePost(post._id);
+
+      // Add 1 to the likesCount state
+      setLikesCount(likesCount + 1);
+    } else {
+      setIsLiked(!isLiked);
+
+      // Function for liking and unliking
+      likeUnlikePost(post._id);
+
+      // Reduce 1 to the likesCount state
+      setLikesCount(likesCount - 1);
+    }
   };
 
   const toggleCommentBtn = () => {
     setShowComments(!showComments);
     if (!showComments) {
       // console.log(`Fetch Comment`);
-      comment_store.fetchComments(post._id);
+      fetchComments(post._id);
     }
   };
 
-  const displayComments = (comments, postId) => {
+  const handleCreateComment = async (e) => {
+    e.preventDefault();
+
+    await createComment(post._id);
+    setCommentsCount(commentsCount + 1);
+  };
+
+  const displayComments = () => {
     // First check if comments and postId exist
-    if (!comments || !comments[postId]) {
+    if (!comments || !comments[post._id]) {
       return <div>Loading...</div>;
     }
 
     // Then check the length
-    if (comments[postId].length === 0) {
+    if (comments[post._id].length === 0) {
       return <div>No comments.</div>;
     }
 
@@ -58,16 +137,25 @@ const Post = ({ post }) => {
           <span className="font-semibold mr-2">
             {`${comment.user_id.first_name} ${comment.user_id.last_name}`}
           </span>
-          <span className='text-gray-500'>{comment.comment}</span>
+          <span className="text-gray-500">{comment.comment}</span>
           <div className="flex gap-6">
-          <p className="font-thin text-sm text-gray-400">11m</p>
-          <a href className="font-thin text-sm text-gray-400 underline cursor-pointer">Edit</a>
-          <a href className="font-thin text-sm text-gray-400 underline cursor-pointer">Delete</a>
-            </div>
+            <p className="font-thin text-sm text-gray-400">11m</p>
+            <a
+              href
+              className="font-thin text-sm text-gray-400 underline cursor-pointer"
+            >
+              Edit
+            </a>
+            <a
+              href
+              className="font-thin text-sm text-gray-400 underline cursor-pointer"
+            >
+              Delete
+            </a>
+          </div>
         </div>
       </div>
     ));
-    
   };
   return (
     <div className="bg-white rounded-2xl shadow-md mb-6 w-full" key={post._id}>
@@ -83,9 +171,9 @@ const Post = ({ post }) => {
       <p className="mt-2 pl-8 mb-2 text-semibold antialiased">{post.content}</p>
 
       <div className="relative " onDoubleClick={handleDoubleTap}>
-        {post.images[0] ? (
+        {testImage ? (
           <img
-            src={post.images[0]}
+            src={testImage}
             alt="Post content"
             className="w-11/12 mx-7 rounded-2xl justify-center"
           />
@@ -113,36 +201,40 @@ const Post = ({ post }) => {
 
       <div className="p-4 pl-8">
         <div className="flex gap-4">
-          <button onClick={handleLike}>
-            <i
-              className={`bx ${isLiked ? "bxs-heart text-red-500" : "bx-heart"
+          <div className="flex items-center gap-1">
+            <button onClick={handleLike}>
+              <i
+                className={`bx ${
+                  isLiked ? "bxs-heart text-red-500" : "bx-heart"
                 } text-2xl`}
-            ></i>
-          </button>
-          <button onClick={toggleCommentBtn}>
-            <i className="bx bx-comment text-2xl"></i>
-          </button>
+              ></i>
+            </button>
+            {likesCount > 0 ? <span>{formatNumber(likesCount)}</span> : ""}
+          </div>
+          <div className="flex items-center gap-1">
+            <button onClick={toggleCommentBtn}>
+              <i className="bx bx-comment text-2xl"></i>
+            </button>
+            {commentsCount > 0 ? (
+              <span>{formatNumber(commentsCount)}</span>
+            ) : (
+              ""
+            )}
+          </div>
         </div>
       </div>
       {/* Check if showComments is true, then display the comments the comment text field */}
       {showComments && (
         <div className="px-4 pb-4">
-          <div className="col-span-1 max-h-40 overflow-y-auto mb-4">
-            {displayComments(comment_store.comments, post._id)}
+          <div className="max-h-40 overflow-y-auto mb-4">
+            {displayComments()}
           </div>
-          <form
-            onSubmit={(e) => comment_store.createComment(e, post._id)}
-            className="flex gap-2"
-          >
+          <form onSubmit={handleCreateComment} className="flex gap-2">
             <input
               key={post._id}
               type="text"
-              value={
-                comment_store.targetPost === post._id
-                  ? comment_store.comment
-                  : ""
-              } // Check if the input field is the target if not leave it empty
-              onChange={(e) => comment_store.updateCommentField(e, post._id)}
+              value={targetPost === post._id ? comment : ""} // Check if the input field is the target if not leave it empty
+              onChange={(e) => updateCommentField(e, post._id)}
               placeholder="Add comment"
               className="flex-1 px-3 py-2 border rounded-xl focus:outline-none focus:border-loomin-yellow"
             />
