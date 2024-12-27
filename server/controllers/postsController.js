@@ -1,5 +1,6 @@
 const Post = require("../models/post.js");
 const User = require("../models/user.js");
+const Comment = require("../models/comment.js");
 
 const createPost = async (req, res) => {
   const { content, images } = req.body;
@@ -31,12 +32,15 @@ const editPost = async (req, res) => {
 
   try {
     // Update post
-    const post = await Post.findOneAndUpdate(
+    const newPost = await Post.findOneAndUpdate(
       { _id: postId, creator: req.user._id }, // Get post where id == selected id && creator == authorized user
-      { content, images }
-    );
+      { content, images },
+      { new: true }
+    ).populate("creator");
 
-    res.status(200).json({ post, success: "Post edited successfully." });
+    console.log(newPost);
+
+    res.status(200).json({ newPost, success: "Post edited successfully." });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to edit post." });
@@ -47,18 +51,38 @@ const deletePost = async (req, res) => {
   const postId = req.params.id;
   console.log(postId);
   try {
-    await Post.findOneAndDelete({ _id: postId, creator: req.user._id });
-    res.status(200).json({ success: "Post deleted successfully." });
+    const deletedPost = await Post.findOneAndDelete({
+      _id: postId,
+      creator: req.user._id,
+    });
+
+    // Delete comments associated with the post
+    await Comment.deleteMany({ post_id: postId });
+
+    // Remove the post id the user's posts array
+    if (deletedPost) {
+      await User.findByIdAndUpdate(
+        { _id: req.user._id },
+        { $pull: { posts: postId } }, // Remove the postId from the posts array
+        { new: true }
+      );
+    }
+
+    res
+      .status(200)
+      .json({ deletedPost, success: "Post deleted successfully." });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to delete post." });
   }
 };
 
-const fetchPost = async (req, res) => {
+const fetchPosts = async (req, res) => {
   try {
     // Fetch all the post
-    const post = await Post.find().populate("creator").sort({ createdAt: -1 });
+    const post = await Post.find({ isArchived: false })
+      .populate("creator")
+      .sort({ createdAt: -1 });
 
     // Send post to the client
     res.status(200).json({ post });
@@ -91,10 +115,32 @@ const likeUnlikePost = async (req, res) => {
   }
 };
 
+const archivePost = async (req, res) => {
+  try {
+    // Get the selected post
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Toggle archive status
+    post.isArchived = !post.isArchived;
+    post.archivedAt = post.isArchived ? new Date() : null;
+
+    await post.save();
+
+    res.json({ post });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   createPost,
   editPost,
   deletePost,
-  fetchPost,
+  fetchPosts,
   likeUnlikePost,
+  archivePost,
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import User from "../assets/shrek.jpg";
-import Createpost from "./createpost";
+import Createpost from "./CreatePostForm";
 import Post from "./post";
 import placeholder from "../assets/placeholder.png";
 import user3 from "../assets/gengar.png";

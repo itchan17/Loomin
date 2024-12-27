@@ -4,23 +4,6 @@ import axios from "axios";
 const useCommentStore = create((set) => ({
   comments: null,
 
-  comment: "",
-
-  targetPost: null,
-
-  updateCommentField: (e, postId) => {
-    // Set the selected post
-    set({ targetPost: postId });
-
-    const { value } = e.target;
-
-    set((state) => {
-      return {
-        comment: value, // Update the comment with the new value
-      };
-    });
-  },
-
   // Fetch the comment based on teh selected post
   fetchComments: async (postId) => {
     const { comments } = useCommentStore.getState();
@@ -35,8 +18,9 @@ const useCommentStore = create((set) => ({
     set({ comments: { ...comments, [postId]: res.data.comments } });
   },
 
-  createComment: async (postId) => {
-    const { comment, comments } = useCommentStore.getState();
+  createComment: async (postId, comment) => {
+    const { comments } = useCommentStore.getState();
+
     try {
       // This will return the new comment with populated user data
       const res = await axios.post(`posts/${postId}/comments`, { comment });
@@ -51,6 +35,44 @@ const useCommentStore = create((set) => ({
       });
     } catch (error) {
       throw new Error("Creating comment failed");
+    }
+  },
+
+  editComment: async (postId, commentId, comment) => {
+    const { comments } = useCommentStore.getState();
+    try {
+      const res = await axios.put(`posts/${postId}/comments/${commentId}`, {
+        comment,
+      });
+
+      // Update the comments state
+      const newComments = [...comments[postId]];
+      const commentIndex = comments[postId].findIndex(
+        (comment) => comment._id === commentId
+      );
+
+      newComments[commentIndex] = res.data.comment;
+
+      set({ comments: { ...comments, [postId]: newComments } });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  },
+
+  deleteComment: async (postId, commentId) => {
+    const { comments } = useCommentStore.getState();
+
+    try {
+      const res = await axios.delete(`posts/${postId}/comments/${commentId}`);
+
+      const newComments = comments[postId].filter(
+        (comment) => comment._id !== commentId
+      );
+      set({ comments: { [postId]: newComments } });
+    } catch (error) {
+      console.log(error);
+      throw error;
     }
   },
 }));

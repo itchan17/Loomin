@@ -9,17 +9,18 @@ import {
   ImageDimensionsValidator,
 } from "use-file-picker/validators";
 
-const Createpost = ({ onClose }) => {
+const EditPostForm = ({ onClose, post }) => {
   // Post states
-  const createForm = usePostStore((state) => state.createForm);
+  const editForm = usePostStore((state) => state.editForm);
+
   // User states
   const loggedInUser = useUserStore((state) => state.loggedInUser);
 
   // State functions
-  const createPost = usePostStore((state) => state.createPost);
-  const updateCreateFormField = usePostStore(
-    (state) => state.updateCreateFormField
+  const updateEditFormField = usePostStore(
+    (state) => state.updateEditFormField
   );
+  const updatePost = usePostStore((state) => state.updatePost);
 
   const { openFilePicker, filesContent, loading, errors } = useFilePicker({
     readAs: "DataURL",
@@ -41,10 +42,14 @@ const Createpost = ({ onClose }) => {
   if (loading) return <div>Loading...</div>;
   if (errors.length) return <div>Error...</div>;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    createPost();
+    await updatePost(post._id);
+
+    if (onClose()) {
+      onClose();
+    }
   };
 
   return (
@@ -67,9 +72,9 @@ const Createpost = ({ onClose }) => {
 
           <div className="ml-3 pt-2 flex flex-col w-full">
             <textarea
-              value={createForm.content}
+              value={editForm.content}
               name="content"
-              onChange={updateCreateFormField}
+              onChange={updateEditFormField}
               placeholder="It's Shrekin time"
               className="w-full text-xl resize-none outline-none h-32"
             ></textarea>
@@ -102,4 +107,4 @@ const Createpost = ({ onClose }) => {
   );
 };
 
-export default Createpost;
+export default EditPostForm;
