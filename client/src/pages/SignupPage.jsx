@@ -37,18 +37,18 @@ const SignupPage = ({ onSwitch }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-md text-center overflow-hidden mx-4">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 font-poppins">
+      <div className="flex flex-col items-center justify-center bg-white rounded-lg shadow-lg w-full max-w-md text-center mx-4 h-full">
         {/* Top half-circle gradient */}
-        <div className="relative bg-gradient-to-t from-[#FF6F61] to-[#FFD23F] h-32 rounded-b-[50%] text-[#1A1A1A] flex flex-col justify-center pt-6">
+        <div className="relative bg-gradient-to-t from-[#FF6F61] to-[#FFD23F] h-32 w-full rounded-b-[50%] text-[#1A1A1A] flex flex-col justify-center pt-6">
           <h1 className="text-2xl font-bold mb-0">SIGN UP</h1>
           <p className="text-sm tracking-widest uppercase text-white mt-1">
             TO CONTINUE
           </p>
         </div>
-
+    
         <form
-          className="flex flex-col px-6 pt-6 space-y-4"
+          className="flex flex-col px-6 pt-6 space-y-8 w-full"
           onSubmit={handleSubmit}
         >
           <div className="relative">
@@ -64,7 +64,7 @@ const SignupPage = ({ onSwitch }) => {
               First Name
             </label>
             {errorMessage.firstName && (
-              <p className="text-sm text-red-500 mt-1">
+              <p className="absolute left-0 w-full text-sm text-red-500 top-full text-left ml-3">
                 {errorMessage.firstName}
               </p>
             )}
@@ -79,11 +79,11 @@ const SignupPage = ({ onSwitch }) => {
               className="peer block w-10/12 mx-auto px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
               placeholder=" "
             />
-            <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
+            <label className="absolute left-11 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
               Last Name
             </label>
             {errorMessage.lastName && (
-              <p className="text-sm text-red-500 mt-1">
+              <p className="absolute left-0 w-full text-sm text-red-500 top-full text-left ml-10">
                 {errorMessage.lastName}
               </p>
             )}
@@ -98,11 +98,32 @@ const SignupPage = ({ onSwitch }) => {
               className="peer block w-10/12 mx-auto px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
               placeholder=" "
             />
-            <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
+            <label className="absolute left-11 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
               Email
             </label>
             {errorMessage.email && (
-              <p className="text-sm text-red-500 mt-1">{errorMessage.email}</p>
+              <p className="absolute left-0 w-full text-sm text-red-500 top-full text-left ml-10">
+                {errorMessage.email}
+              </p>
+            )}
+          </div>
+
+          <div className="relative">
+            <input
+              type="text"
+              name="username"
+              value={signupForm.username}
+              onChange={updateSignupField}
+              className="peer block w-10/12 mx-auto px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
+              placeholder=" "
+            />
+            <label className="absolute left-11 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
+              Username
+            </label>
+            {errorMessage.username && (
+              <p className="absolute left-0 w-full text-sm text-red-500 top-full text-left ml-10">
+                {errorMessage.username}
+              </p>
             )}
           </div>
 
@@ -115,7 +136,7 @@ const SignupPage = ({ onSwitch }) => {
               className="peer block w-10/12 mx-auto pr-12 pl-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
               placeholder=" "
             />
-            <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
+            <label className="absolute left-11 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
               Password
             </label>
             <button
@@ -124,13 +145,14 @@ const SignupPage = ({ onSwitch }) => {
               className="absolute inset-y-0 right-10 flex items-center justify-center text-gray-500 hover:text-gray-700"
             >
               <img
-                src="/Vector.svg"
+                src={showPassword ? "/eye-fill.svg" : "/Vector.svg"}
                 alt="Toggle Password Visibility"
                 className="w-5 h-5"
               />
             </button>
+
             {errorMessage.password && (
-              <p className="text-sm text-red-500 mt-1">
+              <p className="absolute left-0 w-full text-sm text-red-500 top-full text-left ml-10">
                 {errorMessage.password}
               </p>
             )}
@@ -145,7 +167,7 @@ const SignupPage = ({ onSwitch }) => {
               className="peer block w-10/12 mx-auto pr-12 pl-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
               placeholder=" "
             />
-            <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
+            <label className="absolute left-11 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
               Confirm Password
             </label>
             <button
@@ -154,13 +176,14 @@ const SignupPage = ({ onSwitch }) => {
               className="absolute inset-y-0 right-10 flex items-center justify-center text-gray-500 hover:text-gray-700"
             >
               <img
-                src="/Vector.svg"
+                src={showConfirmPassword ? "/eye-fill.svg" : "/Vector.svg"}
                 alt="Toggle Confirm Password Visibility"
                 className="w-5 h-5"
               />
             </button>
+
             {errorMessage.confirmPassword && (
-              <p className="text-sm text-red-500 mt-1">
+              <p className="absolute left-0 w-full text-sm text-red-500 top-full text-left ml-10">
                 {errorMessage.confirmPassword}
               </p>
             )}
