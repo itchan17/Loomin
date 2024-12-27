@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Dropdown from "./dropdown";
+import Dropdown from "./PostDropdown";
 import useCommentStore from "../stores/CommentStore";
 import useUserStore from "../stores/UserStore";
 import usePostStore from "../stores/PostStore";
 import numeral from "numeral";
 import testImage from "../assets/placeholder.png";
+import CreateCommentForm from "./CreateCommentForm";
+import EditCommentForm from "./EditCommentForm";
 
 const Post = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -13,21 +15,19 @@ const Post = ({ post }) => {
   const [showComments, setShowComments] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [commentsCount, setCommentsCount] = useState(0);
+  const [editComment, setEditComment] = useState(false);
+  const [commentToEdit, setCommentToEdit] = useState("");
+  const [commentId, setCommentId] = useState(null);
 
   //User state
   const loggedInUser = useUserStore((state) => state.loggedInUser);
 
   // Comment states
   const comments = useCommentStore((state) => state.comments);
-  const comment = useCommentStore((state) => state.comment);
-  const targetPost = useCommentStore((state) => state.targetPost);
 
   // Comment state functions
-  const createComment = useCommentStore((state) => state.createComment);
   const fetchComments = useCommentStore((state) => state.fetchComments);
-  const updateCommentField = useCommentStore(
-    (state) => state.updateCommentField
-  );
+  const deleteComment = useCommentStore((state) => state.deleteComment);
 
   // Post state functions
   const likeUnlikePost = usePostStore((state) => state.likeUnlikePost);
@@ -107,13 +107,6 @@ const Post = ({ post }) => {
     }
   };
 
-  const handleCreateComment = async (e) => {
-    e.preventDefault();
-
-    await createComment(post._id);
-    setCommentsCount(commentsCount + 1);
-  };
-
   const displayComments = () => {
     // First check if comments and postId exist
     if (!comments || !comments[post._id]) {
@@ -129,8 +122,8 @@ const Post = ({ post }) => {
     return comments[post._id]?.map((comment) => (
       <div key={comment._id} className="flex items-start space-x-3 mb-2">
         <img
-          src={post.creator.profile_picture}
-          alt={`${post.creator.first_name} ${post.creator.last_name}`}
+          src={comment.user_id.profile_picture}
+          alt={`${comment.user_id.first_name} ${comment.user_id.last_name}`}
           className="w-10 h-10 rounded-full flex-shrink-0"
         />
         <div className="flex-1 flex flex-col">
@@ -140,22 +133,40 @@ const Post = ({ post }) => {
           <span className="text-gray-500">{comment.comment}</span>
           <div className="flex gap-6">
             <p className="font-thin text-sm text-gray-400">11m</p>
-            <a
-              href
-              className="font-thin text-sm text-gray-400 underline cursor-pointer"
-            >
-              Edit
-            </a>
-            <a
-              href
-              className="font-thin text-sm text-gray-400 underline cursor-pointer"
-            >
-              Delete
-            </a>
+            {loggedInUser._id === comment.user_id._id ? (
+              <>
+                <a
+                  onClick={() => toggleEditComment(comment)}
+                  className="font-thin text-sm text-gray-400 underline cursor-pointer"
+                >
+                  Edit
+                </a>
+                <a
+                  className="font-thin text-sm text-gray-400 underline cursor-pointer"
+                  onClick={() => handleDeleteComment(post._id, comment._id)}
+                >
+                  Delete
+                </a>
+              </>
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </div>
     ));
+  };
+
+  const handleDeleteComment = async (postId, commentId) => {
+    await deleteComment(postId, commentId);
+    setCommentsCount((state) => state - 1);
+  };
+
+  // Toggle edit comment
+  const toggleEditComment = (comment) => {
+    setEditComment(true);
+    setCommentToEdit(comment.comment);
+    setCommentId(comment._id);
   };
   return (
     <div className="bg-white rounded-2xl shadow-md mb-6 w-full" key={post._id}>
@@ -166,7 +177,11 @@ const Post = ({ post }) => {
           className="w-10 h-10 rounded-full"
         />
         <span className="ml-3 font-semibold">{`${post.creator.first_name} ${post.creator.last_name}`}</span>
-        <Dropdown></Dropdown>
+        {post.creator._id === loggedInUser._id ? (
+          <Dropdown post={post}></Dropdown>
+        ) : (
+          ""
+        )}
       </div>
       <p className="mt-2 pl-8 mb-2 text-semibold antialiased">{post.content}</p>
 
@@ -229,22 +244,19 @@ const Post = ({ post }) => {
           <div className="max-h-40 overflow-y-auto mb-4">
             {displayComments()}
           </div>
-          <form onSubmit={handleCreateComment} className="flex gap-2">
-            <input
-              key={post._id}
-              type="text"
-              value={targetPost === post._id ? comment : ""} // Check if the input field is the target if not leave it empty
-              onChange={(e) => updateCommentField(e, post._id)}
-              placeholder="Add comment"
-              className="flex-1 px-3 py-2 border rounded-xl focus:outline-none focus:border-loomin-yellow"
-            />
-            <button
-              type="submit"
-              className="px-4 py-1 bg-loomin-yellow text-white rounded-3xl hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange"
-            >
-              Post
-            </button>
-          </form>
+          {!editComment ? (
+            <CreateCommentForm
+              postId={post._id}
+              setCommentsCount={setCommentsCount}
+            ></CreateCommentForm>
+          ) : (
+            <EditCommentForm
+              postId={post._id}
+              commentId={commentId}
+              commentToEdit={commentToEdit}
+              setEditComment={setEditComment}
+            ></EditCommentForm>
+          )}
         </div>
       )}
     </div>

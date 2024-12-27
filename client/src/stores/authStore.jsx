@@ -202,6 +202,14 @@ const useAuthStore = create((set) => ({
     }
   },
 
+  logout: async () => {
+    try {
+      await axios.get("/logout");
+    } catch (error) {
+      throw error;
+    }
+  },
+
   checkAuth: async () => {
     try {
       // Send the user credentials
@@ -211,6 +219,7 @@ const useAuthStore = create((set) => ({
     } catch (error) {
       // Set to false
       set({ isLoggedIn: false });
+      throw error;
     }
   },
 }));

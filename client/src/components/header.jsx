@@ -3,9 +3,14 @@ import React from "react";
 import "../global.css";
 import logo from "../assets/loomin.png";
 import Swal from "sweetalert2";
+import useAuthStore from "../stores/AuthStore";
+import { useNavigate } from "react-router-dom";
 
 const Header = ({ toggleSidebar }) => {
-  const logoutAlert = () => {
+  const logout = useAuthStore((state) => state.logout);
+  const navigate = useNavigate();
+
+  const logoutAlert = async () => {
     return Swal.fire({
       title: "Logout?",
       text: "Are you sure you want to logout?",
@@ -14,17 +19,25 @@ const Header = ({ toggleSidebar }) => {
       confirmButtonColor: "#FF6F61",
       cancelButtonColor: "#d33",
       confirmButtonText: "Log out",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: "Logged out!",
-          text: "You have been logged out successfully.",
-          icon: "success",
-          confirmButtonColor: "#FF6F61",
-          confirmButtonText: "Okay",
-        });
-      }
-    });
+    })
+      .then(async (result) => {
+        if (result.isConfirmed) {
+          await logout();
+
+          return Swal.fire({
+            title: "Logged out!",
+            text: "You have been logged out successfully.",
+            icon: "success",
+            confirmButtonColor: "#FF6F61",
+            confirmButtonText: "Okay",
+          });
+        }
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
+      });
   };
   return (
     <header className="flex justify-between items-center h-16 text-black py-4 pl-2 pr-2 md:pl-6 md:pr-8 bg-gradient-to-r from-loomin-yellow to-loomin-orange drop-shadow-md sticky top-0">

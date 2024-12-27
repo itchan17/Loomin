@@ -12,6 +12,13 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      minlength: 3,
+    },
     email: {
       type: String,
       required: true,
@@ -26,32 +33,35 @@ const userSchema = new mongoose.Schema(
     },
     date_of_birth: {
       type: Date,
-      required: false,
+      default: null,
     },
     bio: {
       type: String,
-      required: false,
+      default: null,
     },
     profile_picture: {
       type: String,
-      required: false,
+      default: null,
     },
     posts: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Post",
+        default: [],
       },
     ],
     followers: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+        default: [],
       },
     ],
     following: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+        default: [],
       },
     ],
     verified: {

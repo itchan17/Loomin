@@ -41,7 +41,7 @@ const createComment = async (req, res) => {
   }
 };
 
-const fetchPostComment = async (req, res) => {
+const fetchPostComments = async (req, res) => {
   const postId = req.params.id;
   try {
     const post = await Post.findById(postId);
@@ -60,4 +60,55 @@ const fetchPostComment = async (req, res) => {
   }
 };
 
-module.exports = { createComment, fetchPostComment };
+const editComment = async (req, res) => {
+  const { postId, commentId } = req.params;
+  const updatedComment = req.body.comment;
+
+  try {
+    const comment = await Comment.findOneAndUpdate(
+      { _id: commentId, user_id: req.user._id }, // Get comment
+      { comment: updatedComment },
+      { new: true }
+    ).populate("user_id");
+
+    res.status(200).json({ comment });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "An internal server error occurred" }); // Server error
+  }
+};
+
+const deleteComment = async (req, res) => {
+  const { postId, commentId } = req.params;
+
+  try {
+    // Delete comment from the comments collection
+    const deletedComment = await Comment.findOneAndDelete({
+      _id: commentId,
+      user_id: req.user._id,
+    });
+
+    // Remove the post id the user's posts array
+    if (deletedComment) {
+      await Post.findByIdAndUpdate(
+        { _id: postId }, // User ID from authenticated user
+        { $pull: { comments: commentId } }, // Remove the postId from the posts array
+        { new: true }
+      );
+    }
+
+    res
+      .status(200)
+      .json({ deletedComment, success: "Comment deleted successfully." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "An internal server error occurred" }); // Server error
+  }
+};
+
+module.exports = {
+  createComment,
+  fetchPostComments,
+  editComment,
+  deleteComment,
+};
