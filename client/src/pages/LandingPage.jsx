@@ -4,11 +4,11 @@ const LandingPage = () => {
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-gradient-to-t from-[#FF6F61] to-[#FFD23F] text-center px-4 pt-6 font-poppins">
       {/* Logo and Welcome Section */}
-      <div className="mb-4 mt-5">
+      <div className="mb-4 mt-0">
         <img
-          src="public/LOGO-LOOMIN.svg"
+          src="assets/loomin.png"
           alt="Loomin Logo"
-          className="w-64 h-64 -mb-4"
+          className="w-80 h-80 -mb-12"
         />
         <h1 className="text-3xl font-bold text-black uppercase tracking-wide">
           <span className="text-black">W E L C O M E</span>
