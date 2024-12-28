@@ -28,8 +28,11 @@ const CreateCommentForm = ({ postId, setCommentsCount, setComments }) => {
       />
 
       <button
+        disabled={comment ? false : true}
         type="submit"
-        className="px-4 py-1 bg-loomin-yellow text-white rounded-3xl hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange"
+        className={`px-4 py-1 bg-loomin-yellow text-white rounded-3xl hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange ${
+          comment ? "" : "cursor-not-allowed"
+        }`}
       >
         {"Comment"}
       </button>

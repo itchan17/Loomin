@@ -20,6 +20,7 @@ const Createpost = ({ onClose }) => {
   const updateCreateFormField = usePostStore(
     (state) => state.updateCreateFormField
   );
+  const clearForm = usePostStore((state) => state.clearForm);
 
   const { openFilePicker, filesContent, loading, errors } = useFilePicker({
     readAs: "DataURL",
@@ -45,8 +46,15 @@ const Createpost = ({ onClose }) => {
     e.preventDefault();
 
     await createPost();
-    if (onClose()) {
+    if (onClose) {
       onClose();
+    }
+  };
+
+  const closeForm = () => {
+    if (onClose) {
+      onClose();
+      clearForm();
     }
   };
 
@@ -55,7 +63,8 @@ const Createpost = ({ onClose }) => {
       <div className=" rounded-xl mx-auto bg-white md:w-3/4 lg:w-2/3">
         <div className="flex justify-between px-2 py-2 ml-auto">
           <button
-            onClick={onClose}
+            type="button"
+            onClick={closeForm}
             className="bx bx-x text-loomin-orange text-2xl ml-auto px-2 hover:bg-orange-100 rounded-full cursor-pointer"
           ></button>
         </div>
@@ -93,8 +102,11 @@ const Createpost = ({ onClose }) => {
           </div>
           <div>
             <button
+              disabled={createForm.content ? false : true}
               type="submit"
-              className="inline px-4 py-2 rounded-full font-bold text-white bg-loomin-orange cursor-pointer hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange"
+              className={`inline px-4 py-2 rounded-full font-bold text-white bg-loomin-orange cursor-pointer hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange ${
+                createForm.content ? "" : "cursor-not-allowed"
+              }`}
             >
               Loom!
             </button>

@@ -18,6 +18,8 @@ const usePostStore = create((set) => ({
     content: "",
   },
 
+  clearForm: () => set({ createForm: { content: "" } }),
+
   // Get the content of selected post
   getPost: (post) => {
     set({
