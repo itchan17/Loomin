@@ -145,7 +145,7 @@ const SignupPage = ({ onSwitch }) => {
               className="absolute inset-y-0 right-10 flex items-center justify-center text-gray-500 hover:text-gray-700"
             >
               <img
-                src={showPassword ? "/eye-fill.svg" : "/Vector.svg"}
+                src={showPassword ? "assets/eye-fill.svg" : "assets/Vector.svg"}
                 alt="Toggle Password Visibility"
                 className="w-5 h-5"
               />
@@ -176,7 +176,7 @@ const SignupPage = ({ onSwitch }) => {
               className="absolute inset-y-0 right-10 flex items-center justify-center text-gray-500 hover:text-gray-700"
             >
               <img
-                src={showConfirmPassword ? "/eye-fill.svg" : "/Vector.svg"}
+                src={showConfirmPassword ? "assets/eye-fill.svg" : "assets/Vector.svg"}
                 alt="Toggle Confirm Password Visibility"
                 className="w-5 h-5"
               />
