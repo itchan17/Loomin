@@ -11,6 +11,20 @@ import EditCommentForm from "./EditCommentForm";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 const Post = ({ post }) => {
+  //User state
+  const loggedInUser = useUserStore((state) => state.loggedInUser);
+
+  //User state functions
+  const followUser = useUserStore((state) => state.followUser);
+
+  // Comment state functions
+  const fetchComments = useCommentStore((state) => state.fetchComments);
+  const deleteComment = useCommentStore((state) => state.deleteComment);
+
+  // Post state functions
+  const likeUnlikePost = usePostStore((state) => state.likeUnlikePost);
+
+  //Local states
   const [isLiked, setIsLiked] = useState(false);
   const [showHeart, setShowHeart] = useState(false);
   const [showComments, setShowComments] = useState(false);
@@ -22,37 +36,37 @@ const Post = ({ post }) => {
   const [comments, setComments] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  //User state
-  const loggedInUser = useUserStore((state) => state.loggedInUser);
-
-  // Comment states
-
-  // Comment state functions
-  const fetchComments = useCommentStore((state) => state.fetchComments);
-  const deleteComment = useCommentStore((state) => state.deleteComment);
-
-  // Post state functions
-  const likeUnlikePost = usePostStore((state) => state.likeUnlikePost);
+  const [follow, setFollow] = useState(false);
 
   useEffect(() => {
     setLikesCount(post.likes.length);
     setCommentsCount(post.comments.length);
     checkIfLiked();
+
+    if (loggedInUser.following.includes(post.creator._id)) {
+      setFollow(!follow);
+    }
   }, []);
 
-  // Check if the user liked the post then set isLiked to true the component renders
-  const checkIfLiked = () => {
-    if (post.likes.includes(loggedInUser._id)) {
-      setIsLiked(true);
-    }
-  };
   // Format the number
   const formatNumber = (count) => {
     return count > 1000
       ? numeral(count).format("0.0a")
       : numeral(count).format("0a");
   };
+  const toggleFollow = () => {
+    setFollow(!follow);
+    followUser(post.creator._id);
+  };
+  // Liking post functions
+  // Check if the user liked the post then set isLiked to true the component renders
+  const checkIfLiked = () => {
+    if (post.likes.includes(loggedInUser._id)) {
+      setIsLiked(true);
+    }
+  };
 
+  // Handle the like button
   const handleLike = () => {
     if (!isLiked) {
       setIsLiked(!isLiked);
@@ -101,6 +115,8 @@ const Post = ({ post }) => {
     }
   };
 
+  // Comments functions
+  // Handle toggle comment button
   const toggleCommentBtn = async () => {
     setShowComments(!showComments);
     if (!showComments) {
@@ -185,9 +201,25 @@ const Post = ({ post }) => {
           <img
             src={post.creator.profile_picture}
             alt={`${post.creator.first_name} ${post.creator.last_name}`}
-            className="w-10 h-10 rounded-full"
+            className="w-10 h-10 rounded-full cursor-pointer"
           />
-          <span className="ml-3 font-semibold">{`${post.creator.first_name} ${post.creator.last_name}`}</span>
+          <div className="ml-2 flex flex-col">
+            <div className="flex gap-1 items-center">
+              <span className="font-semibold cursor-pointer">{`${post.creator.first_name} ${post.creator.last_name}`}</span>
+              {loggedInUser._id !== post.creator._id && (
+                <>
+                  <span>·</span>
+                  <span
+                    onClick={toggleFollow}
+                    className="text-sm text-loomin-orange font-semibold cursor-pointer"
+                  >
+                    {follow ? "Following" : "Follow"}
+                  </span>
+                </>
+              )}
+            </div>
+            <span className="-mt-1 text-sm cursor-pointer">{`@${post.creator.username}`}</span>
+          </div>
           {post.creator._id === loggedInUser._id ? (
             <Dropdown post={post}></Dropdown>
           ) : (

@@ -9,16 +9,29 @@ const useUserStore = create((set) => ({
   postsCount: null,
 
   fetchLoggedInUser: async () => {
-    const res = await axios.get("/users");
+    try {
+      const res = await axios.get("/users");
 
-    // Set the state
-    set({
-      loggedInUser: res.data,
-      loggedInUserName: `${res.data.first_name} ${res.data.last_name}`,
-      followersCount: res.data.followers.length,
-      followingCount: res.data.following.length,
-      postsCount: res.data.posts.length,
-    });
+      // Set the state
+      set({
+        loggedInUser: res.data,
+        loggedInUserName: `${res.data.first_name} ${res.data.last_name}`,
+        followersCount: res.data.followers.length,
+        followingCount: res.data.following.length,
+        postsCount: res.data.posts.length,
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  followUser: async (followedUserId) => {
+    try {
+      const res = await axios.post(`/users/${followedUserId}/following`);
+      set({ followingCount: res.data.followingCount });
+    } catch (error) {
+      throw error;
+    }
   },
 }));
 
