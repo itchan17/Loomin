@@ -8,6 +8,7 @@ import numeral from "numeral";
 import testImage from "../assets/placeholder.png";
 import CreateCommentForm from "./CreateCommentForm";
 import EditCommentForm from "./EditCommentForm";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const Post = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -18,12 +19,13 @@ const Post = ({ post }) => {
   const [editComment, setEditComment] = useState(false);
   const [commentToEdit, setCommentToEdit] = useState("");
   const [commentId, setCommentId] = useState(null);
-
+  const [comments, setComments] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   //User state
   const loggedInUser = useUserStore((state) => state.loggedInUser);
 
   // Comment states
-  const comments = useCommentStore((state) => state.comments);
 
   // Comment state functions
   const fetchComments = useCommentStore((state) => state.fetchComments);
@@ -99,27 +101,35 @@ const Post = ({ post }) => {
     }
   };
 
-  const toggleCommentBtn = () => {
+  const toggleCommentBtn = async () => {
     setShowComments(!showComments);
     if (!showComments) {
       // console.log(`Fetch Comment`);
-      fetchComments(post._id);
+      await fetchComments(post._id, setComments, page, setHasMore);
+      setPage(page + 1);
     }
+  };
+
+  const loadMoreComments = () => {
+    setTimeout(async () => {
+      await fetchComments(post._id, setComments, page, setHasMore);
+      setPage(page + 1);
+    }, 500);
   };
 
   const displayComments = () => {
     // First check if comments and postId exist
-    if (!comments || !comments[post._id]) {
+    if (!comments) {
       return <div>Loading...</div>;
     }
 
     // Then check the length
-    if (comments[post._id].length === 0) {
+    if (comments.length === 0) {
       return <div>No comments.</div>;
     }
-
+    console.log(comments);
     // If we have comments, map and display them
-    return comments[post._id]?.map((comment) => (
+    return comments.map((comment) => (
       <div key={comment._id} className="flex items-start space-x-3 mb-2">
         <img
           src={comment.user_id.profile_picture}
@@ -158,7 +168,7 @@ const Post = ({ post }) => {
   };
 
   const handleDeleteComment = async (postId, commentId) => {
-    await deleteComment(postId, commentId);
+    await deleteComment(postId, commentId, setComments);
     setCommentsCount((state) => state - 1);
   };
 
@@ -169,96 +179,118 @@ const Post = ({ post }) => {
     setCommentId(comment._id);
   };
   return (
-    <div className="bg-white rounded-2xl shadow-md mb-6 w-full" key={post._id}>
-      <div className="flex items-center p-4">
-        <img
-          src={post.creator.profile_picture}
-          alt={`${post.creator.first_name} ${post.creator.last_name}`}
-          className="w-10 h-10 rounded-full"
-        />
-        <span className="ml-3 font-semibold">{`${post.creator.first_name} ${post.creator.last_name}`}</span>
-        {post.creator._id === loggedInUser._id ? (
-          <Dropdown post={post}></Dropdown>
-        ) : (
-          ""
-        )}
-      </div>
-      <p className="mt-2 pl-8 mb-2 text-semibold antialiased">{post.content}</p>
-
-      <div className="relative " onDoubleClick={handleDoubleTap}>
-        {testImage ? (
+    <div className="border rounded-2xl max-w-2xl mb-6" key={post._id}>
+      <div className="bg-white shadow-md rounded-2xl  w-full">
+        <div className="flex items-center p-4">
           <img
-            src={testImage}
-            alt="Post content"
-            className="w-11/12 mx-7 rounded-2xl justify-center"
+            src={post.creator.profile_picture}
+            alt={`${post.creator.first_name} ${post.creator.last_name}`}
+            className="w-10 h-10 rounded-full"
           />
-        ) : null}
-
-        <AnimatePresence>
-          {showHeart && (
-            <motion.div
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="absolute inset-0 flex items-center justify-center"
-            >
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 0.3 }}
-              >
-                <i className="bx bxs-heart text-6xl text-red-500 opacity-80"></i>
-              </motion.div>
-            </motion.div>
+          <span className="ml-3 font-semibold">{`${post.creator.first_name} ${post.creator.last_name}`}</span>
+          {post.creator._id === loggedInUser._id ? (
+            <Dropdown post={post}></Dropdown>
+          ) : (
+            ""
           )}
-        </AnimatePresence>
-      </div>
+        </div>
+        <p className="mt-2 pl-8 mb-2 text-semibold antialiased">
+          {post.content}
+        </p>
 
-      <div className="p-4 pl-8">
-        <div className="flex gap-4">
-          <div className="flex items-center gap-1">
-            <button onClick={handleLike}>
-              <i
-                className={`bx ${
-                  isLiked ? "bxs-heart text-red-500" : "bx-heart"
-                } text-2xl`}
-              ></i>
-            </button>
-            {likesCount > 0 ? <span>{formatNumber(likesCount)}</span> : ""}
+        <div className="relative " onDoubleClick={handleDoubleTap}>
+          {testImage ? (
+            <img
+              src={testImage}
+              alt="Post content"
+              className="w-11/12 mx-7 rounded-2xl justify-center"
+            />
+          ) : null}
+
+          <AnimatePresence>
+            {showHeart && (
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="absolute inset-0 flex items-center justify-center"
+              >
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <i className="bx bxs-heart text-6xl text-red-500 opacity-80"></i>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <div className="p-4 pl-8">
+          <div className="flex gap-4">
+            <div className="flex items-center gap-1">
+              <button onClick={handleLike}>
+                <i
+                  className={`bx ${
+                    isLiked ? "bxs-heart text-red-500" : "bx-heart"
+                  } text-2xl`}
+                ></i>
+              </button>
+              {likesCount > 0 ? <span>{formatNumber(likesCount)}</span> : ""}
+            </div>
+            <div className="flex items-center gap-1">
+              <button onClick={toggleCommentBtn}>
+                <i className="bx bx-comment text-2xl"></i>
+              </button>
+              {commentsCount > 0 ? (
+                <span>{formatNumber(commentsCount)}</span>
+              ) : (
+                ""
+              )}
+            </div>
           </div>
-          <div className="flex items-center gap-1">
-            <button onClick={toggleCommentBtn}>
-              <i className="bx bx-comment text-2xl"></i>
-            </button>
-            {commentsCount > 0 ? (
-              <span>{formatNumber(commentsCount)}</span>
+        </div>
+        {/* Check if showComments is true, then display the comments the comment text field */}
+        {showComments && (
+          <div className="px-4 pb-4">
+            <div
+              id="comments-container"
+              className="max-h-40 overflow-y-auto mb-4"
+            >
+              <InfiniteScroll
+                dataLength={comments.length}
+                next={loadMoreComments}
+                hasMore={hasMore}
+                scrollableTarget="comments-container"
+                loader={
+                  <div className="flex justify-center mb-2">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                  </div>
+                }
+              >
+                {displayComments()}
+              </InfiniteScroll>
+            </div>
+
+            {!editComment ? (
+              <CreateCommentForm
+                postId={post._id}
+                setCommentsCount={setCommentsCount}
+                setComments={setComments}
+              ></CreateCommentForm>
             ) : (
-              ""
+              <EditCommentForm
+                postId={post._id}
+                commentId={commentId}
+                commentToEdit={commentToEdit}
+                setEditComment={setEditComment}
+                setComments={setComments}
+              ></EditCommentForm>
             )}
           </div>
-        </div>
+        )}
       </div>
-      {/* Check if showComments is true, then display the comments the comment text field */}
-      {showComments && (
-        <div className="px-4 pb-4">
-          <div className="max-h-40 overflow-y-auto mb-4">
-            {displayComments()}
-          </div>
-          {!editComment ? (
-            <CreateCommentForm
-              postId={post._id}
-              setCommentsCount={setCommentsCount}
-            ></CreateCommentForm>
-          ) : (
-            <EditCommentForm
-              postId={post._id}
-              commentId={commentId}
-              commentToEdit={commentToEdit}
-              setEditComment={setEditComment}
-            ></EditCommentForm>
-          )}
-        </div>
-      )}
     </div>
   );
 };

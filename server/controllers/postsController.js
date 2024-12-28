@@ -79,13 +79,27 @@ const deletePost = async (req, res) => {
 
 const fetchPosts = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
     // Fetch all the post
-    const post = await Post.find({ isArchived: false })
-      .populate("creator")
-      .sort({ createdAt: -1 });
+    const posts = await Post.find({ isArchived: false })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("creator");
+
+    const totalPosts = await Post.countDocuments({ isArchived: false });
+
+    const hasMore = totalPosts > skip + posts.length;
 
     // Send post to the client
-    res.status(200).json({ post });
+    res.json({
+      posts,
+      hasMore,
+      currentPage: page,
+      totalPosts,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to fetch post." });

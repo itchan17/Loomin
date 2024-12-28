@@ -1,14 +1,14 @@
 import useCommentStore from "../stores/CommentStore";
 import React, { useState } from "react";
 
-const CreateCommentForm = ({ postId, setCommentsCount }) => {
+const CreateCommentForm = ({ postId, setCommentsCount, setComments }) => {
   const [comment, setComment] = useState("");
   const createComment = useCommentStore((state) => state.createComment);
 
   const handleCreateComment = async (e) => {
     e.preventDefault();
 
-    await createComment(postId, comment);
+    await createComment(postId, comment, setComments);
     setCommentsCount((prevCount) => prevCount + 1);
     setComment("");
   };

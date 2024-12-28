@@ -6,6 +6,7 @@ const EditCommentForm = ({
   commentId,
   commentToEdit,
   setEditComment,
+  setComments,
 }) => {
   const [comment, setComment] = useState("");
   const editComment = useCommentStore((state) => state.editComment);
@@ -17,7 +18,7 @@ const EditCommentForm = ({
   const handleEditComment = async (e) => {
     e.preventDefault();
 
-    await editComment(postId, commentId, comment);
+    await editComment(postId, commentId, comment, setComments);
     setEditComment((prevState) => false);
     setComment("");
   };
