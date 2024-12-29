@@ -17,7 +17,10 @@ const createPost = async (req, res) => {
       { _id: creator },
       { $push: { posts: newPost._id } }
     );
-    const post = await Post.findById({ _id: newPost._id }).populate("creator");
+    const post = await Post.findById({ _id: newPost._id }).populate({
+      path: "creator",
+      select: "first_name last_name profile_picture username",
+    });
 
     res.status(200).json({ post, success: "Post created successfully." });
   } catch (error) {
@@ -87,7 +90,10 @@ const fetchPosts = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate("creator");
+      .populate({
+        path: "creator",
+        select: "first_name last_name profile_picture username",
+      });
 
     const totalPosts = await Post.countDocuments({ isArchived: false });
 
