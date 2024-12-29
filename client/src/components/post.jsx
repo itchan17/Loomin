@@ -13,9 +13,11 @@ import InfiniteScroll from "react-infinite-scroll-component";
 const Post = ({ post }) => {
   //User state
   const loggedInUser = useUserStore((state) => state.loggedInUser);
+  const followedUsers = useUserStore((state) => state.followedUsers);
 
   //User state functions
   const followUser = useUserStore((state) => state.followUser);
+  const setFollowedUsers = useUserStore((state) => state.setFollowedUsers);
 
   // Comment state functions
   const fetchComments = useCommentStore((state) => state.fetchComments);
@@ -36,16 +38,11 @@ const Post = ({ post }) => {
   const [comments, setComments] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [follow, setFollow] = useState(false);
 
   useEffect(() => {
     setLikesCount(post.likes.length);
     setCommentsCount(post.comments.length);
     checkIfLiked();
-
-    if (loggedInUser.following.includes(post.creator._id)) {
-      setFollow(!follow);
-    }
   }, []);
 
   // Format the number
@@ -55,8 +52,8 @@ const Post = ({ post }) => {
       : numeral(count).format("0a");
   };
   const toggleFollow = () => {
-    setFollow(!follow);
     followUser(post.creator._id);
+    setFollowedUsers(post.creator._id)
   };
   // Liking post functions
   // Check if the user liked the post then set isLiked to true the component renders
@@ -213,7 +210,7 @@ const Post = ({ post }) => {
                     onClick={toggleFollow}
                     className="text-sm text-loomin-orange font-semibold cursor-pointer"
                   >
-                    {follow ? "Following" : "Follow"}
+                    {followedUsers.includes(post.creator._id) ? "Following" : "Follow"}
                   </span>
                 </>
               )}
