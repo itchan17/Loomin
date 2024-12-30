@@ -17,9 +17,9 @@ const HomePage = () => {
         <Header toggleSidebar={toggleSidebar} />
         <div className="flex flex-1 h-screen overflow-hidden">
           <LeftSidebar isOpen={isSidebarOpen} />
-          <main className="flex-auto overflow-auto bg-gray-200">
-            <Timeline />
-          </main>
+
+          <Timeline />
+
           <RightSideBar />
         </div>
       </div>

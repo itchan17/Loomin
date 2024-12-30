@@ -52,4 +52,6 @@ router.delete(
 // User routes
 router.get("/users", authMiddleware, usersController.fetchUser);
 
+router.post("/users/:id/following", authMiddleware, usersController.followUser);
+
 module.exports = router;

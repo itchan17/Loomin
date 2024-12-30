@@ -3,7 +3,12 @@ import axios from "axios";
 import useUserStore from "./UserStore";
 
 const usePostStore = create((set) => ({
-  posts: null,
+  posts: [],
+
+  page: 1,
+
+  hasMore: true,
+  loading: false,
 
   createForm: {
     content: "",
@@ -12,6 +17,8 @@ const usePostStore = create((set) => ({
   editForm: {
     content: "",
   },
+
+  clearForm: () => set({ createForm: { content: "" } }),
 
   // Get the content of selected post
   getPost: (post) => {
@@ -98,9 +105,15 @@ const usePostStore = create((set) => ({
 
   fetchPosts: async () => {
     try {
-      const posts = await axios.get("/posts");
-
-      set({ posts: posts.data.post, likesCount: posts.data.post.length });
+      const { posts, page } = usePostStore.getState();
+      console.log(page);
+      const fetchedPosts = await axios.get(`/posts?page=${page}&limit=10`);
+      console.log(fetchedPosts);
+      set({
+        posts: [...posts, ...fetchedPosts.data.posts],
+        page: page + 1,
+        hasMore: fetchedPosts.data.hasMore,
+      });
     } catch (error) {
       console.log(error);
       throw error;

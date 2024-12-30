@@ -6,6 +6,7 @@ const EditCommentForm = ({
   commentId,
   commentToEdit,
   setEditComment,
+  setComments,
 }) => {
   const [comment, setComment] = useState("");
   const editComment = useCommentStore((state) => state.editComment);
@@ -17,7 +18,7 @@ const EditCommentForm = ({
   const handleEditComment = async (e) => {
     e.preventDefault();
 
-    await editComment(postId, commentId, comment);
+    await editComment(postId, commentId, comment, setComments);
     setEditComment((prevState) => false);
     setComment("");
   };
@@ -48,8 +49,11 @@ const EditCommentForm = ({
         {"Cancel"}
       </button>
       <button
+        disabled={comment ? false : true}
         type="submit"
-        className="px-4 py-1 bg-loomin-yellow text-white rounded-3xl hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange"
+        className={`px-4 py-1 bg-loomin-yellow text-white rounded-3xl hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange ${
+          comment ? "" : "cursor-not-allowed"
+        }`}
       >
         {"Save"}
       </button>

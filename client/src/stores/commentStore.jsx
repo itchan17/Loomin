@@ -2,74 +2,75 @@ import { create } from "zustand";
 import axios from "axios";
 
 const useCommentStore = create((set) => ({
-  comments: null,
-
   // Fetch the comment based on teh selected post
-  fetchComments: async (postId) => {
-    const { comments } = useCommentStore.getState();
+  fetchComments: async (postId, setComments, page, setHasMore) => {
+    // Make the request to fetch comments
+    const res = await axios.get(
+      `/posts/${postId}/comments?page=${page}&limit=5`
+    );
 
-    const res = await axios.get(`/posts/${postId}/comments`);
+    // If the comment box is being opened for the first time
+    setComments((prevComments) => {
+      const updatedComments = [...prevComments, ...res.data.comments];
+      return updatedComments;
+    });
 
-    // If user open comment box for the first time
-    if (comments === null) {
-      set({ comments: { [postId]: res.data.comments } });
-    }
-    // If not, add the comments of new selected post, the previous comments
-    set({ comments: { ...comments, [postId]: res.data.comments } });
+    setHasMore(res.data.hasMore);
   },
 
-  createComment: async (postId, comment) => {
-    const { comments } = useCommentStore.getState();
-
+  createComment: async (postId, comment, setComments) => {
     try {
       // This will return the new comment with populated user data
       const res = await axios.post(`posts/${postId}/comments`, { comment });
 
       // Add the new comment to the post comments
       set({
-        comments: {
-          ...comments,
-          [postId]: [...comments[postId], res.data.createdComment],
-        },
         comment: "",
+      });
+
+      setComments((prevComments) => {
+        const updatedComments = [...prevComments, res.data.createdComment];
+        return updatedComments;
       });
     } catch (error) {
       throw new Error("Creating comment failed");
     }
   },
 
-  editComment: async (postId, commentId, comment) => {
-    const { comments } = useCommentStore.getState();
+  editComment: async (postId, commentId, comment, setComments) => {
     try {
       const res = await axios.put(`posts/${postId}/comments/${commentId}`, {
         comment,
       });
 
-      // Update the comments state
-      const newComments = [...comments[postId]];
-      const commentIndex = comments[postId].findIndex(
-        (comment) => comment._id === commentId
-      );
+      // Update the comments state of the selected post
+      setComments((prevComments) => {
+        const updatedComments = [...prevComments];
+        const commentIndex = prevComments.findIndex(
+          (comment) => comment._id === commentId
+        );
 
-      newComments[commentIndex] = res.data.comment;
-
-      set({ comments: { ...comments, [postId]: newComments } });
+        updatedComments[commentIndex] = res.data.comment;
+        return updatedComments;
+      });
     } catch (error) {
       console.log(error);
       throw error;
     }
   },
 
-  deleteComment: async (postId, commentId) => {
-    const { comments } = useCommentStore.getState();
-
+  deleteComment: async (postId, commentId, setComments) => {
     try {
       const res = await axios.delete(`posts/${postId}/comments/${commentId}`);
 
-      const newComments = comments[postId].filter(
-        (comment) => comment._id !== commentId
-      );
-      set({ comments: { [postId]: newComments } });
+      // Update the comments state of the selected post
+      setComments((prevComments) => {
+        const updatedComments = prevComments.filter(
+          (comment) => comment._id !== commentId
+        );
+
+        return updatedComments;
+      });
     } catch (error) {
       console.log(error);
       throw error;
