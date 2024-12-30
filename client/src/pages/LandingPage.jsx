@@ -6,7 +6,7 @@ const LandingPage = () => {
       {/* Logo and Welcome Section */}
       <div className="mb-4 -mt-4">
         <img
-          src="public/LOGO-LOOMIN.svg"
+          src="./public/LOGO-LOOMIN.svg"
           alt="Loomin Logo"
           className="w-96 h-80 -mb-16 -mt-4"
         />
