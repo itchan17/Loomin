@@ -54,7 +54,10 @@ const Rightsidebar = ({ isOpen }) => {
               <h6 class="text-slate-800 font-semibold">{`${following.first_name} ${following.last_name}`}</h6>
             </div>
           </div>
-          <button className=" border-1 border-orange-300 border text-sm px-4 py-2 hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange rounded-full cursor-pointer">
+          <button
+            onClick={() => followUser(following)}
+            className=" border-1 border-orange-300 border text-sm px-4 py-2 hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange rounded-full cursor-pointer"
+          >
             <p className=" text-transparent text-base font-semibold bg-clip-text bg-gradient-to-r from-loomin-yellow to-loomin-orange hover:text-white">
               Following
             </p>
