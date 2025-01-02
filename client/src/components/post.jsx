@@ -14,6 +14,7 @@ const Post = ({ post }) => {
   //User state
   const loggedInUser = useUserStore((state) => state.loggedInUser);
   const following = useUserStore((state) => state.following);
+  const isLoading = useUserStore((state) => state.isLoading);
 
   //User state functions
   const followUser = useUserStore((state) => state.followUser);
@@ -42,10 +43,13 @@ const Post = ({ post }) => {
   const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
-    setLikesCount(post.likes.length);
-    setCommentsCount(post.comments.length);
-    checkIfLiked();
-  }, []);
+    if (!isLoading && loggedInUser) {
+      console.log("Running");
+      setLikesCount(post.likes.length);
+      setCommentsCount(post.comments.length);
+      checkIfLiked();
+    }
+  }, [loggedInUser, isLoading]);
 
   // Format the number
   const formatNumber = (count) => {

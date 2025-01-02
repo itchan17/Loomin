@@ -97,28 +97,34 @@ const ChatBox = () => {
           </div>
         </div>
       </div>
-      <div class="py-2 px-5">
+      <form class="py-2 px-5">
         <div class="relative hidden md:flex items-center">
           <input
             type="text"
+            name="message"
             placeholder="Type a message ..."
-            class="w-full bg-[#D9D9D9] bg-opacity-40 px-4 py-2 border border-black rounded-xl bg-white/80 w-64"
+            class="w-full bg-[#D9D9D9] bg-opacity-40 px-4 py-2 border border-black rounded-xl bg-white/80"
           />
-          <svg
+          <button
+            type="submit"
             class="absolute right-3 w-7 text-gray-500 cursor-pointer"
-            width="41"
-            height="34"
-            viewBox="0 0 41 34"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+            aria-label="Send message"
           >
-            <path
-              d="M5.97917 1.90625C6.12309 1.90625 6.2647 1.93641 6.39081 1.99393L37.9308 16.3792C38.3442 16.5678 38.4951 16.9985 38.2677 17.3413C38.1896 17.459 38.0728 17.5559 37.9308 17.6207L6.39081 32.0059C5.97746 32.1945 5.45807 32.0694 5.23073 31.7267C5.16137 31.622 5.125 31.5047 5.125 31.3853V2.61458C5.125 2.22338 5.50743 1.90625 5.97917 1.90625ZM8.54167 6.20854V15.5832H17.0833V18.4165H8.54167V27.7913L32.2019 16.9999L8.54167 6.20854Z"
-              fill="#1A1A1A"
-            />
-          </svg>
+            <svg
+              width="30"
+              height="34"
+              viewBox="0 0 41 34"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M5.97917 1.90625C6.12309 1.90625 6.2647 1.93641 6.39081 1.99393L37.9308 16.3792C38.3442 16.5678 38.4951 16.9985 38.2677 17.3413C38.1896 17.459 38.0728 17.5559 37.9308 17.6207L6.39081 32.0059C5.97746 32.1945 5.45807 32.0694 5.23073 31.7267C5.16137 31.622 5.125 31.5047 5.125 31.3853V2.61458C5.125 2.22338 5.50743 1.90625 5.97917 1.90625ZM8.54167 6.20854V15.5832H17.0833V18.4165H8.54167V27.7913L32.2019 16.9999L8.54167 6.20854Z"
+                fill="#1A1A1A"
+              />
+            </svg>
+          </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
