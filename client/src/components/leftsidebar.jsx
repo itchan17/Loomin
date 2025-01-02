@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import feedIcon from "../assets/home.svg";
 import profileIcon from "../assets/userIcon.svg";
 import notificationIcon from "../assets/notification.svg";
+import messageIcon from "../assets/messageIcon.svg";
 import useUserStore from "../stores/UserStore";
 import numeral from "numeral";
+import { useNavigate } from "react-router-dom";
 
 const Leftsidebar = ({ isOpen }) => {
   // States
@@ -22,6 +24,8 @@ const Leftsidebar = ({ isOpen }) => {
       ? numeral(count).format("0.0a")
       : numeral(count).format("0a");
   };
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchLoggedInUser();
@@ -65,7 +69,10 @@ const Leftsidebar = ({ isOpen }) => {
         </div>
         <nav className="mt-8 w-full flex flex-col gap-4">
           <hr className="h-px my-1` text-emerald-500"></hr>
-          <div className="flex items-center gap-4 px-4 py-2 rounded-lg hover:bg-gradient-to-r hover:from-[#FFD23F] hover:to-[#FF6F61] hover:text-white">
+          <div
+            onClick={() => navigate("/")}
+            className="flex items-center gap-4 px-4 py-2 rounded-lg hover:bg-gradient-to-r hover:from-[#FFD23F] hover:to-[#FF6F61] hover:text-white"
+          >
             <img src={feedIcon} alt="Feed" className="w-6 h-6" />
             <span>Home</span>
           </div>
@@ -80,6 +87,17 @@ const Leftsidebar = ({ isOpen }) => {
               className="w-6 h-6 hover:fill-current hover:text-white"
             />
             <span>Notifications</span>
+          </div>
+          <div
+            onClick={() => navigate("/inbox")}
+            className="flex items-center gap-4 px-4 py-2 rounded-lg hover:bg-gradient-to-r hover:from-[#FFD23F] hover:to-[#FF6F61] hover:text-white"
+          >
+            <img
+              src={messageIcon}
+              alt="Notifications"
+              className="w-6 h-6 hover:fill-current hover:text-white"
+            />
+            <span>Messages</span>
           </div>
         </nav>
       </div>
