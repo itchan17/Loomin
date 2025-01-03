@@ -71,7 +71,7 @@ const Rightsidebar = ({ isOpen }) => {
   return (
     <aside
       id="rightsidebar"
-      className={`w-3/12 p-2 bg-WHITE ml-auto from-black to-white border border-gray-200 h-screen transition-transform ${
+      className={`w-3/12 p-2 bg-loomin-white shadow-inner ml-auto from-black to-white border border-gray-200 h-screen transition-transform ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       } sm:translate-x-0`}
     >

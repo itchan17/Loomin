@@ -14,14 +14,13 @@ const HomePage = () => {
   return (
     <>
       <div className="flex flex-col h-screen w-full overflow-hidden">
-        <Header toggleSidebar={toggleSidebar} />
+        <Header/>
         <div className="flex flex-1 h-screen overflow-hidden">
-          <LeftSidebar isOpen={isSidebarOpen} />
-
-
-          <Timeline />
-
-          <RightSideBar />
+          <LeftSidebar/>
+          <main className="flex-auto overflow-auto bg-loomin-white">
+          <Timeline/>
+          </main>
+          <RightSideBar/>
         </div>
       </div>
     </>
