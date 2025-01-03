@@ -5,6 +5,7 @@ import logo from "../assets/loomin.png";
 import Swal from "sweetalert2";
 import useAuthStore from "../stores/AuthStore";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
 const Header = ({ toggleSidebar }) => {
@@ -67,13 +68,13 @@ const Header = ({ toggleSidebar }) => {
 
       {/* Logo */}
       <div className="flex items-center gap-8">
-        <a href="#" className="flex items-center w-24">
+        <Link to="/" className="flex items-center w-24">
           <img
             src={logo}
             alt="Loomin Logo"
             className="w-full h-full object-contain"
           />
-        </a>
+        </Link>
 
 
         {/* Search Bar */}

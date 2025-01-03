@@ -98,11 +98,14 @@ const ChatBox = () => {
         </div>
       </div>
       <div class="py-2 px-5">
-        <div class="relative hidden md:flex items-center">
+        <div class=" pt-2 relative hidden md:flex items-center pb-2">
+          <button className="mr-2 h-10 w-10 hover:bg-orange-100 rounded-full">
+            <i className="bx bx-smile text-xl text-gray-500 hover:text-loomin-orange"></i>
+          </button>
           <input
             type="text"
             placeholder="Type a message ..."
-            class="w-full bg-[#D9D9D9] bg-opacity-40 px-4 py-2 border border-black rounded-xl bg-white/80 w-64"
+            class="w-full bg-gray-100 focus:outline-none px-4 py-2 border shadow-inner rounded-xl bg-white/80"
           />
           <svg
             class="absolute right-3 w-7 text-gray-500 cursor-pointer"

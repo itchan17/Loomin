@@ -11,6 +11,7 @@ import HomePage from "./pages/HomePage.jsx";
 import MessagePage from "./pages/MessagePage.jsx";
 import CheckAuth from "./components/checkAuth.jsx";
 import ComingSoon from "./pages/comingsoon.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
 
 const App = () => {
   return (
@@ -42,6 +43,15 @@ const App = () => {
             </CheckAuth>
           }
         />
+        <Route
+          path="/profile"
+          element={
+            <CheckAuth>
+              <ProfilePage></ProfilePage>
+            </CheckAuth>
+          }
+        />
+
       </Routes>
     </Router>
   );
