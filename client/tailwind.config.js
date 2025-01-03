@@ -8,7 +8,8 @@ export default {
     extend: {
       colors: {
         'loomin-yellow': '#FFD23F',
-        'loomin-orange': '#FF6F61'
+        'loomin-orange': '#FF6F61',
+        'loomin-white': '#F9F9F9'
       },
     },
   },

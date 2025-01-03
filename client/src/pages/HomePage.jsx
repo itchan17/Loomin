@@ -18,6 +18,7 @@ const HomePage = () => {
         <div className="flex flex-1 h-screen overflow-hidden">
           <LeftSidebar isOpen={isSidebarOpen} />
 
+
           <Timeline />
 
           <RightSideBar />

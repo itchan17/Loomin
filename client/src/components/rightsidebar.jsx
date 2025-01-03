@@ -4,9 +4,11 @@ import User2 from "../assets/gengar.png";
 import useUserStore from "../stores/UserStore";
 
 const Rightsidebar = ({ isOpen }) => {
+
   //User state
   const followingToDisplay = useUserStore((state) => state.followingToDisplay);
   const suggestedUser = useUserStore((state) => state.suggestedUser);
+
 
   //User state functions
   const followUser = useUserStore((state) => state.followUser);

@@ -86,8 +86,9 @@ const Timeline = () => {
       >
         {displayPosts()}
       </InfiniteScroll>
+
     </div>
   );
 };
 
-export default Timeline;
+      export default Timeline;

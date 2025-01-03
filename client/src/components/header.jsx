@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import useAuthStore from "../stores/AuthStore";
 import { useNavigate } from "react-router-dom";
 
+
 const Header = ({ toggleSidebar }) => {
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
@@ -74,6 +75,7 @@ const Header = ({ toggleSidebar }) => {
           />
         </a>
 
+
         {/* Search Bar */}
         <div className="relative hidden md:flex items-center">
           <input
@@ -105,5 +107,6 @@ const Header = ({ toggleSidebar }) => {
     </header>
   );
 };
+
 
 export default Header;

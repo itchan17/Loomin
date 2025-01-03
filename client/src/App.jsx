@@ -10,6 +10,7 @@ import LoginPage from "./pages/LoginPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import MessagePage from "./pages/MessagePage.jsx";
 import CheckAuth from "./components/checkAuth.jsx";
+import ComingSoon from "./pages/comingsoon.jsx";
 
 const App = () => {
   return (
@@ -22,6 +23,14 @@ const App = () => {
               <HomePage></HomePage>
             </CheckAuth>
           }
+        />
+        <Route
+        path="/comingsoon"
+        element={
+          <CheckAuth>
+            <ComingSoon></ComingSoon>
+          </CheckAuth>
+        }
         />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
