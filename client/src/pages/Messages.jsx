@@ -3,6 +3,7 @@ import "../global.css";
 import LeftSidebar from "../components/leftsidebar";
 import Header from "../components/header";
 import Inbox from '../components/inbox';
+import Chatbox from '../components/chatbox';
 
 
 
@@ -18,10 +19,12 @@ const Messages = () => {
             <Header toggleSidebar={toggleSidebar} />
             <div className="flex flex-1 h-screen overflow-hidden">
                 <LeftSidebar isOpen={isSidebarOpen} />
-                <main className="w-4/12 overflow-auto bg-gray-200">
+                <main className="w-4/12 bg-white overflow-hidden">
                 <Inbox></Inbox>
-                   
                 </main>
+                <div className="w-5/12 overflow-hidden">
+                <Chatbox></Chatbox>
+                </div>
             </div>
         </div>
     );

@@ -60,7 +60,7 @@ const Header = ({ toggleSidebar }) => {
                         className="pl-10 pr-4 py-2 rounded-xl bg-white/80 focus:outline-none focus:ring-1 focus:ring-loomin-orange w-64"
                     />
                     <svg
-                        className="absolute left-3 w-5 h-5 text-gray-500"
+                        className="absolute left-3 w-5 h-5 z-10 text-gray-500"
                         fill="none"
                         strokeLinecap="round"
                         strokeLinejoin="round"
