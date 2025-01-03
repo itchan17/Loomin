@@ -4,8 +4,11 @@ import ChatBox from "./ChatBox";
 import useChatStore from "../stores/chatStore";
 import useUserStore from "../stores/UserStore";
 import Chat from "./Chat";
+import { io } from "socket.io-client";
 
 const Inbox = () => {
+  const [socket, setSocket] = useState(null);
+
   // Chat states
   const chats = useChatStore((state) => state.chats);
   const chatsLoading = useChatStore((state) => state.chatsLoading);
@@ -13,6 +16,26 @@ const Inbox = () => {
   const activeChat = useChatStore((state) => state.activeChat);
   // User states
   const loggedInUser = useUserStore((state) => state.loggedInUser);
+
+  useEffect(() => {
+    const newSocket = io("http://localhost:3000", {
+      withCredentials: true,
+    });
+    setSocket(newSocket);
+
+    return () => newSocket.disconnect();
+  }, []);
+
+  useEffect(() => {
+    console.log(loggedInUser._id);
+    if (socket === null) return;
+    if (socket && loggedInUser._id) {
+      socket.emit("addUser", loggedInUser._id);
+      socket.on("getOnlineUsers", (res) => {
+        console.log(res);
+      });
+    }
+  }, [socket, loggedInUser]);
 
   useEffect(() => {
     getUserChats(loggedInUser._id);
