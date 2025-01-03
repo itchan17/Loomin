@@ -8,7 +8,6 @@ import {
 import SignupPage from "./pages/SignupPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
-import Messages from "./pages/Messages.jsx";
 import CheckAuth from "./components/checkAuth.jsx";
 import ComingSoon from "./pages/comingsoon.jsx";
 
@@ -23,14 +22,6 @@ const App = () => {
               <HomePage></HomePage>
             </CheckAuth>
           }
-        />
-        <Route
-        path="/messages"
-        element={
-          <CheckAuth>
-            <Messages></Messages>
-          </CheckAuth>
-        }
         />
         <Route
         path="/comingsoon"
