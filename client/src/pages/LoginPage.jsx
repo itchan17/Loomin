@@ -40,23 +40,22 @@ const LoginPage = ({ onSwitch }) => {
  return (
     <div className="flex items-center justify-center h-screen w-screen bg-gray-100 font-poppins">
       <div className="bg-white shadow-lg text-center overflow-hidden w-full h-full sm:rounded-lg sm:max-w-md sm:h-auto sm:w-full">
-        {/* Header with Half-Moon Gradient */}
         <div className="relative bg-gradient-to-t from-[#FF6F61] to-[#FFD23F] h-28 rounded-b-[50%] text-[#1A1A1A] flex flex-col justify-end pb-4">
           <h1 className="text-2xl font-bold mb-0">LOG IN</h1>
           <p className="text-sm tracking-widest uppercase text-white">
             TO CONTINUE
           </p>
         </div>
-  
-        {/* Form */}
+
         <form
-          className="flex flex-col px-6 pt-6 space-y-8"
+          className="flex flex-col px-14 pt-6 space-y-8"
           onSubmit={handleSubmit}
         >
           <div className="relative">
             <input
               type="email"
               name="email"
+              id="email"
               className={`block w-full px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 ${
                 errorMessage.email ? "border-red-500" : "border-gray-300"
               }`}
@@ -65,9 +64,10 @@ const LoginPage = ({ onSwitch }) => {
               onChange={updateLoginField}
             />
             <label
-              className={`absolute left-2 text-sm text-black transition-all duration-200 transform scale-100 top-2 origin-[0] ${
+              htmlFor="email"
+              className={`absolute left-2 text-sm text-black transition-all duration-200 transform scale-100 top-1 origin-[0] ${
                 loginForm.email
-                  ? "translate-y-[-0.6rem] scale-90 text-gray-500"
+                  ? "translate-y-[-0.2rem] scale-90 text-gray-500"
                   : "translate-y-2 scale-100"
               }`}
             >
@@ -79,11 +79,12 @@ const LoginPage = ({ onSwitch }) => {
               </p>
             )}
           </div>
-  
+
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
               name="password"
+              id="password"
               className={`block w-full pr-12 pl-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 ${
                 errorMessage.password ? "border-red-500" : "border-gray-300"
               }`}
@@ -92,9 +93,10 @@ const LoginPage = ({ onSwitch }) => {
               onChange={updateLoginField}
             />
             <label
-              className={`absolute left-2 text-sm text-black transition-all duration-200 transform scale-100 top-2 origin-[0] ${
+              htmlFor="password"
+              className={`absolute left-2 text-sm text-black transition-all duration-200 transform scale-100 top-1 origin-[0] ${
                 loginForm.password
-                  ? "translate-y-[-0.6rem] scale-90 text-gray-500"
+                  ? "translate-y-[-0.2rem] scale-90 text-gray-500"
                   : "translate-y-2 scale-100"
               }`}
             >
@@ -117,9 +119,9 @@ const LoginPage = ({ onSwitch }) => {
               </p>
             )}
           </div>
-  
+
           <div className="flex justify-between items-center w-full text-sm text-[#1A1A1A]">
-            <label className="flex items-center gap-2">
+            <label className="flex items-center gap-2 pb-2">
               <input type="checkbox" className="rounded border-gray-300" />
               Remember Me
             </label>
@@ -127,7 +129,7 @@ const LoginPage = ({ onSwitch }) => {
               Forgot Password?
             </a>
           </div>
-  
+
           <button
             type="submit"
             className="w-full max-w-[50%] mx-auto bg-gradient-to-r from-[#FF6F61] to-[#FFD23F] text-white font-bold py-2 rounded-full shadow-md hover:shadow-lg transition"
@@ -135,7 +137,7 @@ const LoginPage = ({ onSwitch }) => {
             LOG IN
           </button>
         </form>
-  
+
         <p className="mt-4 mb-6 text-sm text-[#1A1A1A]">
           Don't have an account?{" "}
           <span
