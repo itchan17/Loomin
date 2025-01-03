@@ -18,20 +18,19 @@ const Timeline = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-  const displayPosts = () => {};
+  const displayPosts = () => { };
 
   return (
-    <div className="bg-white-500">
+    <div className="bg-white w-full overflow-hidden">
       <div class="mb-2 flex items-center justify-center pr-12">
         <h5 class="text-slate-800 text-4xl pl-12 font-bold mr-auto py-4  antialiased">
           Home
         </h5>
+
         <button
           onClick={toggleModal}
           className="bg-gradient-to-r from-loomin-yellow to-loomin-orange
-            text-white font-bold py-1 px-4 rounded-2xl hover:scale-110 transform transition-transform
-      "
-        >
+            text-white font-bold py-1 px-4 rounded-2xl hover:scale-110 transform transition-transform">
           <i className="bx bx-plus font-sans"></i>
           Post
         </button>
@@ -45,16 +44,18 @@ const Timeline = () => {
         </div>
       )}
       {store.posts
-        ? store.posts.map((post) => {
-            return (
-              <div className="max-w-2xl mx-auto">
-                <Post post={post} key={post._id} />
-              </div>
-            );
-          })
-        : "No post yet"}
+        ? <div className="flex flex-col items-center px-2">
+          {store.posts.map((post) => (
+            <div key={post._id} className="w-full max-w-2xl mx-auto flex justify-center">
+              <Post post={post} />
+            </div>
+
+          ))}
+        </div>
+        : (<div className="text-center py-4">No post yet</div>)
+      }
     </div>
   );
 };
 
-export default Timeline;
+      export default Timeline;

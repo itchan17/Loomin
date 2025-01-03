@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import commentStore from "../stores/commentStore";
 import Dropdown from "./dropdown";
+import Testimg from "../assets/placeholder.png";
+import Testimg2 from "../assets/shrek.jpg";
 
 const Post = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -60,22 +62,22 @@ const Post = ({ post }) => {
           </span>
           <span className='text-gray-500'>{comment.comment}</span>
           <div className="flex gap-6">
-          <p className="font-thin text-sm text-gray-400">11m</p>
-          <a href className="font-thin text-sm text-gray-400 underline cursor-pointer">Edit</a>
-          <a href className="font-thin text-sm text-gray-400 underline cursor-pointer">Delete</a>
-            </div>
+            <p className="font-thin text-sm text-gray-400">11m</p>
+            <a href className="font-thin text-sm text-gray-400 underline cursor-pointer">Edit</a>
+            <a href className="font-thin text-sm text-gray-400 underline cursor-pointer">Delete</a>
+          </div>
         </div>
       </div>
     ));
-    
+
   };
   return (
-    <div className="bg-white rounded-2xl shadow-md mb-6 w-full" key={post._id}>
-      <div className="flex items-center p-4">
+    <div className="bg-loomin-white rounded-3xl shadow-lg  border border-gray-200 mb-6 w-full" key={post._id}>
+      <div className="flex items-center py-4 pb-2 px-7 ">
         <img
-          src={post.creator.profile_picture}
+          src={post.creator.profile_picture || Testimg2}
           alt={`${post.creator.first_name} ${post.creator.last_name}`}
-          className="w-10 h-10 rounded-full"
+          className="w-12 h-12 rounded-full"
         />
         <span className="ml-3 font-semibold">{`${post.creator.first_name} ${post.creator.last_name}`}</span>
         <Dropdown></Dropdown>
@@ -83,13 +85,21 @@ const Post = ({ post }) => {
       <p className="mt-2 pl-8 mb-2 text-semibold antialiased">{post.content}</p>
 
       <div className="relative " onDoubleClick={handleDoubleTap}>
-        {post.images[0] ? (
+       {/*} {post.images[0] ? (
           <img
-            src={post.images[0]}
+            src={Testimg}
             alt="Post content"
             className="w-11/12 mx-7 rounded-2xl justify-center"
           />
-        ) : null}
+        ) : null}*/}
+
+        <img
+          src={Testimg}
+          alt="Post content"
+          className="w-11/12 mx-7 rounded-2xl justify-center"
+        />
+
+
 
         <AnimatePresence>
           {showHeart && (

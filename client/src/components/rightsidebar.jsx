@@ -5,8 +5,8 @@ import User2 from '../assets/gengar.png';
 
 const Rightsidebar = ({ isOpen }) => {
     return (
-        <aside id="rightsidebar" className={`w-3/12 p-2 bg-WHITE ml-auto from-black to-white border border-gray-200 h-screen transition-transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} sm:translate-x-0`}>
-            <div class="relative flex flex-col my-2 bg-white shadow-sm border border-slate-200 rounded-lg w-full">
+        <aside id="rightsidebar" className={`w-1/4 p-2 bg-loomin-white ml-auto shadow-inner from-black to-white border border-gray-200 h-screen transition-transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} sm:translate-x-0`}>
+            <div class="relative flex flex-col my-2 bg-white shadow-md border border-slate-200 rounded-lg w-full">
                 <div class="p-4">
                     <div class="mb-2 flex items-center justify-between">
                         <h5 class="text-slate-800 text-xl font-bold">
@@ -50,7 +50,7 @@ const Rightsidebar = ({ isOpen }) => {
 
                 </div>
             </div>
-            <div className='relative flex flex-col my-2 bg-white shadow-sm border border-slate-200 rounded-lg w-full'>
+            <div className='relative flex flex-col my-2 bg-white shadow-md border border-slate-200 rounded-lg w-full'>
                 <div className='p-4'>
                     <div class="mb-2 flex items-center justify-between">
                         <h5 class="text-slate-800 text-xl font-bold">

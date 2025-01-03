@@ -3,6 +3,7 @@ import React from 'react';
 import '../global.css';
 import logo from '../assets/loomin.png'
 import Swal from 'sweetalert2'
+import {Link} from 'react-router-dom';
 
 
 const logoutAlert = () => {
@@ -31,7 +32,7 @@ const logoutAlert = () => {
 const Header = ({ toggleSidebar }) => {
 
     return (
-        <header className="flex justify-between item-center h-16 text-black py-4 pl-2 pr-2 md:pl-6 md:pr-8 
+        <header className="flex justify-between item-center h-16 shadow-md text-black py-4 pl-2 pr-2 md:pl-6 md:pr-8 
         bg-gradient-to-r from-loomin-yellow to-loomin-orange drop-shadow-md" position:sticky 
         >
             <button
@@ -49,9 +50,9 @@ const Header = ({ toggleSidebar }) => {
             </button>
             <div className="flex items-center gap-8">
 
-                <a href="#" className="flex items-center w-24">
+                <Link to="/" className="flex items-center w-24">
                     <img src={logo} alt="Loomin Logo" className="w-full h-full object-contain" />
-                </a>
+                </Link>
                 <div className="relative hidden md:flex items-center ">
                     <input
                         type="text"
