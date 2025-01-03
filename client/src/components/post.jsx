@@ -43,13 +43,10 @@ const Post = ({ post }) => {
   const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
-    if (!isLoading && loggedInUser) {
-      console.log("Running");
-      setLikesCount(post.likes.length);
-      setCommentsCount(post.comments.length);
-      checkIfLiked();
-    }
-  }, [loggedInUser, isLoading]);
+    setLikesCount(post.likes.length);
+    setCommentsCount(post.comments.length);
+    checkIfLiked();
+  }, [loggedInUser]);
 
   // Format the number
   const formatNumber = (count) => {
