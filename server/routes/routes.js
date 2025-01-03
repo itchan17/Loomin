@@ -18,7 +18,11 @@ router.get("/logout", authMiddleware, authController.logout);
 router.post("/create-post", authMiddleware, postsController.createPost);
 router.put("/posts/:id", authMiddleware, postsController.editPost);
 router.delete("/posts/:id", authMiddleware, postsController.deletePost);
-router.get("/posts", authMiddleware, postsController.fetchPost);
+router.get("/posts", authMiddleware, postsController.fetchPosts);
+router.put("/posts/:id/archive", authMiddleware, postsController.archivePost);
+
+// Like / Unlike post route
+router.post("/posts/:id/like", authMiddleware, postsController.likeUnlikePost);
 
 // Comment routes
 router.post(
@@ -30,10 +34,24 @@ router.post(
 router.get(
   "/posts/:id/comments",
   authMiddleware,
-  commentsController.fetchPostComment
+  commentsController.fetchPostComments
+);
+
+router.put(
+  "/posts/:postId/comments/:commentId",
+  authMiddleware,
+  commentsController.editComment
+);
+
+router.delete(
+  "/posts/:postId/comments/:commentId",
+  authMiddleware,
+  commentsController.deleteComment
 );
 
 // User routes
 router.get("/users", authMiddleware, usersController.fetchUser);
+
+router.post("/users/:id/following", authMiddleware, usersController.followUser);
 
 module.exports = router;

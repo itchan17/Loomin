@@ -1,170 +1,332 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import commentStore from "../stores/commentStore";
-import Dropdown from "./dropdown";
+import Dropdown from "./PostDropdown";
+import useCommentStore from "../stores/CommentStore";
+import useUserStore from "../stores/UserStore";
+import usePostStore from "../stores/PostStore";
+import numeral from "numeral";
+import testImage from "../assets/placeholder.png";
+import CreateCommentForm from "./CreateCommentForm";
+import EditCommentForm from "./EditCommentForm";
+import InfiniteScroll from "react-infinite-scroll-component";
 import Testimg from "../assets/placeholder.png";
 import Testimg2 from "../assets/shrek.jpg";
 
+
 const Post = ({ post }) => {
+  //User state
+  const loggedInUser = useUserStore((state) => state.loggedInUser);
+  const following = useUserStore((state) => state.following);
+
+  //User state functions
+  const followUser = useUserStore((state) => state.followUser);
+  const setFollowingToDisplay = useUserStore(
+    (state) => state.setFollowingToDisplay
+  );
+
+  // Comment state functions
+  const fetchComments = useCommentStore((state) => state.fetchComments);
+  const deleteComment = useCommentStore((state) => state.deleteComment);
+
+  // Post state functions
+  const likeUnlikePost = usePostStore((state) => state.likeUnlikePost);
+
+  //Local states
   const [isLiked, setIsLiked] = useState(false);
   const [showHeart, setShowHeart] = useState(false);
   const [showComments, setShowComments] = useState(false);
-  const [comments, setComments] = useState([
-    { id: 1, username: "user12345", text: "Testing lang" },
-    { id: 2, username: "user54321", text: "oks!" },
-  ]);
-  const comment_store = commentStore();
+  const [likesCount, setLikesCount] = useState(0);
+  const [commentsCount, setCommentsCount] = useState(0);
+  const [editComment, setEditComment] = useState(false);
+  const [commentToEdit, setCommentToEdit] = useState("");
+  const [commentId, setCommentId] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    setShowHeart(true);
-    setTimeout(() => {
-      setShowHeart(false);
-    }, 1000);
+  useEffect(() => {
+    setLikesCount(post.likes.length);
+    setCommentsCount(post.comments.length);
+    checkIfLiked();
+  }, []);
+
+  // Format the number
+  const formatNumber = (count) => {
+    return count > 1000
+      ? numeral(count).format("0.0a")
+      : numeral(count).format("0a");
   };
-
-  const handleDoubleTap = () => {
-    setIsLiked(true);
-    setShowHeart(true);
-    setTimeout(() => setShowHeart(false), 1000);
+  const toggleFollow = () => {
+    followUser(post.creator);
   };
-
-  const toggleCommentBtn = () => {
-    setShowComments(!showComments);
-    if (!showComments) {
-      // console.log(`Fetch Comment`);
-      comment_store.fetchComments(post._id);
+  // Liking post functions
+  // Check if the user liked the post then set isLiked to true the component renders
+  const checkIfLiked = () => {
+    if (post.likes.includes(loggedInUser._id)) {
+      setIsLiked(true);
     }
   };
 
-  const displayComments = (comments, postId) => {
+  // Handle the like button
+  const handleLike = () => {
+    if (!isLiked) {
+      setIsLiked(!isLiked);
+      setShowHeart(true);
+      setTimeout(() => {
+        setShowHeart(false);
+      }, 1000);
+
+      // Function for liking and unliking
+      likeUnlikePost(post._id);
+
+      // Add 1 to the likesCount state
+      setLikesCount(likesCount + 1);
+    } else {
+      setIsLiked(!isLiked);
+
+      // Function for liking and unliking
+      likeUnlikePost(post._id);
+
+      // Reduce 1 to the likesCount state
+      setLikesCount(likesCount - 1);
+    }
+  };
+
+  const handleDoubleTap = () => {
+    if (!isLiked) {
+      setIsLiked(!isLiked);
+      setShowHeart(true);
+      setTimeout(() => {
+        setShowHeart(false);
+      }, 1000);
+
+      // Function for liking and unliking
+      likeUnlikePost(post._id);
+
+      // Add 1 to the likesCount state
+      setLikesCount(likesCount + 1);
+    } else {
+      setIsLiked(!isLiked);
+
+      // Function for liking and unliking
+      likeUnlikePost(post._id);
+
+      // Reduce 1 to the likesCount state
+      setLikesCount(likesCount - 1);
+    }
+  };
+
+  // Comments functions
+  // Handle toggle comment button
+  const toggleCommentBtn = async () => {
+    setShowComments(!showComments);
+    if (!showComments) {
+      // console.log(`Fetch Comment`);
+      await fetchComments(post._id, setComments, page, setHasMore);
+      setPage(page + 1);
+    }
+  };
+
+  const loadMoreComments = () => {
+    setTimeout(async () => {
+      await fetchComments(post._id, setComments, page, setHasMore);
+      setPage(page + 1);
+    }, 500);
+  };
+
+  const displayComments = () => {
     // First check if comments and postId exist
-    if (!comments || !comments[postId]) {
+    if (!comments) {
       return <div>Loading...</div>;
     }
 
     // Then check the length
-    if (comments[postId].length === 0) {
+    if (comments.length === 0) {
       return <div>No comments.</div>;
     }
-
+    console.log(comments);
     // If we have comments, map and display them
-    return comments[post._id]?.map((comment) => (
+    return comments.map((comment) => (
       <div key={comment._id} className="flex items-start space-x-3 mb-2">
         <img
-          src={post.creator.profile_picture}
-          alt={`${post.creator.first_name} ${post.creator.last_name}`}
+          src={comment.user_id.profile_picture}
+          alt={`${comment.user_id.first_name} ${comment.user_id.last_name}`}
           className="w-10 h-10 rounded-full flex-shrink-0"
         />
         <div className="flex-1 flex flex-col">
           <span className="font-semibold mr-2">
             {`${comment.user_id.first_name} ${comment.user_id.last_name}`}
           </span>
-          <span className='text-gray-500'>{comment.comment}</span>
+          <span className="text-gray-500">{comment.comment}</span>
           <div className="flex gap-6">
             <p className="font-thin text-sm text-gray-400">11m</p>
-            <a href className="font-thin text-sm text-gray-400 underline cursor-pointer">Edit</a>
-            <a href className="font-thin text-sm text-gray-400 underline cursor-pointer">Delete</a>
+
+            {loggedInUser._id === comment.user_id._id ? (
+              <>
+                <a
+                  onClick={() => toggleEditComment(comment)}
+                  className="font-thin text-sm text-gray-400 underline cursor-pointer"
+                >
+                  Edit
+                </a>
+                <a
+                  className="font-thin text-sm text-gray-400 underline cursor-pointer"
+                  onClick={() => handleDeleteComment(post._id, comment._id)}
+                >
+                  Delete
+                </a>
+              </>
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </div>
     ));
+  };
 
+  const handleDeleteComment = async (postId, commentId) => {
+    await deleteComment(postId, commentId, setComments);
+    setCommentsCount((state) => state - 1);
+  };
+
+  // Toggle edit comment
+  const toggleEditComment = (comment) => {
+    setEditComment(true);
+    setCommentToEdit(comment.comment);
+    setCommentId(comment._id);
   };
   return (
-    <div className="bg-loomin-white rounded-3xl shadow-lg  border border-gray-200 mb-6 w-full" key={post._id}>
-      <div className="flex items-center py-4 pb-2 px-7 ">
-        <img
-          src={post.creator.profile_picture || Testimg2}
-          alt={`${post.creator.first_name} ${post.creator.last_name}`}
-          className="w-12 h-12 rounded-full"
-        />
-        <span className="ml-3 font-semibold">{`${post.creator.first_name} ${post.creator.last_name}`}</span>
-        <Dropdown></Dropdown>
-      </div>
-      <p className="mt-2 pl-8 mb-2 text-semibold antialiased">{post.content}</p>
-
-      <div className="relative " onDoubleClick={handleDoubleTap}>
-       {/*} {post.images[0] ? (
+    <div className="border rounded-2xl max-w-2xl mb-6" key={post._id}>
+      <div className="bg-white shadow-md rounded-2xl  w-full">
+        <div className="flex items-center p-4">
           <img
-            src={Testimg}
-            alt="Post content"
-            className="w-11/12 mx-7 rounded-2xl justify-center"
+            src={post.creator.profile_picture}
+            alt={`${post.creator.first_name} ${post.creator.last_name}`}
+            className="w-10 h-10 rounded-full cursor-pointer"
           />
-        ) : null}*/}
-
-        <img
-          src={Testimg}
-          alt="Post content"
-          className="w-11/12 mx-7 rounded-2xl justify-center"
-        />
-
-
-
-        <AnimatePresence>
-          {showHeart && (
-            <motion.div
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="absolute inset-0 flex items-center justify-center"
-            >
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 0.3 }}
-              >
-                <i className="bx bxs-heart text-6xl text-red-500 opacity-80"></i>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      <div className="p-4 pl-8">
-        <div className="flex gap-4">
-          <button onClick={handleLike}>
-            <i
-              className={`bx ${isLiked ? "bxs-heart text-red-500" : "bx-heart"
-                } text-2xl`}
-            ></i>
-          </button>
-          <button onClick={toggleCommentBtn}>
-            <i className="bx bx-comment text-2xl"></i>
-          </button>
-        </div>
-      </div>
-      {/* Check if showComments is true, then display the comments the comment text field */}
-      {showComments && (
-        <div className="px-4 pb-4">
-          <div className="col-span-1 max-h-40 overflow-y-auto mb-4">
-            {displayComments(comment_store.comments, post._id)}
+          <div className="ml-2 flex flex-col">
+            <div className="flex gap-1 items-center">
+              <span className="font-semibold cursor-pointer">{`${post.creator.first_name} ${post.creator.last_name}`}</span>
+              {loggedInUser._id !== post.creator._id && (
+                <>
+                  <span>·</span>
+                  <span
+                    onClick={toggleFollow}
+                    className="text-sm text-loomin-orange font-semibold cursor-pointer"
+                  >
+                    {following.includes(post.creator._id)
+                      ? "Following"
+                      : "Follow"}
+                  </span>
+                </>
+              )}
+            </div>
+            <span className="-mt-1 text-sm cursor-pointer">{`@${post.creator.username}`}</span>
           </div>
-          <form
-            onSubmit={(e) => comment_store.createComment(e, post._id)}
-            className="flex gap-2"
-          >
-            <input
-              key={post._id}
-              type="text"
-              value={
-                comment_store.targetPost === post._id
-                  ? comment_store.comment
-                  : ""
-              } // Check if the input field is the target if not leave it empty
-              onChange={(e) => comment_store.updateCommentField(e, post._id)}
-              placeholder="Add comment"
-              className="flex-1 px-3 py-2 border rounded-xl focus:outline-none focus:border-loomin-yellow"
-            />
-            <button
-              type="submit"
-              className="px-4 py-1 bg-loomin-yellow text-white rounded-3xl hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange"
-            >
-              Post
-            </button>
-          </form>
+          {post.creator._id === loggedInUser._id ? (
+            <Dropdown post={post}></Dropdown>
+          ) : (
+            ""
+          )}
         </div>
-      )}
+        <p className="mt-2 pl-8 mb-2 text-semibold antialiased">
+          {post.content}
+        </p>
+
+        <div className="relative " onDoubleClick={handleDoubleTap}>
+          {testImage ? (
+            <img
+              src={testImage}
+              alt="Post content"
+              className="w-11/12 mx-7 rounded-2xl justify-center"
+            />
+          ) : null}
+
+          <AnimatePresence>
+            {showHeart && (
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="absolute inset-0 flex items-center justify-center"
+              >
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <i className="bx bxs-heart text-6xl text-red-500 opacity-80"></i>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <div className="p-4 pl-8">
+          <div className="flex gap-4">
+            <div className="flex items-center gap-1">
+              <button onClick={handleLike}>
+                <i
+                  className={`bx ${
+                    isLiked ? "bxs-heart text-red-500" : "bx-heart"
+                  } text-2xl`}
+                ></i>
+              </button>
+              {likesCount > 0 ? <span>{formatNumber(likesCount)}</span> : ""}
+            </div>
+            <div className="flex items-center gap-1">
+              <button onClick={toggleCommentBtn}>
+                <i className="bx bx-comment text-2xl"></i>
+              </button>
+              {commentsCount > 0 ? (
+                <span>{formatNumber(commentsCount)}</span>
+              ) : (
+                ""
+              )}
+            </div>
+          </div>
+        </div>
+        {/* Check if showComments is true, then display the comments the comment text field */}
+        {showComments && (
+          <div className="px-4 pb-4">
+            <div
+              id="comments-container"
+              className="max-h-40 overflow-y-auto mb-4"
+            >
+              <InfiniteScroll
+                dataLength={comments.length}
+                next={loadMoreComments}
+                hasMore={hasMore}
+                scrollableTarget="comments-container"
+                loader={
+                  <div className="flex justify-center mb-2">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                  </div>
+                }
+              >
+                {displayComments()}
+              </InfiniteScroll>
+            </div>
+
+            {!editComment ? (
+              <CreateCommentForm
+                postId={post._id}
+                setCommentsCount={setCommentsCount}
+                setComments={setComments}
+              ></CreateCommentForm>
+            ) : (
+              <EditCommentForm
+                postId={post._id}
+                commentId={commentId}
+                commentToEdit={commentToEdit}
+                setEditComment={setEditComment}
+                setComments={setComments}
+              ></EditCommentForm>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

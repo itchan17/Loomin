@@ -1,27 +1,34 @@
-import User from "../assets/shrek.jpg";
 import React from "react";
-import postStore from "../stores/postStore";
-import userStore from "../stores/userStore";
-import { useFilePicker } from 'use-file-picker';
+import usePostStore from "../stores/PostStore";
+import useUserStore from "../stores/UserStore";
+import { useFilePicker } from "use-file-picker";
 import {
   FileAmountLimitValidator,
   FileTypeValidator,
   FileSizeValidator,
   ImageDimensionsValidator,
-} from 'use-file-picker/validators';
+} from "use-file-picker/validators";
 
+const EditPostForm = ({ onClose, post }) => {
+  // Post states
+  const editForm = usePostStore((state) => state.editForm);
 
+  // User states
+  const loggedInUser = useUserStore((state) => state.loggedInUser);
 
+  // State functions
+  const updateEditFormField = usePostStore(
+    (state) => state.updateEditFormField
+  );
+  const updatePost = usePostStore((state) => state.updatePost);
 
-
-const Createpost = ({ onClose }) => {
   const { openFilePicker, filesContent, loading, errors } = useFilePicker({
-    readAs: 'DataURL',
-    accept: 'image/*',
+    readAs: "DataURL",
+    accept: "image/*",
     multiple: true,
     validators: [
       new FileAmountLimitValidator({ max: 1 }),
-      new FileTypeValidator(['jpg', 'png']),
+      new FileTypeValidator(["jpg", "png"]),
       new FileSizeValidator({ maxFileSize: 50 * 1024 * 1024 /* 50 MB */ }),
       new ImageDimensionsValidator({
         maxHeight: 900,
@@ -35,18 +42,19 @@ const Createpost = ({ onClose }) => {
   if (loading) return <div>Loading...</div>;
   if (errors.length) return <div>Error...</div>;
 
-  const store = postStore();
-  const user = userStore();
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    store.createPost();
+    await updatePost(post._id);
+
+    if (onClose()) {
+      onClose();
+    }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="rounded-xl mx-auto bg-white md:w-3/4 lg:w-2/3">
+      <div className=" rounded-xl mx-auto bg-white md:w-3/4 lg:w-2/3">
         <div className="flex justify-between px-2 py-2 ml-auto">
           <button
             onClick={onClose}
@@ -57,27 +65,29 @@ const Createpost = ({ onClose }) => {
           <div className="w-16 h-14">
             <img
               className="rounded-full w-14 h-14 object-cover"
-              src={user.loggedInUser.profile_picture}
+              src={loggedInUser.profile_picture}
               alt="Profile"
             />
           </div>
 
           <div className="ml-3 pt-2 flex flex-col w-full">
             <textarea
-              value={store.createForm.content}
+              value={editForm.content}
               name="content"
-              onChange={store.updateCreateFormField}
+              onChange={updateEditFormField}
               placeholder="It's Shrekin time"
               className="w-full text-xl resize-none outline-none h-32"
             ></textarea>
-
           </div>
         </div>
 
         <div class="flex items-center text-loomin-orange justify-between py-2 px-4 mr-auto border-t">
           <div class="flex text-2xl pl-0.5">
             <div class="flex items-center justify-center p-3 hover:bg-orange-100 rounded-full cursor-pointer">
-              <button onClick={() => openFilePicker()} className="bx bxs-image"></button>
+              <button
+                onClick={() => openFilePicker()}
+                className="bx bxs-image"
+              ></button>
             </div>
             <div class="flex items-center justify-center p-3 hover:bg-orange-100 rounded-full cursor-pointer">
               <button className="bx bxs-happy"></button>
@@ -97,4 +107,4 @@ const Createpost = ({ onClose }) => {
   );
 };
 
-export default Createpost;
+export default EditPostForm;

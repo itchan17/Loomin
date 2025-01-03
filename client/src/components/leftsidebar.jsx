@@ -1,22 +1,40 @@
 import React, { useState, useEffect } from "react";
-import userImage from "../assets/shrek.jpg";
 import feedIcon from "../assets/home.svg";
 import profileIcon from "../assets/userIcon.svg";
 import notificationIcon from "../assets/notification.svg";
-import userStore from "../stores/userStore";
+import useUserStore from "../stores/UserStore";
+import numeral from "numeral";
+import { useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 import {Link} from 'react-router-dom';
 
 const Leftsidebar = ({ isOpen }) => {
-  const store = userStore();
+  // States
+  const loggedInUser = useUserStore((state) => state.loggedInUser);
+  const loggedInUserName = useUserStore((state) => state.loggedInUserName);
+  const postsCount = useUserStore((state) => state.postsCount);
+  const followingCount = useUserStore((state) => state.followingCount);
+  const followersCount = useUserStore((state) => state.followersCount);
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   const isMessagePage = location.pathname === '/messages';
   const isComingSoon = location.pathname === './comingsoon'
 
+  // State functions
+  const fetchLoggedInUser = useUserStore((state) => state.fetchLoggedInUser);
+
+  // Format the number
+  const formatNumber = (count) => {
+    return count > 1000
+      ? numeral(count).format("0.0a")
+      : numeral(count).format("0a");
+  };
+
+  const navigate = useNavigate();
+
 
   useEffect(() => {
-    store.fetchLoggedInUser();
+    fetchLoggedInUser();
   }, []);
 
 
@@ -29,23 +47,30 @@ const Leftsidebar = ({ isOpen }) => {
       <div className="flex flex-col items-center p-6">
         <div className="flex items-center gap-4 mb-4">
           <img
-            src={store.loggedInUser.profile_picture || userImage}
+            src={loggedInUser.profile_picture || userImage}
+
             alt="User"
             className="w-24 h-24 rounded-full"
           />
-          <span className="username">{store.loggedInUserName}</span>
+          <span className="username">{loggedInUserName}</span>
         </div>
         <div className="flex justify-between gap-4 px-2 w-full">
           <div className=" flex flex-col items-center">
-            <span className="font-bold text-lg">{store.postsCount}</span>
+            <span className="font-bold text-lg">
+              {formatNumber(postsCount)}
+            </span>
             <span className="text-sm text-gray-600">Looms</span>
           </div>
           <div className="flex flex-col items-center">
-            <span className="font-bold text-lg">{store.followersCount}</span>
+            <span className="font-bold text-lg">
+              {formatNumber(followersCount)}
+            </span>
             <span className="text-sm text-gray-600">Followers</span>
           </div>
           <div className="flex flex-col items-center">
-            <span className="font-bold text-lg">{store.followingCount}</span>
+            <span className="font-bold text-lg">
+              {formatNumber(followingCount)}
+            </span>
             <span className="text-sm text-gray-600">Following</span>
           </div>
         </div>
@@ -92,7 +117,17 @@ const Leftsidebar = ({ isOpen }) => {
             <i alt="Feed" className="bx bx-message-dots text-xl"></i>
             <span className="ml-1 text-xl mb-1">Messages</span>
           </div>
-          </Link>
+          <div
+            onClick={() => navigate("/inbox")}
+            className="flex items-center gap-4 px-4 py-2 rounded-lg hover:bg-gradient-to-r hover:from-[#FFD23F] hover:to-[#FF6F61] hover:text-white"
+          >
+            <img
+              src={messageIcon}
+              alt="Notifications"
+              className="w-6 h-6 hover:fill-current hover:text-white"
+            />
+            <span>Messages</span>
+          </div>
         </nav>
       </div>
     </aside>
