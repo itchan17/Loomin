@@ -37,10 +37,10 @@ const Timeline = () => {
     // Infinite crolling for timeline
     <div
       id="posts-container"
-      className="flex-auto bg-gray-200 px-5 overflow-y-auto"
+      className="flex-auto items-center px-auto px-6 pl-11  overflow-y-auto"
     >
       {/* Header of the timeline */}
-      <div className="py-4 w-full bg-white-500 mb-2 flex items-center justify-between px-1 border-4">
+      <div className="py-4 w-full bg-white-500 mb-2 flex items-center justify-between pl-0 pr-5 ">
         <h5 className="text-slate-800 text-4xl font-bold antialiased">Home</h5>
         <button
           onClick={toggleModal}
@@ -86,8 +86,9 @@ const Timeline = () => {
       >
         {displayPosts()}
       </InfiniteScroll>
+
     </div>
   );
 };
 
-export default Timeline;
+      export default Timeline;

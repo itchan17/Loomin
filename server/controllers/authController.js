@@ -53,8 +53,8 @@ const signup = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
-
+  const { email, password, rememberMe } = req.body;
+  console.log(req.body);
   try {
     const user = await User.findOne({ email });
 
@@ -75,16 +75,25 @@ const login = async (req, res) => {
         .json({ error: "Invalid account credentials. Please try again." });
     }
     // Create jwt
-    const exp = Date.now() + 1000 * 60 * 60 * 24 * 30; // 30 days before expiration
+    const exp =
+      Date.now() +
+      (rememberMe ? 1000 * 60 * 60 * 24 * 30 : 1000 * 60 * 60 * 24); //Set the session to 30 days or 1 day
+
     const token = jwt.sign({ userId: user._id, exp }, process.env.JWT_KEY);
 
-    // Set the cookie
-    res.cookie("access_token", token, {
-      expires: new Date(exp),
+    const cookieOptions = {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
-    });
+    };
+
+    // Set cookie epiration to true
+    if (rememberMe) {
+      cookieOptions.expires = new Date(exp); // 30 days
+    }
+
+    // Set the cookie
+    res.cookie("access_token", token, cookieOptions);
     res.sendStatus(200);
   } catch (error) {
     console.log(error);

@@ -4,9 +4,11 @@ import User2 from "../assets/gengar.png";
 import useUserStore from "../stores/UserStore";
 
 const Rightsidebar = ({ isOpen }) => {
+
   //User state
   const followingToDisplay = useUserStore((state) => state.followingToDisplay);
   const suggestedUser = useUserStore((state) => state.suggestedUser);
+
 
   //User state functions
   const followUser = useUserStore((state) => state.followUser);
@@ -54,7 +56,10 @@ const Rightsidebar = ({ isOpen }) => {
               <h6 class="text-slate-800 font-semibold">{`${following.first_name} ${following.last_name}`}</h6>
             </div>
           </div>
-          <button className=" border-1 border-orange-300 border text-sm px-4 py-2 hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange rounded-full cursor-pointer">
+          <button
+            onClick={() => followUser(following)}
+            className=" border-1 border-orange-300 border text-sm px-4 py-2 hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange rounded-full cursor-pointer"
+          >
             <p className=" text-transparent text-base font-semibold bg-clip-text bg-gradient-to-r from-loomin-yellow to-loomin-orange hover:text-white">
               Following
             </p>
@@ -66,7 +71,7 @@ const Rightsidebar = ({ isOpen }) => {
   return (
     <aside
       id="rightsidebar"
-      className={`w-3/12 p-2 bg-WHITE ml-auto from-black to-white border border-gray-200 h-screen transition-transform ${
+      className={`w-3/12 p-2 bg-loomin-white shadow-inner ml-auto from-black to-white border border-gray-200 h-screen transition-transform ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       } sm:translate-x-0`}
     >

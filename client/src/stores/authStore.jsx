@@ -5,6 +5,7 @@ const useAuthStore = create((set) => ({
   loginForm: {
     email: "",
     password: "",
+    rememberMe: false,
   },
 
   signupForm: {
@@ -66,12 +67,12 @@ const useAuthStore = create((set) => ({
   },
 
   updateLoginField: (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
 
     set((state) => ({
       loginForm: {
         ...state.loginForm,
-        [name]: value,
+        [name]: type === "checkbox" ? checked : value,
       },
     }));
   },
