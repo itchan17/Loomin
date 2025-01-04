@@ -7,11 +7,12 @@ import useAuthStore from "../stores/AuthStore";
 import useUserStore from "../stores/UserStore";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-
+import useSocketStore from "../stores/socketStore";
 
 const Header = ({ toggleSidebar }) => {
   const logout = useAuthStore((state) => state.logout);
   const clearUser = useUserStore((state) => state.clearUser);
+  const socket = useSocketStore((state) => state.socket);
   const navigate = useNavigate();
 
   const logoutAlert = async () => {
@@ -40,6 +41,7 @@ const Header = ({ toggleSidebar }) => {
       .then((result) => {
         if (result.isConfirmed) {
           clearUser();
+          socket.disconnect();
           navigate("/login");
         }
       });
@@ -79,7 +81,6 @@ const Header = ({ toggleSidebar }) => {
           />
         </Link>
 
-
         {/* Search Bar */}
         <div className="relative hidden md:flex items-center">
           <input
@@ -111,6 +112,5 @@ const Header = ({ toggleSidebar }) => {
     </header>
   );
 };
-
 
 export default Header;

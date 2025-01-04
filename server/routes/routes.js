@@ -65,5 +65,10 @@ router.get(
 // Message routes
 router.post("/messages", authMiddleware, messagesController.createMessage);
 router.get("/messages/:chatId", authMiddleware, messagesController.getMessages);
+router.put(
+  "/messages/mark-as-read",
+  authMiddleware,
+  messagesController.updateMessageStatus
+);
 
 module.exports = router;

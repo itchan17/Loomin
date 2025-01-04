@@ -11,6 +11,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
+const { handleSocketConnection } = require("./socket.js");
 
 // Connect to db
 connectToDb();
@@ -38,25 +39,8 @@ app.use(
 //Routes
 app.use(routes);
 
-// Socket.IO connection
-let onlineUsers = [];
-io.on("connection", (socket) => {
-  socket.on("addUser", (userId) => {
-    !onlineUsers.some((user) => user.userId === userId) &&
-      onlineUsers.push({ userId, socketId: socket.id });
-
-    io.emit("getOnlineUsers", onlineUsers);
-  });
-
-  // When a user disconnects
-  socket.on("disconnect", () => {
-    // Remove the user from onlineUsers array when they disconnect
-    onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
-
-    // Emit the updated list of online users to all clients
-    io.emit("getOnlineUsers", onlineUsers);
-  });
-});
+// Socket
+handleSocketConnection(io);
 
 // Start server
 server.listen(process.env.PORT, () => {

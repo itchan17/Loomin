@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import useSocketStore from "./socketStore";
 
 const useChatStore = create((set) => ({
   chats: null,
@@ -9,6 +10,7 @@ const useChatStore = create((set) => ({
   messages: null,
   currentRecipient: null,
   message: "",
+  newMessageNotif: [],
 
   updateMessageField: (e) => {
     const { value } = e.target;
@@ -50,6 +52,7 @@ const useChatStore = create((set) => ({
 
     try {
       const response = await axios.get(`/messages/${chatId}`);
+
       console.log(response.data);
       set({ messages: response.data });
     } catch (error) {
@@ -58,7 +61,9 @@ const useChatStore = create((set) => ({
   },
 
   sendMessage: async (chatId, senderId) => {
-    const { message, messages } = useChatStore.getState();
+    const { message, messages, currentRecipient, newMessageNotif } =
+      useChatStore.getState();
+    const socket = useSocketStore.getState().socket;
 
     if (message) {
       try {
@@ -66,11 +71,63 @@ const useChatStore = create((set) => ({
           chatId,
           senderId,
           text: message,
+          receiverId: currentRecipient._id,
         });
-        set({ message: "", messages: [...messages, response.data] });
+
+        socket.emit("sendMessage", {
+          ...response.data,
+          recipientId: currentRecipient._id,
+        });
+
+        set({
+          message: "",
+          messages: [...messages, response.data],
+          newMessageNotif: [...newMessageNotif, response.data],
+        });
       } catch (error) {
         console.log(error);
       }
+    }
+  },
+
+  setMessages: (message) => {
+    const { messages } = useChatStore.getState();
+    set({ messages: [...messages, message] });
+  },
+
+  setNewMessageNotif: (message) => {
+    const { newMessageNotif } = useChatStore.getState();
+    set({ newMessageNotif: [...newMessageNotif, message] });
+  },
+
+  // Update read status
+  updateMessageStatus: async (chatId, userId, messageId) => {
+    const { newMessageNotif } = useChatStore.getState();
+    try {
+      const response = await axios.put("/messages/mark-as-read", {
+        chatId,
+        userId,
+        messageId,
+      });
+      console.log(response);
+
+      // Add the new receive chat it the new message notif, so that it can be displayed in the chat preview
+      if (messageId) {
+        set({ newMessageNotif: [...newMessageNotif, response.data.message] });
+      }
+      // set({ messages: response.data });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getLatestMessage: async (chatId, setLatestMessage) => {
+    try {
+      const response = await axios.get(`/messages/${chatId}`);
+
+      setLatestMessage(response.data[response.data.length - 1]);
+    } catch (error) {
+      console.log(error);
     }
   },
 }));

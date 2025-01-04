@@ -4,42 +4,47 @@ import ChatBox from "./ChatBox";
 import useChatStore from "../stores/chatStore";
 import useUserStore from "../stores/UserStore";
 import Chat from "./Chat";
-import { io } from "socket.io-client";
+import useSocketStore from "../stores/socketStore";
 
 const Inbox = () => {
-  const [socket, setSocket] = useState(null);
-
   // Chat states
   const chats = useChatStore((state) => state.chats);
   const chatsLoading = useChatStore((state) => state.chatsLoading);
   const getUserChats = useChatStore((state) => state.getUserChats);
   const activeChat = useChatStore((state) => state.activeChat);
+  const updateMessageStatus = useChatStore(
+    (state) => state.updateMessageStatus
+  );
+  const setNewMessageNotif = useChatStore((state) => state.setNewMessageNotif);
   // User states
   const loggedInUser = useUserStore((state) => state.loggedInUser);
 
-  useEffect(() => {
-    const newSocket = io("http://localhost:3000", {
-      withCredentials: true,
-    });
-    setSocket(newSocket);
-
-    return () => newSocket.disconnect();
-  }, []);
-
-  useEffect(() => {
-    console.log(loggedInUser._id);
-    if (socket === null) return;
-    if (socket && loggedInUser._id) {
-      socket.emit("addUser", loggedInUser._id);
-      socket.on("getOnlineUsers", (res) => {
-        console.log(res);
-      });
-    }
-  }, [socket, loggedInUser]);
+  const socket = useSocketStore((state) => state.socket);
 
   useEffect(() => {
     getUserChats(loggedInUser._id);
   }, [loggedInUser]);
+
+  // ADd new message notif if the user has no active chat
+  useEffect(() => {
+    console.log("Getting New Message Notif");
+
+    if (!socket || !loggedInUser?._id) return;
+
+    // Add the event listener
+    socket.on("getMessage", (message) => {
+      console.log(activeChat);
+      if (activeChat === null) {
+        console.log(message);
+        setNewMessageNotif(message);
+      }
+    });
+
+    // Cleanup function to remove the event listener
+    return () => {
+      socket.off("getMessage");
+    };
+  }, [socket]);
 
   const displayChats = () => {
     return chats.map((chat) => {

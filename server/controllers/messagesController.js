@@ -2,10 +2,15 @@ const Message = require("../models/message.js");
 
 // Creating message
 const createMessage = async (req, res) => {
-  const { chatId, senderId, text } = req.body;
+  const { chatId, senderId, receiverId, text } = req.body;
 
   try {
-    const message = await Message.create({ chatId, senderId, text });
+    const message = await Message.create({
+      chatId,
+      receiverId,
+      senderId,
+      text,
+    });
 
     res.status(200).json(message);
   } catch (error) {
@@ -16,7 +21,6 @@ const createMessage = async (req, res) => {
 
 // Getting messages
 const getMessages = async (req, res) => {
-  console.log(req);
   const { chatId } = req.params;
 
   try {
@@ -28,4 +32,45 @@ const getMessages = async (req, res) => {
   }
 };
 
-module.exports = { createMessage, getMessages };
+const updateMessageStatus = async (req, res) => {
+  const { chatId, userId, messageId } = req.body;
+  console.log(req.body);
+  try {
+    if (messageId) {
+      // Update a single message
+      const message = await Message.findOne({ _id: messageId, chatId });
+      if (!message) {
+        return res.status(404).json({ message: "Message not found" });
+      }
+
+      if (message.receiverId.toString() === userId && message.read === false) {
+        message.read = true;
+        await message.save();
+      }
+
+      return res.status(200).json({ message, updated: true });
+    } else {
+      const messages = await Message.find({ chatId });
+
+      // Update the 'read' status for messages
+      const updatedMessages = await Promise.all(
+        messages.map(async (message) => {
+          if (message.receiverId.toString() === userId) {
+            if (message.read === false) {
+              message.read = true;
+              await message.save(); // Save the individual message
+            }
+          }
+          return message; // Return the modified message
+        })
+      );
+
+      res.status(200).json({ updatedMessages, updated: true });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
+};
+
+module.exports = { createMessage, getMessages, updateMessageStatus };

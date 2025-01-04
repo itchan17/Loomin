@@ -12,6 +12,7 @@ const useUserStore = create((set) => ({
   suggestedUser: [], // Data of suugested users
   isLoading: true, // Add loading state
   error: null, // Add error state
+  onlineUsers: [],
 
   fetchLoggedInUser: async () => {
     try {
@@ -89,6 +90,10 @@ const useUserStore = create((set) => ({
     } catch (error) {
       throw error;
     }
+  },
+
+  setOnlineUsers: (onlineUsers) => {
+    set({ onlineUsers });
   },
 }));
 

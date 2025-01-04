@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "../global.css";
 import useChatStore from "../stores/chatStore";
 import useUserStore from "../stores/UserStore";
+import useSocketStore from "../stores/socketStore";
 import moment from "moment";
 import EmojiPicker from "emoji-picker-react";
 const ChatBox = () => {
@@ -9,13 +10,53 @@ const ChatBox = () => {
   // Chat states
   const messages = useChatStore((state) => state.messages);
   const message = useChatStore((state) => state.message);
+  const setMessages = useChatStore((state) => state.setMessages);
   const currentRecipient = useChatStore((state) => state.currentRecipient);
   const updateMessageField = useChatStore((state) => state.updateMessageField);
   const sendMessage = useChatStore((state) => state.sendMessage);
   const activeChat = useChatStore((state) => state.activeChat);
+  const updateMessageStatus = useChatStore(
+    (state) => state.updateMessageStatus
+  );
 
   // User states
   const loggedInUser = useUserStore((state) => state.loggedInUser);
+  const onlineUsers = useUserStore((state) => state.onlineUsers);
+
+  const socket = useSocketStore((state) => state.socket);
+  const messagesEndRef = useRef(null);
+
+  // Scroll to the bottom whenever messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "start",
+      });
+    }
+  }, [messages]);
+
+  // Receive message real time through socket
+  useEffect(() => {
+    console.log("Getting Message");
+
+    if (!socket || !loggedInUser?._id) return;
+    // Add the event listener
+    socket.on("getMessage", (message) => {
+      setMessages(message);
+      // If the use has open the chat, update the message status to read
+      if (activeChat === message.chatId) {
+        updateMessageStatus(message.chatId, loggedInUser._id, message._id);
+      }
+    });
+
+    // Cleanup function to remove the event listener
+    return () => {
+      socket.off("getMessage");
+    };
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     await sendMessage(activeChat, loggedInUser._id);
@@ -71,11 +112,16 @@ const ChatBox = () => {
     <div class="w-full flex flex-col justify-between">
       <div class="border-b border-[#A4A4A4] bg-[#D9D9D9] bg-opacity-40 py-3 flex flex-col items-center justify-center">
         <h1 class="text-2xl font-bold">{`${currentRecipient.first_name} ${currentRecipient.last_name}`}</h1>
-        <p>Online</p>
+        {onlineUsers.some((user) => user.userId === currentRecipient._id) ? (
+          <p>Online</p>
+        ) : (
+          ""
+        )}
       </div>
       {/* Messages */}
       <div class="flex flex-col overflow-y-auto px-5 ">
         {messages && dislpayMessages()}
+        <div ref={messagesEndRef} />
       </div>
       <form onSubmit={handleSubmit} class="py-2 px-5">
         <div class="relative hidden md:flex items-center">
