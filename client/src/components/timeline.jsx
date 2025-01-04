@@ -11,17 +11,28 @@ const Timeline = () => {
 
   // State functions
   const fetchPosts = usePostStore((state) => state.fetchPosts);
+  const clearPosts = usePostStore((state) => state.clearPosts);
 
   // Local states
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
-    fetchPosts();
+    if (isInitialLoad) {
+      clearPosts();
+      fetchPosts(page);
+      setIsInitialLoad(false);
+      setPage(2);
+    }
   }, []);
 
   const loadMorePosts = () => {
+    console.log(page);
     setTimeout(async () => {
-      await fetchPosts();
+      console.log;
+      await fetchPosts(page);
+      setPage((prevPage) => prevPage + 1);
     }, 500);
   };
 

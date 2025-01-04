@@ -4,12 +4,14 @@ import "../global.css";
 import logo from "../assets/loomin.png";
 import Swal from "sweetalert2";
 import useAuthStore from "../stores/AuthStore";
+import useUserStore from "../stores/UserStore";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 
 const Header = ({ toggleSidebar }) => {
   const logout = useAuthStore((state) => state.logout);
+  const clearUser = useUserStore((state) => state.clearUser);
   const navigate = useNavigate();
 
   const logoutAlert = async () => {
@@ -37,6 +39,7 @@ const Header = ({ toggleSidebar }) => {
       })
       .then((result) => {
         if (result.isConfirmed) {
+          clearUser();
           navigate("/login");
         }
       });

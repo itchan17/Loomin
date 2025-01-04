@@ -5,6 +5,8 @@ const authController = require("../controllers/authController.js");
 const postsController = require("../controllers/postsController.js");
 const commentsController = require("../controllers/commentsController.js");
 const usersController = require("../controllers/usersController.js");
+const chatsController = require("../controllers/chatsController.js");
+const messagesController = require("../controllers/messagesController.js");
 
 // User registration routes
 router.post("/signup", authController.signup);
@@ -30,19 +32,16 @@ router.post(
   authMiddleware,
   commentsController.createComment
 );
-
 router.get(
   "/posts/:id/comments",
   authMiddleware,
   commentsController.fetchPostComments
 );
-
 router.put(
   "/posts/:postId/comments/:commentId",
   authMiddleware,
   commentsController.editComment
 );
-
 router.delete(
   "/posts/:postId/comments/:commentId",
   authMiddleware,
@@ -50,8 +49,21 @@ router.delete(
 );
 
 // User routes
-router.get("/users", authMiddleware, usersController.fetchUser);
-
+router.get("/users", authMiddleware, usersController.fetchLoggedInUser);
+router.get("/users/:id", authMiddleware, usersController.fetchUser);
 router.post("/users/:id/following", authMiddleware, usersController.followUser);
+
+// Chat routes
+router.post("/chats", authMiddleware, chatsController.createChat);
+router.get("/chats/:id", authMiddleware, chatsController.findUserChats);
+router.get(
+  "/chats/:firstId/:secondId",
+  authMiddleware,
+  chatsController.findChat
+);
+
+// Message routes
+router.post("/messages", authMiddleware, messagesController.createMessage);
+router.get("/messages/:chatId", authMiddleware, messagesController.getMessages);
 
 module.exports = router;

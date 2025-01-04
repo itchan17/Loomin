@@ -5,8 +5,6 @@ import useUserStore from "./UserStore";
 const usePostStore = create((set) => ({
   posts: [],
 
-  page: 1,
-
   hasMore: true,
   loading: false,
 
@@ -102,16 +100,15 @@ const usePostStore = create((set) => ({
       },
     }));
   },
+  // Add clear posts function
+  clearPosts: () => set({ posts: [], hasMore: true }),
 
-  fetchPosts: async () => {
+  fetchPosts: async (page) => {
     try {
-      const { posts, page } = usePostStore.getState();
-      console.log(page);
+      const { posts } = usePostStore.getState();
       const fetchedPosts = await axios.get(`/posts?page=${page}&limit=10`);
-      console.log(fetchedPosts);
       set({
         posts: [...posts, ...fetchedPosts.data.posts],
-        page: page + 1,
         hasMore: fetchedPosts.data.hasMore,
       });
     } catch (error) {

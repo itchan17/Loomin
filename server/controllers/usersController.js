@@ -1,6 +1,6 @@
 const User = require("../models/user.js");
 
-const fetchUser = async (req, res) => {
+const fetchLoggedInUser = async (req, res) => {
   const userId = req.user._id;
 
   try {
@@ -64,4 +64,19 @@ const followUser = async (req, res) => {
   }
 };
 
-module.exports = { fetchUser, followUser };
+const fetchUser = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    // Return the logged in user
+    const user = await User.findById({ _id: userId }).select(
+      "first_name last_name profile_picture username"
+    );
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+module.exports = { fetchLoggedInUser, followUser, fetchUser };
