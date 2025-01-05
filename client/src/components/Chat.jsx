@@ -4,8 +4,8 @@ import useChatStore from "../stores/chatStore";
 import moment from "moment";
 
 const Chat = ({ chat, setActiveMessage, activeMessage }) => {
+  // Chat store states
   const fetchRecipientUser = useChatStore((state) => state.fetchRecipientUser);
-  const [recipientUser, setRecipientUser] = useState({});
   const activeChat = useChatStore((state) => state.activeChat);
   const messages = useChatStore((state) => state.messages);
   const selectChat = useChatStore((state) => state.selectChat);
@@ -15,9 +15,10 @@ const Chat = ({ chat, setActiveMessage, activeMessage }) => {
   const getLatestMessage = useChatStore((state) => state.getLatestMessage);
   const newMessageNotif = useChatStore((state) => state.newMessageNotif);
 
-  // User states
+  // User store states
   const loggedInUser = useUserStore((state) => state.loggedInUser);
 
+  const [recipientUser, setRecipientUser] = useState({});
   const [latestMessage, setLatestMessage] = useState([]);
 
   const handleClick = (chatId, recipientUser) => {
@@ -26,11 +27,10 @@ const Chat = ({ chat, setActiveMessage, activeMessage }) => {
   };
 
   useEffect(() => {
+    // This will fetch the data of the recipient of this chat
     fetchRecipientUser(chat, setRecipientUser, loggedInUser._id);
-  }, []);
 
-  useEffect(() => {
-    // Fetch latest message of each caht
+    // Will fetch the latest message of the chat and update the state
     getLatestMessage(chat._id, setLatestMessage);
   }, []);
 
@@ -41,16 +41,20 @@ const Chat = ({ chat, setActiveMessage, activeMessage }) => {
     }
   }, [messages]);
 
+  // If the newMessageNotif gets updated, it will update the latesMessage to display
   useEffect(() => {
+    // Check if the chat has a new message in the newMessageNotif
     if (
       newMessageNotif &&
       newMessageNotif?.some(
         (message) => message.chatId === chat._id && activeChat !== chat._id
       )
     ) {
+      // Will filter all the messages
       const latestMessage = newMessageNotif.filter(
         (message) => message.chatId === chat._id
       );
+      // Get the last message
       setLatestMessage(latestMessage[latestMessage.length - 1]);
     }
   }, [newMessageNotif]);

@@ -50,6 +50,7 @@ router.delete(
 
 // User routes
 router.get("/users", authMiddleware, usersController.fetchLoggedInUser);
+router.get("/users/search", authMiddleware, usersController.searchUser);
 router.get("/users/:id", authMiddleware, usersController.fetchUser);
 router.post("/users/:id/following", authMiddleware, usersController.followUser);
 

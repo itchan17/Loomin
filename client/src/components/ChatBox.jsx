@@ -77,7 +77,7 @@ const ChatBox = () => {
     }));
   };
 
-  const dislpayMessages = () => {
+  const dsiplayMessages = () => {
     return messages.map((message) => {
       if (message.senderId === loggedInUser._id) {
         return (
@@ -130,7 +130,7 @@ const ChatBox = () => {
       </div>
       {/* Messages */}
       <div class="flex flex-col overflow-y-auto px-5 ">
-        {messages && dislpayMessages()}
+        {messages && dsiplayMessages()}
         <div ref={messagesEndRef} />
       </div>
       <form onSubmit={handleSubmit} class="py-2 px-5">
