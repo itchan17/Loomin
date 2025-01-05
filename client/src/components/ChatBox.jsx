@@ -15,9 +15,10 @@ const ChatBox = () => {
   const updateMessageField = useChatStore((state) => state.updateMessageField);
   const sendMessage = useChatStore((state) => state.sendMessage);
   const activeChat = useChatStore((state) => state.activeChat);
-  const updateMessageStatus = useChatStore(
-    (state) => state.updateMessageStatus
+  const getAndUpdateMessageStatus = useChatStore(
+    (state) => state.getAndUpdateMessageStatus
   );
+  const setNewMessageNotif = useChatStore((state) => state.setNewMessageNotif);
 
   // User states
   const loggedInUser = useUserStore((state) => state.loggedInUser);
@@ -44,10 +45,19 @@ const ChatBox = () => {
     if (!socket || !loggedInUser?._id) return;
     // Add the event listener
     socket.on("getMessage", (message) => {
-      setMessages(message);
       // If the use has open the chat, update the message status to read
       if (activeChat === message.chatId) {
-        updateMessageStatus(message.chatId, loggedInUser._id, message._id);
+        // setMessages(message);
+        console.log("Works everytime");
+        getAndUpdateMessageStatus(
+          message.chatId,
+          loggedInUser._id,
+          message._id
+        );
+      }
+      if (activeChat !== message.chatId) {
+        console.log(message);
+        setNewMessageNotif(message);
       }
     });
 
@@ -55,7 +65,7 @@ const ChatBox = () => {
     return () => {
       socket.off("getMessage");
     };
-  }, []);
+  }, [activeChat]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

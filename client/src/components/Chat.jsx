@@ -7,9 +7,10 @@ const Chat = ({ chat, setActiveMessage, activeMessage }) => {
   const fetchRecipientUser = useChatStore((state) => state.fetchRecipientUser);
   const [recipientUser, setRecipientUser] = useState({});
   const activeChat = useChatStore((state) => state.activeChat);
+  const messages = useChatStore((state) => state.messages);
   const selectChat = useChatStore((state) => state.selectChat);
-  const updateMessageStatus = useChatStore(
-    (state) => state.updateMessageStatus
+  const getAndUpdateMessageStatus = useChatStore(
+    (state) => state.getAndUpdateMessageStatus
   );
   const getLatestMessage = useChatStore((state) => state.getLatestMessage);
   const newMessageNotif = useChatStore((state) => state.newMessageNotif);
@@ -21,7 +22,7 @@ const Chat = ({ chat, setActiveMessage, activeMessage }) => {
 
   const handleClick = (chatId, recipientUser) => {
     selectChat(chatId, recipientUser);
-    updateMessageStatus(chatId, loggedInUser._id);
+    getAndUpdateMessageStatus(chatId, loggedInUser._id);
   };
 
   useEffect(() => {
@@ -29,13 +30,23 @@ const Chat = ({ chat, setActiveMessage, activeMessage }) => {
   }, []);
 
   useEffect(() => {
+    // Fetch latest message of each caht
     getLatestMessage(chat._id, setLatestMessage);
   }, []);
+
+  // Set the latest message whenever send a message
+  useEffect(() => {
+    if (messages && activeChat === chat._id) {
+      setLatestMessage(messages[messages.length - 1]);
+    }
+  }, [messages]);
 
   useEffect(() => {
     if (
       newMessageNotif &&
-      newMessageNotif?.some((message) => message.chatId === chat._id)
+      newMessageNotif?.some(
+        (message) => message.chatId === chat._id && activeChat !== chat._id
+      )
     ) {
       const latestMessage = newMessageNotif.filter(
         (message) => message.chatId === chat._id
@@ -65,19 +76,41 @@ const Chat = ({ chat, setActiveMessage, activeMessage }) => {
       <div className="flex-1 min-w-0">
         <div className="flex justify-between">
           <span className="font-semibold">{`${recipientUser.first_name} ${recipientUser.last_name}`}</span>
-          <span className="font-semibold ml-2">
-            {" "}
-            {latestMessage ? moment(latestMessage.createdAt).fromNow() : ""}
-          </span>
+
+          {latestMessage && latestMessage.senderId === loggedInUser._id ? (
+            <span className="ml-2">
+              {latestMessage ? moment(latestMessage.createdAt).fromNow() : ""}
+            </span>
+          ) : latestMessage &&
+            latestMessage.senderId !== loggedInUser._id &&
+            latestMessage.read === false ? (
+            <span className="font-semibold ml-2">
+              {latestMessage ? moment(latestMessage.createdAt).fromNow() : ""}
+            </span>
+          ) : latestMessage &&
+            latestMessage.senderId !== loggedInUser._id &&
+            latestMessage.read === true ? (
+            <span className="ml-2">
+              {latestMessage ? moment(latestMessage.createdAt).fromNow() : ""}
+            </span>
+          ) : (
+            ""
+          )}
         </div>
         <div className="pr-16">
-          <p className="truncate">
-            {latestMessage && latestMessage.senderId === loggedInUser._id
-              ? `You: ${latestMessage.text}`
-              : latestMessage && latestMessage.senderId !== loggedInUser._id
-              ? latestMessage.text
-              : ""}
-          </p>
+          {latestMessage && latestMessage.senderId === loggedInUser._id ? (
+            <p className="truncate">You: {latestMessage.text}</p>
+          ) : latestMessage &&
+            latestMessage.senderId !== loggedInUser._id &&
+            latestMessage.read === false ? (
+            <p className="truncate font-semibold">{latestMessage.text}</p>
+          ) : latestMessage &&
+            latestMessage.senderId !== loggedInUser._id &&
+            latestMessage.read === true ? (
+            <p className="truncate">{latestMessage.text}</p>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </div>

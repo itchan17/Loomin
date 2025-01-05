@@ -8,10 +8,12 @@ import useUserStore from "../stores/UserStore";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import useSocketStore from "../stores/socketStore";
+import useChatStore from "../stores/chatStore";
 
 const Header = ({ toggleSidebar }) => {
   const logout = useAuthStore((state) => state.logout);
   const clearUser = useUserStore((state) => state.clearUser);
+  const clearActiveChat = useChatStore((state) => state.clearActiveChat);
   const socket = useSocketStore((state) => state.socket);
   const navigate = useNavigate();
 
@@ -41,6 +43,7 @@ const Header = ({ toggleSidebar }) => {
       .then((result) => {
         if (result.isConfirmed) {
           clearUser();
+          clearActiveChat();
           socket.disconnect();
           navigate("/login");
         }

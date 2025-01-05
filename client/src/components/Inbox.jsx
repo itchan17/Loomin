@@ -12,10 +12,10 @@ const Inbox = () => {
   const chatsLoading = useChatStore((state) => state.chatsLoading);
   const getUserChats = useChatStore((state) => state.getUserChats);
   const activeChat = useChatStore((state) => state.activeChat);
-  const updateMessageStatus = useChatStore(
-    (state) => state.updateMessageStatus
-  );
   const setNewMessageNotif = useChatStore((state) => state.setNewMessageNotif);
+  const newMessageNotif = useChatStore((state) => state.newMessageNotif);
+  const sortChats = useChatStore((state) => state.sortChats);
+
   // User states
   const loggedInUser = useUserStore((state) => state.loggedInUser);
 
@@ -25,15 +25,19 @@ const Inbox = () => {
     getUserChats(loggedInUser._id);
   }, [loggedInUser]);
 
-  // ADd new message notif if the user has no active chat
   useEffect(() => {
-    console.log("Getting New Message Notif");
+    if (newMessageNotif.length !== 0) {
+      sortChats(newMessageNotif[newMessageNotif.length - 1].chatId);
+    }
+  }, [newMessageNotif]);
 
+  // Add new message notif if the user has no active chat
+  useEffect(() => {
     if (!socket || !loggedInUser?._id) return;
 
     // Add the event listener
     socket.on("getMessage", (message) => {
-      console.log(activeChat);
+      console.log("Getting New Message Notif");
       if (activeChat === null) {
         console.log(message);
         setNewMessageNotif(message);
@@ -44,7 +48,7 @@ const Inbox = () => {
     return () => {
       socket.off("getMessage");
     };
-  }, [socket]);
+  }, [socket, activeChat]);
 
   const displayChats = () => {
     return chats.map((chat) => {
