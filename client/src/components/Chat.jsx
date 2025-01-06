@@ -24,6 +24,16 @@ const Chat = ({ chat, setActiveMessage, activeMessage }) => {
   const handleClick = (chatId, recipientUser) => {
     selectChat(chatId, recipientUser);
     getAndUpdateMessageStatus(chatId, loggedInUser._id);
+
+    if (
+      newMessageNotif &&
+      newMessageNotif?.some(
+        (message) => message.chatId === chat._id && activeChat !== chat._id
+      )
+    ) {
+      // Will filter all the messages
+      newMessageNotif.map((message) => (message.read = true));
+    }
   };
 
   useEffect(() => {

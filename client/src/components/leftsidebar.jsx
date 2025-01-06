@@ -26,6 +26,9 @@ const Leftsidebar = ({ isOpen }) => {
   const fetchLoggedInUser = useUserStore((state) => state.fetchLoggedInUser);
 
   const clearActiveChat = useChatStore((state) => state.clearActiveChat);
+  const unreadMessagesCount = useChatStore(
+    (state) => state.unreadMessagesCount
+  );
 
   // Format the number
   const formatNumber = (count) => {
@@ -127,15 +130,20 @@ const Leftsidebar = ({ isOpen }) => {
           <Link to="/inbox">
             <div
               onClick={clearActiveChat}
-              className={`flex items-center gap-4 px-4 py-2 rounded-lg 
+              className={`flex items-center justify-between px-4 py-2 rounded-lg 
           ${
             isMessagePage
               ? "bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] text-white"
               : "hover:bg-gradient-to-r hover:from-[#FFD23F] hover:to-[#FF6F61] hover:text-white"
           }`}
             >
-              <i alt="Feed" className="bx bx-message-dots text-xl"></i>
-              <span className="ml-1 text-xl mb-1">Messages</span>
+              <div className="flex items-center gap-4">
+                <i alt="Feed" className="bx bx-message-dots text-xl"></i>
+                <span className="ml-1 text-xl mb-1">Messages</span>
+              </div>
+              <span className="text-xl font-semibold">
+                {unreadMessagesCount ? unreadMessagesCount : ""}
+              </span>
             </div>
           </Link>
         </nav>

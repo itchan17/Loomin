@@ -5,13 +5,38 @@ const createChat = async (req, res) => {
   const { firstId, secondId } = req.body;
 
   try {
-    const chat = await Chat.findOne({ members: { $all: [firstId, secondId] } });
+    // Check for self chat
+    if (firstId === secondId) {
+      const chat = await Chat.findOne({
+        members: [firstId, secondId],
+      });
 
-    if (chat) return res.status(200).json(chat);
+      if (chat) {
+        return res.status(200).json(chat);
+      }
 
-    const newChat = await Chat.create({ members: [firstId, secondId] });
+      // If chat doesn't exist, create a new one
+      const newChat = await Chat.create({
+        members: [firstId, secondId],
+      });
 
-    res.status(200).json(newChat);
+      return res.status(200).json(newChat);
+    } else {
+      const chat = await Chat.findOne({
+        members: { $all: [firstId, secondId], $size: 2 },
+      });
+
+      if (chat) {
+        return res.status(200).json(chat);
+      }
+
+      // If chat doesn't exist, create a new one
+      const newChat = await Chat.create({
+        members: [firstId, secondId],
+      });
+
+      return res.status(200).json(newChat);
+    }
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
@@ -20,7 +45,7 @@ const createChat = async (req, res) => {
 
 // Fin user's chats
 const findUserChats = async (req, res) => {
-  const userId = req.params.id;
+  const { userId } = req.params;
 
   try {
     const chats = await Chat.find({ members: { $in: [userId] } });
@@ -34,11 +59,11 @@ const findUserChats = async (req, res) => {
 
 //Find single chat
 const findChat = async (req, res) => {
-  const { firstId, secondId } = req.params;
+  const { chatId } = req.params;
 
   try {
-    const chat = await Chat.findOne({ members: { $all: [firstId, secondId] } });
-
+    const chat = await Chat.findOne({ _id: chatId });
+    console.log(chat);
     res.status(200).json(chat);
   } catch (error) {
     console.log(error);

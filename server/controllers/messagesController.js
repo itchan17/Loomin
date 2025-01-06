@@ -19,12 +19,13 @@ const createMessage = async (req, res) => {
   }
 };
 
-// Getting messages
+// Get messages based on the chatId
 const getMessages = async (req, res) => {
   const { chatId } = req.params;
 
   try {
     const messages = await Message.find({ chatId });
+
     res.status(200).json(messages);
   } catch (error) {
     console.log(error);
@@ -32,7 +33,27 @@ const getMessages = async (req, res) => {
   }
 };
 
-const updateMessageStatus = async (req, res) => {
+// Get count of unread messages
+const getUnreadMessages = async (req, res) => {
+  const userId = req.user._id; // Assume user is authenticated
+
+  try {
+    const unreadMessages = await Message.find({
+      receiverId: userId,
+      read: false,
+    });
+
+    res.status(200).json({
+      unreadCount: unreadMessages.length,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
+};
+
+// Updata the messages status and return the updated messages to the client
+const getAndUpdateMessageStatus = async (req, res) => {
   const { chatId, userId, messageId } = req.body;
   console.log(req.body);
   try {
@@ -65,7 +86,17 @@ const updateMessageStatus = async (req, res) => {
         })
       );
 
-      res.status(200).json({ updatedMessages, updated: true });
+      // This will return the count of all unread messages
+      const unreadMessages = await Message.find({
+        receiverId: userId,
+        read: false,
+      });
+
+      res.status(200).json({
+        updatedMessages,
+        updated: true,
+        unreadCount: unreadMessages.length,
+      });
     }
   } catch (error) {
     console.log(error);
@@ -73,4 +104,9 @@ const updateMessageStatus = async (req, res) => {
   }
 };
 
-module.exports = { createMessage, getMessages, updateMessageStatus };
+module.exports = {
+  createMessage,
+  getMessages,
+  getAndUpdateMessageStatus,
+  getUnreadMessages,
+};

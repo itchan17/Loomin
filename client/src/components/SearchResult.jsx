@@ -1,8 +1,23 @@
 import React, { useState, useEffect } from "react";
+import useChatStore from "../stores/chatStore";
+import useUserStore from "../stores/UserStore";
 
 const SearchResult = ({ user }) => {
+  const createChat = useChatStore((state) => state.createChat);
+  const clearInboxSearchTerm = useChatStore(
+    (state) => state.clearInboxSearchTerm
+  );
+
+  // User states
+  const loggedInUser = useUserStore((state) => state.loggedInUser);
+
+  const handleClickChat = (firstId, secondId) => {
+    createChat(firstId, secondId);
+    clearInboxSearchTerm();
+  };
   return (
     <div
+      onClick={() => handleClickChat(loggedInUser._id, user._id)}
       key={user._id}
       className={`flex px-2 py-3 gap-4 items-center rounded cursor-pointer hover:bg-[#f3f4f6]`}
     >
