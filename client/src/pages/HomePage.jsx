@@ -14,7 +14,7 @@ const HomePage = () => {
   return (
     <>
       <div className="flex flex-col h-screen w-full overflow-hidden">
-        <Header/>
+        <Header></Header>
         <div className="flex flex-1 h-screen overflow-hidden">
           <LeftSidebar/>
           <main className="flex-auto overflow-auto bg-loomin-white">

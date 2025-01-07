@@ -96,8 +96,6 @@ const EditProfileModal = ({ isOpen, onClose }) => {
                         </div>
                     </div>
                 </div>
-
-                
                 <div className="p-4 border-t flex justify-center">
                     <button 
                         className="w-full bg-gradient-to-r from-loomin-yellow to-loomin-orange text-white font-semibold py-2 px-6 rounded-lg hover:opacity-90"
