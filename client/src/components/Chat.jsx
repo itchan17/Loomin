@@ -5,7 +5,7 @@ import moment from "moment";
 
 const Chat = ({ chat, setActiveMessage, activeMessage }) => {
   // Chat store states
-  const fetchRecipientUser = useChatStore((state) => state.fetchRecipientUser);
+  // const fetchRecipientUser = useChatStore((state) => state.fetchRecipientUser);
   const activeChat = useChatStore((state) => state.activeChat);
   const messages = useChatStore((state) => state.messages);
   const selectChat = useChatStore((state) => state.selectChat);
@@ -37,8 +37,13 @@ const Chat = ({ chat, setActiveMessage, activeMessage }) => {
   };
 
   useEffect(() => {
-    // This will fetch the data of the recipient of this chat
-    fetchRecipientUser(chat, setRecipientUser, loggedInUser._id);
+    // This will set the data of the recipient of this chat
+    setRecipientUser(() => {
+      // Check if the second member is the logged in user if true the recipient of chat is the self
+      return chat.members[1]._id === loggedInUser._id
+        ? chat.members[0]
+        : chat.members[1];
+    });
 
     // Will fetch the latest message of the chat and update the state
     getLatestMessage(chat._id, setLatestMessage);

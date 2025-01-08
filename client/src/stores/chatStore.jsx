@@ -96,22 +96,6 @@ const useChatStore = create((set) => ({
     }
   },
 
-  // This will fetch the data of the recipient user that will be displayed the chat and chat box
-  fetchRecipientUser: async (chat, setRecipientUser, userId) => {
-    const recipientUserId =
-      chat.members[1] === userId ? chat.members[0] : chat.members[1];
-    if (recipientUserId) {
-      try {
-        const response = await axios.get(`/users/${recipientUserId}`);
-        if (response.status !== 200) throw new Error("Failed to fetch data");
-
-        setRecipientUser(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  },
-
   selectChat: async (chatId, currentRecipient) => {
     const { newMessageNotif } = useChatStore.getState();
 
@@ -234,7 +218,7 @@ const useChatStore = create((set) => ({
     } else {
       try {
         const chat = await axios.get(`/chats/${chatId}`);
-
+        console.log(chat);
         set({ chats: [chat.data, ...chats] });
       } catch (error) {
         console.log(error);
