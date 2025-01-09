@@ -4,46 +4,86 @@ import ChatBox from "./ChatBox";
 import useChatStore from "../stores/chatStore";
 import useUserStore from "../stores/UserStore";
 import Chat from "./Chat";
-import { io } from "socket.io-client";
+import SearchResult from "./SearchResult";
+import useSocketStore from "../stores/socketStore";
+import axios from "axios";
+import debounce from "lodash.debounce";
 
 const Inbox = () => {
-  const [socket, setSocket] = useState(null);
-
   // Chat states
   const chats = useChatStore((state) => state.chats);
   const chatsLoading = useChatStore((state) => state.chatsLoading);
   const getUserChats = useChatStore((state) => state.getUserChats);
   const activeChat = useChatStore((state) => state.activeChat);
+  const setNewMessageNotif = useChatStore((state) => state.setNewMessageNotif);
+  const newMessageNotif = useChatStore((state) => state.newMessageNotif);
+  const sortChats = useChatStore((state) => state.sortChats);
+  const inboxSearchTerm = useChatStore((state) => state.inboxSearchTerm);
+  const updateSearchField = useChatStore((state) => state.updateSearchField);
+
   // User states
   const loggedInUser = useUserStore((state) => state.loggedInUser);
 
-  useEffect(() => {
-    const newSocket = io("http://localhost:3000", {
-      withCredentials: true,
-    });
-    setSocket(newSocket);
+  // Socket store
+  const socket = useSocketStore((state) => state.socket);
 
-    return () => newSocket.disconnect();
-  }, []);
+  // Locat state
+  // const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState(null);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
 
-  useEffect(() => {
-    console.log(loggedInUser._id);
-    if (socket === null) return;
-    if (socket && loggedInUser._id) {
-      socket.emit("addUser", loggedInUser._id);
-      socket.on("getOnlineUsers", (res) => {
-        console.log(res);
-      });
-    }
-  }, [socket, loggedInUser]);
-
+  // If this component get rendered will fetch all the chat created by the user
   useEffect(() => {
     getUserChats(loggedInUser._id);
   }, [loggedInUser]);
 
+  // If there's new message and newMessageNotif get updated, it will sort the chats based on the latest message in the notif
+  useEffect(() => {
+    if (newMessageNotif.length !== 0) {
+      sortChats(newMessageNotif[newMessageNotif.length - 1].chatId);
+    }
+  }, [newMessageNotif]);
+
+  // Search for user with debounce delaying the trigger of request to the server for 300m
+  const debouncedSearch = debounce(async (term) => {
+    if (!term.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    setIsSearchLoading(true);
+    try {
+      const response = await axios.get(`/users/search?keyword=${term}`);
+      setSearchResults(response.data);
+      setIsSearchLoading(false);
+    } catch (error) {
+      console.error("Search error:", error);
+    }
+  }, 300);
+
+  // Run the debouncedSearch everytime there's a changes in searchTerm
+  useEffect(() => {
+    debouncedSearch(inboxSearchTerm);
+
+    // Cleanup
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [inboxSearchTerm]);
+
   const displayChats = () => {
+    console.log(chats);
     return chats.map((chat) => {
       return <Chat key={chat._id} chat={chat} />;
+    });
+  };
+
+  const displaySearchResults = () => {
+    if (isSearchLoading) return <div>Loading...</div>;
+    if (!isSearchLoading && searchResults.length === 0)
+      return <div>No results found.</div>;
+    return searchResults.map((user) => {
+      return <SearchResult key={user._id} user={user} />;
     });
   };
 
@@ -54,6 +94,8 @@ const Inbox = () => {
 
         <div className="relative hidden md:flex items-center mb-6">
           <input
+            onChange={updateSearchField}
+            value={inboxSearchTerm}
             type="text"
             placeholder="Search..."
             className="w-full bg-[#D9D9D9] bg-opacity-40 pl-10 pr-4 py-2 border border-slate-200 shadow-inner rounded-xl bg-white/80 focus:outline-none focus:ring-1 focus:ring-loomin-orange "
@@ -71,7 +113,13 @@ const Inbox = () => {
           </svg>
         </div>
 
-        {chats && displayChats()}
+        {chats && !inboxSearchTerm && displayChats()}
+        {inboxSearchTerm && (
+          <div>
+            <h1 className="font-bold mb-2">Search Results:</h1>
+            {displaySearchResults()}
+          </div>
+        )}
       </div>
 
       {activeChat ? (

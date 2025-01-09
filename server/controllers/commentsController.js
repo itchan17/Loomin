@@ -36,7 +36,7 @@ const createComment = async (req, res) => {
 
     res.status(200).json({ createdComment });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(500).json({ message: "An internal server error occurred" });
   }
 };
@@ -69,7 +69,7 @@ const fetchPostComments = async (req, res) => {
       totalComments,
     });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(500).json({ message: "An internal server error occurred" }); // Server error
   }
 };
@@ -87,7 +87,7 @@ const editComment = async (req, res) => {
 
     res.status(200).json({ comment });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(500).json({ message: "An internal server error occurred" }); // Server error
   }
 };
@@ -115,7 +115,7 @@ const deleteComment = async (req, res) => {
       .status(200)
       .json({ deletedComment, success: "Comment deleted successfully." });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(500).json({ message: "An internal server error occurred" }); // Server error
   }
 };

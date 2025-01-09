@@ -52,7 +52,6 @@ const editPost = async (req, res) => {
 
 const deletePost = async (req, res) => {
   const postId = req.params.id;
-  console.log(postId);
   try {
     const deletedPost = await Post.findOneAndDelete({
       _id: postId,

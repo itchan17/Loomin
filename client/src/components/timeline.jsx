@@ -29,10 +29,17 @@ const Timeline = () => {
 
   const loadMorePosts = () => {
     console.log(page);
+
     setTimeout(async () => {
-      console.log;
-      await fetchPosts(page);
-      setPage((prevPage) => prevPage + 1);
+      try {
+        // Fetch posts and wait for the result
+        await fetchPosts(page);
+
+        // Increment the page after successful fetch
+        setPage((prevPage) => prevPage + 1);
+      } catch (error) {
+        console.error("Error loading posts:", error);
+      }
     }, 500);
   };
 
@@ -46,9 +53,9 @@ const Timeline = () => {
 
   return (
     // Infinite crolling for timeline
-    <div
+    <main
       id="posts-container"
-      className="flex-auto flex flex-col items-center px-4 overflow-y-auto"
+      className="flex-auto bg-loomin-white flex-auto items-center px-auto px-6 pl-11 overflow-y-auto"
     >
       {/* Header of the timeline*/}
       <div className="w-full max-w-2xl py-4 mb-2 flex items-center justify-between">
@@ -70,36 +77,33 @@ const Timeline = () => {
           </div>
         </div>
       )}
-
-      <div className="w-full max-w-2xl">
-        <InfiniteScroll
-          dataLength={posts.length}
-          next={loadMorePosts}
-          hasMore={hasMore}
-          scrollableTarget="posts-container"
-          loader={
-            <div className="flex justify-center mb-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-            </div>
-          }
-          endMessage={
-            !posts.length ? (
-              <div className="flex items-center justify-center">
-                <div>
-                  <p className="text-center text-gray-500">No posts yet!</p>
-                </div>
+      <InfiniteScroll
+        dataLength={posts.length}
+        next={loadMorePosts}
+        hasMore={hasMore}
+        scrollableTarget="posts-container"
+        loader={
+          <div className="flex justify-center mb-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          </div>
+        }
+        endMessage={
+          !posts.length ? (
+            <div className="flex items-center justify-center">
+              <div>
+                <p className="text-center text-gray-500">No posts yet!</p>
               </div>
-            ) : (
-              <p className="text-center text-gray-500 border-black mb-4">
-                You've seen all posts!
-              </p>
-            )
-          }
-        >
-          {displayPosts()}
-        </InfiniteScroll>
-      </div>
-    </div>
+            </div>
+          ) : (
+            <p className="text-center text-gray-500 border-black mb-4">
+              You've seen all posts!
+            </p>
+          )
+        }
+      >
+        {displayPosts()}
+      </InfiniteScroll>
+    </main>
   );
 };
 

@@ -50,20 +50,27 @@ router.delete(
 
 // User routes
 router.get("/users", authMiddleware, usersController.fetchLoggedInUser);
+router.get("/users/search", authMiddleware, usersController.searchUser);
 router.get("/users/:id", authMiddleware, usersController.fetchUser);
 router.post("/users/:id/following", authMiddleware, usersController.followUser);
 
 // Chat routes
-router.post("/chats", authMiddleware, chatsController.createChat);
-router.get("/chats/:id", authMiddleware, chatsController.findUserChats);
+router.post("/chats/create", authMiddleware, chatsController.createChat);
 router.get(
-  "/chats/:firstId/:secondId",
+  "/chats/user/:userId",
   authMiddleware,
-  chatsController.findChat
+  chatsController.findUserChats
 );
+router.get("/chats/:chatId", authMiddleware, chatsController.findChat);
 
 // Message routes
 router.post("/messages", authMiddleware, messagesController.createMessage);
+router.get("/messages", authMiddleware, messagesController.getUnreadMessages);
 router.get("/messages/:chatId", authMiddleware, messagesController.getMessages);
+router.put(
+  "/messages/mark-as-read",
+  authMiddleware,
+  messagesController.getAndUpdateMessageStatus
+);
 
 module.exports = router;

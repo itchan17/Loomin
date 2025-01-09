@@ -4,12 +4,17 @@ import "../global.css";
 import logo from "../assets/loomin.png";
 import useAuthStore from "../stores/AuthStore";
 import useUserStore from "../stores/UserStore";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import useSocketStore from "../stores/socketStore";
+import useChatStore from "../stores/chatStore";
 import LogoutModal from "./LogoutModal";
 
 const Header = ({ toggleSidebar }) => {
   const logout = useAuthStore((state) => state.logout);
   const clearUser = useUserStore((state) => state.clearUser);
+  const clearActiveChat = useChatStore((state) => state.clearActiveChat);
+  const socket = useSocketStore((state) => state.socket);
 
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -40,6 +45,8 @@ const Header = ({ toggleSidebar }) => {
       .then((result) => {
         if (result.isConfirmed) {
           clearUser();
+          clearActiveChat();
+          socket.disconnect();
           navigate("/login");
         }
       });
@@ -58,6 +65,7 @@ const Header = ({ toggleSidebar }) => {
   return (
     <>
       <header className="flex justify-between items-center h-16 text-black py-4 pl-2 pr-2 md:pl-6 md:pr-8 bg-gradient-to-r from-loomin-yellow to-loomin-orange drop-shadow-md sticky top-0">
+        {/* Sidebar Toggle Button */}
         <button
           onClick={toggleSidebar}
           aria-controls="sidebar"
@@ -90,6 +98,7 @@ const Header = ({ toggleSidebar }) => {
             />
           </Link>
 
+          {/* Search Bar */}
           <div className="relative hidden md:flex items-center">
             <input
               type="text"
@@ -109,6 +118,8 @@ const Header = ({ toggleSidebar }) => {
             </svg>
           </div>
         </div>
+
+        {/* Logout Button */}
         <div className="flex items-center ml-auto">
           <button
             onClick={() => setIsLogoutModalOpen(true)}
