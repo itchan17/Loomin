@@ -9,8 +9,10 @@ import useChatStore from "../stores/chatStore";
 const MessagePage = () => {
   const setOnlineUsers = useUserStore((state) => state.setOnlineUsers);
   const loggedInUser = useUserStore((state) => state.loggedInUser);
+  const fetchLoggedInUser = useUserStore((state) => state.fetchLoggedInUser);
 
   const activeChat = useChatStore((state) => state.activeChat);
+  const clearActiveChat = useChatStore((state) => state.clearActiveChat);
   const setNewMessageNotif = useChatStore((state) => state.setNewMessageNotif);
   const getCountUnreadMessages = useChatStore(
     (state) => state.getCountUnreadMessages
@@ -20,6 +22,14 @@ const MessagePage = () => {
 
   const socket = useSocketStore((state) => state.socket);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    fetchLoggedInUser();
+
+    return () => {
+      clearActiveChat();
+    };
+  }, []);
 
   useEffect(() => {
     if (!socket || !loggedInUser?._id) return;

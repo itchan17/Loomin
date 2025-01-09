@@ -5,7 +5,6 @@ import useUserStore from "./UserStore";
 const usePostStore = create((set) => ({
   posts: [],
 
-  hasMore: true,
   loading: false,
 
   createForm: {
@@ -103,14 +102,14 @@ const usePostStore = create((set) => ({
   // Add clear posts function
   clearPosts: () => set({ posts: [], hasMore: true }),
 
-  fetchPosts: async (page) => {
+  fetchPosts: async (page, setHasMore) => {
     try {
       const { posts } = usePostStore.getState();
       const fetchedPosts = await axios.get(`/posts?page=${page}&limit=10`);
       set({
         posts: [...posts, ...fetchedPosts.data.posts],
-        hasMore: fetchedPosts.data.hasMore,
       });
+      setHasMore(fetchedPosts.data.hasMore);
     } catch (error) {
       console.log(error);
       throw error;

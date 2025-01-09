@@ -4,12 +4,14 @@ import profileIcon from "../assets/shrek.jpg";
 import notificationIcon from "../assets/notification.svg";
 import useUserStore from "../stores/UserStore";
 import numeral from "numeral";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useLocation, useParams, Link } from "react-router-dom";
 import useChatStore from "../stores/chatStore";
+import useProfileStore from "../stores/profileStore";
 
 const Leftsidebar = ({ isOpen }) => {
+  const { username: activeProfileUsername } = useParams();
+
+  console.log("Params: " + activeProfileUsername);
   // States
   const loggedInUser = useUserStore((state) => state.loggedInUser);
   const loggedInUserName = useUserStore((state) => state.loggedInUserName);
@@ -22,13 +24,17 @@ const Leftsidebar = ({ isOpen }) => {
   const isComingSoon = location.pathname === "./comingsoon";
   const isProfilePage = location.pathname === "/profile";
 
-  // State functions
-  const fetchLoggedInUser = useUserStore((state) => state.fetchLoggedInUser);
-
-  const clearActiveChat = useChatStore((state) => state.clearActiveChat);
   const unreadMessagesCount = useChatStore(
     (state) => state.unreadMessagesCount
   );
+
+  const setProfileInitialLoad = useProfileStore(
+    (state) => state.setProfileInitialLoad
+  );
+
+  useEffect(() => {
+    setProfileInitialLoad(true);
+  }, [activeProfileUsername]);
 
   // Format the number
   const formatNumber = (count) => {
@@ -37,19 +43,13 @@ const Leftsidebar = ({ isOpen }) => {
       : numeral(count).format("0a");
   };
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchLoggedInUser();
-  }, []);
-
   return (
     <aside
       id="sidebar"
       className="w-1/4 bg-loomin-white shadow-inner h-screen transition-transform border-r border-gray-200"
     >
       <div className="flex flex-col items-center p-6">
-        {!isProfilePage && (
+        {activeProfileUsername === loggedInUser.username ? null : (
           <>
             <div className="flex items-center gap-4 mb-4 mr-auto">
               <img
@@ -58,11 +58,11 @@ const Leftsidebar = ({ isOpen }) => {
                 className="w-24 h-24 rounded-full"
               />
               <Link to="/profile">
-              <span className="username">{loggedInUserName}</span>
+                <span className="username">{loggedInUserName}</span>
               </Link>
             </div>
             <div className="flex justify-between gap-4 px-2 w-full">
-              <div className=" flex flex-col items-center">
+              <div className="flex flex-col items-center">
                 <span className="font-bold text-lg">
                   {formatNumber(postsCount)}
                 </span>
@@ -89,7 +89,6 @@ const Leftsidebar = ({ isOpen }) => {
           <p className="text-slate-500 font-bold">Menu</p>
           <Link to="/">
             <div
-              onClick={clearActiveChat}
               className={`flex items-center gap-4 px-4 py-2 rounded-lg 
           ${
             isHomePage
@@ -101,12 +100,11 @@ const Leftsidebar = ({ isOpen }) => {
               <span className="ml-1 text-xl mb-1">Home</span>
             </div>
           </Link>
-          <Link to="/profile">
+          <Link to={`/profile/${loggedInUser.username}`}>
             <div
-              onClick={clearActiveChat}
               className={`flex items-center gap-4 px-4 py-2 rounded-lg 
           ${
-            isProfilePage //pa-add nalang ng new const pag meron ng page to
+            activeProfileUsername === loggedInUser.username
               ? "bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] text-white"
               : "hover:bg-gradient-to-r hover:from-[#FFD23F] hover:to-[#FF6F61] hover:text-white"
           }`}
@@ -117,7 +115,6 @@ const Leftsidebar = ({ isOpen }) => {
           </Link>
           <Link to="/comingsoon">
             <div
-              onClick={clearActiveChat}
               className={`flex items-center gap-4 px-4 py-2 rounded-lg 
           ${
             isComingSoon //pa-add nalang ng new const pag meron ng page to
@@ -131,7 +128,6 @@ const Leftsidebar = ({ isOpen }) => {
           </Link>
           <Link to="/inbox">
             <div
-              onClick={clearActiveChat}
               className={`flex items-center justify-between px-4 py-2 rounded-lg 
           ${
             isMessagePage

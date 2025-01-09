@@ -65,12 +65,12 @@ const followUser = async (req, res) => {
 };
 
 const fetchUser = async (req, res) => {
-  const userId = req.params.id;
-
+  const username = req.params.username;
+  console.log(username);
   try {
     // Return the logged in user
-    const user = await User.findById({ _id: userId }).select(
-      "first_name last_name profile_picture username"
+    const user = await User.findOne({ username }).select(
+      "-password -createdAt -updatedAt"
     );
 
     res.status(200).json(user);

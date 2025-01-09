@@ -20,7 +20,7 @@ const App = () => {
   const loggedInUser = useUserStore((state) => state.loggedInUser);
 
   useEffect(() => {
-    if (loggedInUser._id) {
+    if (loggedInUser?._id) {
       initializeSocket();
       console.log("App Running");
     }
@@ -59,7 +59,7 @@ const App = () => {
           }
         />
         <Route
-          path="/profile"
+          path="/profile/:username"
           element={
             <CheckAuth>
               <ProfilePage></ProfilePage>
