@@ -37,11 +37,12 @@ const ProfilePosts = () => {
 
   const loadMorePosts = () => {
     console.log(page);
+    console.log(hasMore);
 
     setTimeout(async () => {
       try {
         // Fetch posts and wait for the result
-        await fetchProfilePosts(page, setHasMore, loggedInUser._id);
+        await fetchProfilePosts(page, setHasMore, userProfileData._id);
 
         // Increment the page after successful fetch
         setPage((prevPage) => prevPage + 1);
