@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import feedIcon from "../assets/home.svg";
-import profileIcon from "../assets/userIcon.svg";
+import profileIcon from "../assets/shrek.jpg";
 import notificationIcon from "../assets/notification.svg";
 import useUserStore from "../stores/UserStore";
 import numeral from "numeral";
@@ -48,14 +48,16 @@ const Leftsidebar = ({ isOpen }) => {
       <div className="flex flex-col items-center p-6">
         {!isProfilePage && (
           <>
-            <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center gap-4 mb-4 mr-auto">
               <img
                 src={loggedInUser.profile_picture || profileIcon}
 
                 alt="User"
                 className="w-24 h-24 rounded-full"
               />
+              <Link to="/profile">
               <span className="username">{loggedInUserName}</span>
+              </Link>
             </div>
             <div className="flex justify-between gap-4 px-2 w-full">
               <div className=" flex flex-col items-center">
