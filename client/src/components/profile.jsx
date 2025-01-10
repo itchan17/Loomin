@@ -7,19 +7,22 @@ import ProfileAbout from "./ProfileAbout";
 import EditProfileModal from "./EditProfileModal";
 import useProfileStore from "../stores/profileStore";
 import useUserStore from "../stores/UserStore";
+import numeral from "numeral";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("posts");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const loggedInUser = useUserStore((state) => state.loggedInUser);
 
-  const fetchUserProfileData = useProfileStore(
-    (state) => state.fetchUserProfileData
-  );
   const userProfileData = useProfileStore((state) => state.userProfileData);
-  const activeProfile = useProfileStore((state) => state.activeProfile);
+
+  // Format the number
+  const formatNumber = (count) => {
+    return count > 1000
+      ? numeral(count).format("0.0a")
+      : numeral(count).format("0a");
+  };
 
   return (
     <div
@@ -46,7 +49,9 @@ const Profile = () => {
           <div className="flex flex-col-3 ml-16 items-left gap-4 -mt-10">
             <div className="col-span-2">
               <img
-                src={userIcon}
+                src={
+                  userProfileData ? userProfileData.profile_picture : userIcon
+                }
                 alt="User"
                 className="w-24 h-24 rounded-full shadow-lg"
               />
@@ -70,11 +75,17 @@ const Profile = () => {
               </div>
               <div className="flex gap-6 mt-0 px-3">
                 <div className="flex flex-col items-center gap-0.5">
-                  <span className="font-bold text-lg">150</span>
+                  <span className="font-bold text-lg">
+                    {userProfileData &&
+                      formatNumber(userProfileData.followers.length)}
+                  </span>
                   <span className="text-gray-500 text-sm">Followers</span>
                 </div>
                 <div className="flex flex-col items-center gap-0.5">
-                  <span className="font-bold text-lg">100</span>
+                  <span className="font-bold text-lg">
+                    {userProfileData &&
+                      formatNumber(userProfileData.following.length)}
+                  </span>
                   <span className="text-gray-500 text-sm">Following</span>
                 </div>
               </div>

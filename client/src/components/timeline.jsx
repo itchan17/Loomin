@@ -28,20 +28,18 @@ const Timeline = () => {
     }
   }, []);
 
-  const loadMorePosts = () => {
+  const loadMorePosts = async () => {
     console.log(page);
 
-    setTimeout(async () => {
-      try {
-        // Fetch posts and wait for the result
-        await fetchPosts(page, setHasMore);
+    try {
+      // Fetch posts and wait for the result
+      await fetchPosts(page, setHasMore);
 
-        // Increment the page after successful fetch
-        setPage((prevPage) => prevPage + 1);
-      } catch (error) {
-        console.error("Error loading posts:", error);
-      }
-    }, 500);
+      // Increment the page after successful fetch
+      setPage((prevPage) => prevPage + 1);
+    } catch (error) {
+      console.error("Error loading posts:", error);
+    }
   };
 
   const toggleModal = () => {

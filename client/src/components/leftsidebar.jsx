@@ -11,7 +11,6 @@ import useProfileStore from "../stores/profileStore";
 const Leftsidebar = ({ isOpen }) => {
   const { username: activeProfileUsername } = useParams();
 
-  console.log("Params: " + activeProfileUsername);
   // States
   const loggedInUser = useUserStore((state) => state.loggedInUser);
   const loggedInUserName = useUserStore((state) => state.loggedInUserName);
@@ -22,7 +21,7 @@ const Leftsidebar = ({ isOpen }) => {
   const isHomePage = location.pathname === "/";
   const isMessagePage = location.pathname === "/inbox";
   const isComingSoon = location.pathname === "./comingsoon";
-  const isProfilePage = location.pathname === "/profile";
+  const isProfilePage = location.pathname.includes("/profile");
 
   const unreadMessagesCount = useChatStore(
     (state) => state.unreadMessagesCount
@@ -49,7 +48,8 @@ const Leftsidebar = ({ isOpen }) => {
       className="w-1/4 bg-loomin-white shadow-inner h-screen transition-transform border-r border-gray-200"
     >
       <div className="flex flex-col items-center p-6">
-        {activeProfileUsername === loggedInUser.username ? null : (
+        {isProfilePage &&
+        activeProfileUsername === loggedInUser.username ? null : (
           <>
             <div className="flex items-center gap-4 mb-4 mr-auto">
               <img
@@ -104,7 +104,7 @@ const Leftsidebar = ({ isOpen }) => {
             <div
               className={`flex items-center gap-4 px-4 py-2 rounded-lg 
           ${
-            activeProfileUsername === loggedInUser.username
+            isProfilePage && activeProfileUsername === loggedInUser.username
               ? "bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] text-white"
               : "hover:bg-gradient-to-r hover:from-[#FFD23F] hover:to-[#FF6F61] hover:text-white"
           }`}

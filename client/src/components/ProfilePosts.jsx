@@ -1,59 +1,72 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import userIcon from "../assets/user.png";
 import "boxicons";
 import Post from "./post";
 import useProfileStore from "../stores/profileStore";
-import useUserStore from "../stores/UserStore";
+import usePostStore from "../stores/PostStore";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useParams } from "react-router-dom";
 
 const ProfilePosts = () => {
-  const loggedInUser = useUserStore((state) => state.loggedInUser);
-  // States
-  const profilePosts = useProfileStore((state) => state.profilePosts);
+  // Get the username in the parameter
+  const { username } = useParams();
+
+  // Profile store
   const userProfileData = useProfileStore((state) => state.userProfileData);
   const profileInitialLoad = useProfileStore(
     (state) => state.profileInitialLoad
   );
-
-  // State functions
-  const fetchProfilePosts = useProfileStore((state) => state.fetchProfilePosts);
-  const clearProfilePosts = useProfileStore((state) => state.clearProfilePosts);
   const setProfileInitialLoad = useProfileStore(
     (state) => state.setProfileInitialLoad
   );
 
+  // Post store
+  const posts = usePostStore((state) => state.posts);
+  const fetchProfilePosts = usePostStore((state) => state.fetchProfilePosts);
+  const clearPosts = usePostStore((state) => state.clearPosts);
+
+  // Local states
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const prevUserProfileRef = useRef(userProfileData);
 
+  // Fetch the posts of the user
   useEffect(() => {
-    if (profileInitialLoad && userProfileData) {
-      clearProfilePosts();
+    // Check first if the userProfileData has value
+    // Check if its inital load
+    // Check ig the current username of userProfileData is same in the params
+    if (
+      userProfileData &&
+      profileInitialLoad &&
+      userProfileData.username === username
+    ) {
+      console.log(userProfileData._id);
+      console.log("This is running");
+      clearPosts();
       fetchProfilePosts(1, setHasMore, userProfileData._id);
       setProfileInitialLoad(false);
       setPage(2);
     }
-  }, [userProfileData]);
+  }, [userProfileData, profileInitialLoad, username]);
 
-  const loadMorePosts = () => {
-    console.log(page);
-    console.log(hasMore);
+  useEffect(() => {
+    // This cleanup function remove the post and set initial load to true if the component unmount
+    return () => {
+      clearPosts();
+      setProfileInitialLoad(true);
+    };
+  }, [clearPosts]);
 
-    setTimeout(async () => {
-      try {
-        // Fetch posts and wait for the result
-        await fetchProfilePosts(page, setHasMore, userProfileData._id);
-
-        // Increment the page after successful fetch
-        setPage((prevPage) => prevPage + 1);
-      } catch (error) {
-        console.error("Error loading posts:", error);
-      }
-    }, 500);
+  const loadMorePosts = async () => {
+    try {
+      await fetchProfilePosts(page, setHasMore, userProfileData._id);
+      setPage((prev) => prev + 1);
+    } catch (error) {
+      console.error("Error loading posts:", error);
+    }
   };
 
   const displayPosts = () => {
-    return profilePosts.map((post) => <Post post={post} key={post._id} />);
+    return posts.map((post) => <Post post={post} key={post._id} />);
   };
   return (
     <div className="flex gap-8 bg-[#D9D9D9]">
@@ -102,7 +115,7 @@ const ProfilePosts = () => {
         </div>
 
         <InfiniteScroll
-          dataLength={profilePosts.length}
+          dataLength={posts.length}
           next={loadMorePosts}
           hasMore={hasMore}
           scrollableTarget="posts-container"
@@ -112,7 +125,7 @@ const ProfilePosts = () => {
             </div>
           }
           endMessage={
-            !profilePosts.length ? (
+            !posts.length ? (
               <div className="flex items-center justify-center">
                 <div>
                   <p className="text-center text-gray-500">No posts yet!</p>

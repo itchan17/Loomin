@@ -161,6 +161,25 @@ const usePostStore = create((set) => ({
       throw error;
     }
   },
+
+  // Fetch all posts of the user
+  fetchProfilePosts: async (page, setHasMore, userId) => {
+    console.log(userId);
+    try {
+      const { posts } = usePostStore.getState();
+      const fetchedPosts = await axios.get(
+        `/posts/profile/${userId}?page=${page}&limit=10`
+      );
+      console.log(fetchedPosts);
+      set({
+        posts: [...posts, ...fetchedPosts.data.posts],
+      });
+      setHasMore(fetchedPosts.data.hasMore);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  },
 }));
 
 export default usePostStore;
