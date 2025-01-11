@@ -5,14 +5,11 @@ const jwt = require("jsonwebtoken");
 const signup = async (req, res) => {
   // Get data from the client
   const {
-    first_name,
-    last_name,
+    firstName: first_name,
+    lastName: last_name,
     username,
     email,
     password,
-    bio,
-    date_of_birth,
-    profile_picture,
   } = req.body;
 
   // Encrypt password
@@ -25,23 +22,20 @@ const signup = async (req, res) => {
 
     // If email already exists send a response
     if (existingEmail) {
-      return res.status(409).json({ message: "Email is already taken" });
+      return res.status(409).json({ email: "Email is already taken." });
     }
 
     // If username already exists send a response
     if (existingUsername) {
-      return res.status(409).json({ message: "Username is already taken" });
+      return res.status(409).json({ username: "Username is already taken." });
     }
-
+    console.log(first_name, last_name, username, email, password);
     // If false create the user
     await User.create({
       first_name,
       last_name,
       username,
       email,
-      bio,
-      date_of_birth,
-      profile_picture,
       password: hashedPassword,
     });
 
