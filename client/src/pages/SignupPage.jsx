@@ -37,141 +37,229 @@ const SignupPage = ({ onSwitch }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-md text-center overflow-hidden mx-4">
-        {/* Top half-circle gradient */}
-        <div className="relative bg-gradient-to-t from-[#FF6F61] to-[#FFD23F] h-32 rounded-b-[50%] text-[#1A1A1A] flex flex-col justify-center pt-6">
+    <div className="flex items-center justify-center h-screen w-screen bg-gray-100 font-poppins">
+      <div className="bg-white shadow-lg text-center overflow-hidden w-full h-full sm:rounded-lg sm:max-w-md sm:h-auto sm:w-full">
+        <div className="relative bg-gradient-to-t from-[#FF6F61] to-[#FFD23F] h-28 rounded-b-[50%] text-[#1A1A1A] flex flex-col justify-end pb-4">
           <h1 className="text-2xl font-bold mb-0">SIGN UP</h1>
-          <p className="text-sm tracking-widest uppercase text-white mt-1">
+          <p className="text-sm tracking-widest uppercase text-white">
             TO CONTINUE
           </p>
         </div>
 
         <form
-          className="flex flex-col px-6 pt-6 space-y-4"
+          className="flex flex-col px-6 pt-6 space-y-8"
           onSubmit={handleSubmit}
         >
+          {/* First Name Field */}
           <div className="relative">
             <input
               type="text"
+              id="firstName"
               name="firstName"
+              className={`block w-full px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 ${
+                errorMessage.firstName ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder=""
               value={signupForm.firstName}
               onChange={updateSignupField}
-              className="peer block w-10/12 mx-auto px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
-              placeholder=" "
             />
-            <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
+            <label
+              htmlFor="firstName"
+              className={`absolute left-2 text-sm text-black transition-all duration-200 transform scale-100 top-1 origin-[0] ${
+                signupForm.firstName
+                  ? "translate-y-[-0.2rem] scale-90 text-gray-500"
+                  : "translate-y-2 scale-100"
+              }`}
+            >
               First Name
             </label>
             {errorMessage.firstName && (
-              <p className="text-sm text-red-500 mt-1">
+              <p className="absolute left-0 w-full text-sm text-red-500 top-full text-left ml-1">
                 {errorMessage.firstName}
               </p>
             )}
           </div>
 
+          {/* Last Name */}
           <div className="relative">
             <input
               type="text"
+              id="lastName"
               name="lastName"
+              className={`block w-full px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 ${
+                errorMessage.lastName ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder=""
               value={signupForm.lastName}
               onChange={updateSignupField}
-              className="peer block w-10/12 mx-auto px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
-              placeholder=" "
             />
-            <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
+            <label
+              htmlFor="lastName"
+              className={`absolute left-2 text-sm text-black transition-all duration-200 transform scale-100 top-1 origin-[0] ${
+                signupForm.lastName
+                  ? "translate-y-[-0.2rem] scale-90 text-gray-500"
+                  : "translate-y-2 scale-100"
+              }`}
+            >
               Last Name
             </label>
             {errorMessage.lastName && (
-              <p className="text-sm text-red-500 mt-1">
+              <p className="absolute left-0 w-full text-sm text-red-500 top-full text-left ml-1">
                 {errorMessage.lastName}
               </p>
             )}
           </div>
 
+          {/* Email */}
           <div className="relative">
             <input
-              type="email"
+              type="text"
+              id="email"
               name="email"
+              className={`block w-full px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 ${
+                errorMessage.email ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder=""
               value={signupForm.email}
               onChange={updateSignupField}
-              className="peer block w-10/12 mx-auto px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
-              placeholder=" "
             />
-            <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
+            <label
+              htmlFor="email"
+              className={`absolute left-2 text-sm text-black transition-all duration-200 transform scale-100 top-1 origin-[0] ${
+                signupForm.email
+                  ? "translate-y-[-0.2rem] scale-90 text-gray-500"
+                  : "translate-y-2 scale-100"
+              }`}
+            >
               Email
             </label>
             {errorMessage.email && (
-              <p className="text-sm text-red-500 mt-1">{errorMessage.email}</p>
+              <p className="absolute left-0 w-full text-sm text-red-500 top-full text-left ml-1">
+                {errorMessage.email}
+              </p>
+            )}
+          </div>
+          
+          {/* Username */}
+          <div className="relative">
+            <input
+              type="text"
+              id="username"
+              name="username"
+              className={`block w-full px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 ${
+                errorMessage.username ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder=""
+              value={signupForm.username}
+              onChange={updateSignupField}
+            />
+            <label
+              htmlFor="username"
+              className={`absolute left-2 text-sm text-black transition-all duration-200 transform scale-100 top-1 origin-[0] ${
+                signupForm.username
+                  ? "translate-y-[-0.2rem] scale-90 text-gray-500"
+                  : "translate-y-2 scale-100"
+              }`}
+            >
+              Username
+            </label>
+            {errorMessage.username && (
+              <p className="absolute left-0 w-full text-sm text-red-500 top-full text-left ml-1">
+                {errorMessage.username}
+              </p>
             )}
           </div>
 
+          {/* Password Field */}
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
+              id="password"
               name="password"
+              className={`block w-full pr-12 pl-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 ${
+                errorMessage.password ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder=""
               value={signupForm.password}
               onChange={updateSignupField}
-              className="peer block w-10/12 mx-auto pr-12 pl-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
-              placeholder=" "
             />
-            <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
+            <label
+              htmlFor="password"
+              className={`absolute left-2 text-sm text-black transition-all duration-200 transform scale-100 top-1 origin-[0] ${
+                signupForm.password
+                  ? "translate-y-[-0.2rem] scale-90 text-gray-500"
+                  : "translate-y-2 scale-100"
+              }`}
+            >
               Password
             </label>
             <button
               type="button"
-              onClick={togglePasswordVisibility}
-              className="absolute inset-y-0 right-10 flex items-center justify-center text-gray-500 hover:text-gray-700"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-4 flex items-center justify-center text-gray-500 hover:text-gray-700"
             >
               <img
-                src="/Vector.svg"
+                src={showPassword ? "/eye-fill.svg" : "/Vector.svg"}
                 alt="Toggle Password Visibility"
                 className="w-5 h-5"
               />
             </button>
             {errorMessage.password && (
-              <p className="text-sm text-red-500 mt-1">
+              <p className="absolute left-0 w-full text-sm text-red-500 top-full text-left ml-1">
                 {errorMessage.password}
               </p>
             )}
           </div>
-
+          
+          {/* Confirm Password Field */}
           <div className="relative">
             <input
               type={showConfirmPassword ? "text" : "password"}
-              value={signupForm.confirmPassword}
+              id="confirmPassword"
               name="confirmPassword"
+              className={`block w-full pr-12 pl-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 ${
+                errorMessage.confirmPassword ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder=""
+              value={signupForm.confirmPassword}
               onChange={updateSignupField}
-              className="peer block w-10/12 mx-auto pr-12 pl-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border border-gray-300 rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
-              placeholder=" "
             />
-            <label className="absolute left-14 text-sm text-black transition-all duration-200 transform scale-100 top-2.5 origin-[0] peer-placeholder-shown:translate-y-2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:translate-y-[-0.6rem] peer-focus:scale-90 peer-focus:text-gray-500 peer-valid:translate-y-[-0.6rem] peer-valid:scale-90 peer-valid:text-gray-500">
+            <label
+              htmlFor="confirmPassword"
+              className={`absolute left-2 text-sm text-black transition-all duration-200 transform scale-100 top-1 origin-[0] ${
+                signupForm.confirmPassword
+                  ? "translate-y-[-0.2rem] scale-90 text-gray-500"
+                  : "translate-y-2 scale-100"
+              }`}
+            >
               Confirm Password
             </label>
             <button
               type="button"
-              onClick={toggleConfirmPasswordVisibility}
-              className="absolute inset-y-0 right-10 flex items-center justify-center text-gray-500 hover:text-gray-700"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute inset-y-0 right-4 flex items-center justify-center text-gray-500 hover:text-gray-700"
             >
               <img
-                src="/Vector.svg"
+                src={showConfirmPassword ? "/eye-fill.svg" : "/Vector.svg"}
                 alt="Toggle Confirm Password Visibility"
                 className="w-5 h-5"
               />
             </button>
             {errorMessage.confirmPassword && (
-              <p className="text-sm text-red-500 mt-1">
+              <p className="absolute left-0 w-full text-sm text-red-500 top-full text-left ml-1">
                 {errorMessage.confirmPassword}
               </p>
             )}
           </div>
 
-          {/* Slightly oval button */}
+          {/* Submit Button */}
           <button
             type="submit"
-            className="w-6/12 mx-auto bg-white text-[#1A1A1A] font-bold py-3 rounded-full border border-gray-300 shadow-md hover:shadow-lg transition"
+            className="relative w-6/12 mx-auto text-[#1A1A1A] font-bold rounded-full shadow-md hover:shadow-lg transition overflow-hidden bg-gradient-to-r from-[#FF6F61] to-[#FFD23F] p-[2px]"
           >
-            SIGN UP
+            <div className="flex items-center justify-center w-full h-[40px] bg-white rounded-full">
+              SIGN UP
+            </div>
           </button>
         </form>
 
