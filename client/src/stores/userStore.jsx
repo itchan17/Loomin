@@ -10,25 +10,48 @@ const useUserStore = create((set) => ({
   postsCount: null,
   followingToDisplay: [], // Data of following that is going to display
   suggestedUser: [], // Data of suugested users
+  isLoading: true, // Add loading state
+  error: null, // Add error state
+  onlineUsers: [],
 
   fetchLoggedInUser: async () => {
     try {
+      const { loggedInUser } = useUserStore.getState();
+
+      set({ isLoading: true, error: null });
       const res = await axios.get("/users");
-      console.log(res);
-      // Set the state
-      set({
-        loggedInUser: res.data.user,
-        loggedInUserName: `${res.data.user.first_name} ${res.data.user.last_name}`,
-        followersCount: res.data.user.followers.length,
-        followingCount: res.data.user.following.length,
-        postsCount: res.data.user.posts.length,
-        following: res.data.user.following,
-        followingToDisplay: res.data.followingToDisplay,
-        suggestedUser: res.data.suggestedUser,
-      });
+      if (loggedInUser._id !== res.data.user._id) {
+        console.log("RUNNING");
+        set({
+          loggedInUser: res.data.user,
+          loggedInUserName: `${res.data.user.first_name} ${res.data.user.last_name}`,
+          followersCount: res.data.user.followers.length,
+          followingCount: res.data.user.following.length,
+          postsCount: res.data.user.posts.length,
+          following: res.data.user.following,
+          followingToDisplay: res.data.followingToDisplay,
+          suggestedUser: res.data.suggestedUser,
+          isLoading: false,
+        });
+      }
     } catch (error) {
+      set({ error: error.message, isLoading: false });
       throw error;
     }
+  },
+
+  clearUser: () => {
+    set({
+      loggedInUser: {},
+      loggedInUserName: null,
+      followersCount: null,
+      followingCount: null,
+      postsCount: null,
+      followingToDisplay: [],
+      suggestedUser: [],
+      isLoading: true,
+      error: null,
+    });
   },
 
   followUser: async (followedUser) => {
@@ -67,6 +90,10 @@ const useUserStore = create((set) => ({
     } catch (error) {
       throw error;
     }
+  },
+
+  setOnlineUsers: (onlineUsers) => {
+    set({ onlineUsers });
   },
 }));
 

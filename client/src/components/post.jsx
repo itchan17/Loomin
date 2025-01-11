@@ -9,14 +9,12 @@ import testImage from "../assets/placeholder.png";
 import CreateCommentForm from "./CreateCommentForm";
 import EditCommentForm from "./EditCommentForm";
 import InfiniteScroll from "react-infinite-scroll-component";
-import Testimg from "../assets/placeholder.png";
-import Testimg2 from "../assets/shrek.jpg";
-
 
 const Post = ({ post }) => {
   //User state
   const loggedInUser = useUserStore((state) => state.loggedInUser);
   const following = useUserStore((state) => state.following);
+  const isLoading = useUserStore((state) => state.isLoading);
 
   //User state functions
   const followUser = useUserStore((state) => state.followUser);
@@ -48,7 +46,7 @@ const Post = ({ post }) => {
     setLikesCount(post.likes.length);
     setCommentsCount(post.comments.length);
     checkIfLiked();
-  }, []);
+  }, [loggedInUser]);
 
   // Format the number
   const formatNumber = (count) => {
@@ -160,7 +158,6 @@ const Post = ({ post }) => {
           <span className="text-gray-500">{comment.comment}</span>
           <div className="flex gap-6">
             <p className="font-thin text-sm text-gray-400">11m</p>
-
             {loggedInUser._id === comment.user_id._id ? (
               <>
                 <a

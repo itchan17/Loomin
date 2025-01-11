@@ -7,7 +7,7 @@ const LoginPage = ({ onSwitch }) => {
 
   // States
   const loginForm = useAuthStore((state) => state.loginForm);
-  const errorMessage = useAuthStore((state) => state.errorMessage);
+  const loginErrorMessage = useAuthStore((state) => state.loginErrorMessage);
 
   // State functions
   const updateLoginField = useAuthStore((state) => state.updateLoginField);
@@ -17,6 +17,7 @@ const LoginPage = ({ onSwitch }) => {
 
   // Local state
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Toggle password visbility
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
@@ -25,9 +26,13 @@ const LoginPage = ({ onSwitch }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await login();
+    setIsLoading(true);
 
-    navigate("/");
+    const loginSuccessful = await login();
+    if (loginSuccessful) {
+      navigate("/");
+    }
+    setIsLoading(false);
   };
 
   // Handles navigation to signup page
@@ -37,7 +42,7 @@ const LoginPage = ({ onSwitch }) => {
     navigate("/signup");
   };
 
- return (
+  return (
     <div className="flex items-center justify-center h-screen w-screen bg-gray-100 font-poppins">
       <div className="bg-white shadow-lg text-center overflow-hidden w-full h-full sm:rounded-lg sm:max-w-md sm:h-auto sm:w-full">
         <div className="relative bg-gradient-to-t from-[#FF6F61] to-[#FFD23F] h-28 rounded-b-[50%] text-[#1A1A1A] flex flex-col justify-end pb-4">
@@ -47,99 +52,109 @@ const LoginPage = ({ onSwitch }) => {
           </p>
         </div>
 
-        <form
-          className="flex flex-col px-14 pt-6 space-y-8"
-          onSubmit={handleSubmit}
-        >
-          <div className="relative">
-            <input
-              type="email"
-              name="email"
-              id="email"
-              className={`block w-full px-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 ${
-                errorMessage.email ? "border-red-500" : "border-gray-300"
-              }`}
-              placeholder=""
-              value={loginForm.email}
-              onChange={updateLoginField}
-            />
-            <label
-              htmlFor="email"
-              className={`absolute left-2 text-sm text-black transition-all duration-200 transform scale-100 top-1 origin-[0] ${
-                loginForm.email
-                  ? "translate-y-[-0.2rem] scale-90 text-gray-500"
-                  : "translate-y-2 scale-100"
-              }`}
-            >
-              Email
-            </label>
-            {errorMessage.email && (
-              <p className="absolute left-0 w-full text-sm text-red-500 top-full text-left ml-2">
-                {errorMessage.email}
-              </p>
-            )}
-          </div>
-
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              id="password"
-              className={`block w-full pr-12 pl-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 ${
-                errorMessage.password ? "border-red-500" : "border-gray-300"
-              }`}
-              placeholder=""
-              value={loginForm.password}
-              onChange={updateLoginField}
-            />
-            <label
-              htmlFor="password"
-              className={`absolute left-2 text-sm text-black transition-all duration-200 transform scale-100 top-1 origin-[0] ${
-                loginForm.password
-                  ? "translate-y-[-0.2rem] scale-90 text-gray-500"
-                  : "translate-y-2 scale-100"
-              }`}
-            >
-              Password
-            </label>
-            <button
-              type="button"
-              onClick={togglePasswordVisibility}
-              className="absolute inset-y-0 right-4 flex items-center justify-center text-gray-500 hover:text-gray-700"
-            >
-              <img
-                src={showPassword ? "/eye-fill.svg" : "/Vector.svg"}
-                alt="Toggle Password Visibility"
-                className="w-5 h-5"
-              />
-            </button>
-            {errorMessage.password && (
-              <p className="absolute left-0 w-full text-sm text-red-500 top-full text-left ml-2">
-                {errorMessage.password}
-              </p>
-            )}
-          </div>
-
-<div className="flex justify-between items-center w-10/12 mx-auto text-sm text-[#1A1A1A]">
-            <label className="flex items-center gap-2">
+        <form className="" onSubmit={handleSubmit}>
+          <div className="flex flex-col px-6 pt-6 space-y-4">
+            <div className="relative">
               <input
-                type="checkbox"
-                name="rememberMe"
+                type="text"
+                name="email"
+                id="email"
+                className={`block rounded-lg px-2.5 pb-2.5 pt-5 w-full  shadow-md text-sm text-[#1A1A1A] bg-gray-200 border appearance-none border focus:outline-none focus:ring-2 focus:ring-orange-400 peer ${
+                  loginErrorMessage.email ? "border-red-500" : "border-gray-300"
+                }`}
+                placeholder=""
+                value={loginForm.email}
                 onChange={updateLoginField}
-                className="rounded border-gray-300"
               />
-              Remember Me
-            </label>
-            <a href="/forgot-password" className="text-black hover:underline">
-              Forgot Password?
-            </a>
+              <label
+                for="email"
+                className="absolute text-sm text-gray-500 dark:text-gray-600 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] start-2.5 peer-focus:text-gray-600 peer-focus:dark:text-gray-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
+              >
+                Email
+              </label>
+              {loginErrorMessage.email && (
+                <p className="w-full text-sm text-red-500 top-full text-left break-words">
+                  {loginErrorMessage.email}
+                </p>
+              )}
+            </div>
+            <div>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  id="password"
+                  className={`[&::-ms-reveal]:hidden [&::-webkit-contacts-auto-fill-button]:hidden [&::-webkit-credentials-auto-fill-button]:hidden block rounded-lg px-2.5 pb-2.5 pt-5 w-full  shadow-md text-sm text-[#1A1A1A] bg-gray-200 border appearance-none border focus:outline-none focus:ring-2 focus:ring-orange-400 peer ${
+                    loginErrorMessage.password
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  }`}
+                  placeholder=""
+                  value={loginForm.password}
+                  onChange={updateLoginField}
+                />
+                <label
+                  htmlFor="password"
+                  className={`absolute text-sm text-gray-500 dark:text-gray-600 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] start-2.5 peer-focus:text-gray-600 peer-focus:dark:text-gray-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto ${
+                    loginForm.password
+                      ? "translate-y-[-0.2rem] scale-90 text-gray-500"
+                      : "translate-y-2 scale-100"
+                  }`}
+                >
+                  Password
+                </label>
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute inset-y-0 right-4 flex items-center justify-center text-gray-500 hover:text-gray-700"
+                >
+                  <img
+                    src={showPassword ? "/eye-fill.svg" : "/Vector.svg"}
+                    alt="Toggle Password Visibility"
+                    className="w-5 h-5"
+                  />
+                </button>
+              </div>
+              {loginErrorMessage.globalError && (
+                <p className="w-full text-sm text-red-500 top-full text-left break-words">
+                  {loginErrorMessage.globalError}
+                </p>
+              )}
+            </div>
 
-          <button
-            type="submit"
-            className="w-full max-w-[50%] mx-auto bg-gradient-to-r from-[#FF6F61] to-[#FFD23F] text-white font-bold py-2 rounded-full shadow-md hover:shadow-lg transition"
-          >
-            LOG IN
-          </button>
+            <div className="flex w-full justify-between items-center w-10/12 mx-auto text-sm text-[#1A1A1A] my-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="rememberMe"
+                  onChange={updateLoginField}
+                  className="rounded border-gray-300"
+                />
+                Remember Me
+              </label>
+              <a href="/forgot-password" className="text-black hover:underline">
+                Forgot Password?
+              </a>
+            </div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full max-w-[50%] mx-auto bg-gradient-to-r from-[#FF6F61] to-[#FFD23F] text-white font-bold py-2 rounded-full shadow-md hover:shadow-lg transition flex justify-center items-center space-x-2"
+            >
+              {isLoading ? (
+                <div
+                  class="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
+                  role="status"
+                >
+                  <span class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                    Loading...
+                  </span>
+                </div>
+              ) : (
+                "LOG IN"
+              )}
+            </button>
+          </div>
         </form>
 
         <p className="mt-4 mb-6 text-sm text-[#1A1A1A]">
@@ -157,5 +172,3 @@ const LoginPage = ({ onSwitch }) => {
 };
 
 export default LoginPage;
-
-

@@ -7,22 +7,39 @@ import InfiniteScroll from "react-infinite-scroll-component";
 const Timeline = () => {
   // States
   const posts = usePostStore((state) => state.posts);
-  const hasMore = usePostStore((state) => state.hasMore);
 
   // State functions
   const fetchPosts = usePostStore((state) => state.fetchPosts);
+  const clearPosts = usePostStore((state) => state.clearPosts);
 
   // Local states
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [page, setPage] = useState(1);
+
+  const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
-    fetchPosts();
+    if (isInitialLoad) {
+      clearPosts();
+      fetchPosts(page, setHasMore);
+      setIsInitialLoad(false);
+      setPage(2);
+    }
   }, []);
 
-  const loadMorePosts = () => {
-    setTimeout(async () => {
-      await fetchPosts();
-    }, 500);
+  const loadMorePosts = async () => {
+    console.log(page);
+
+    try {
+      // Fetch posts and wait for the result
+      await fetchPosts(page, setHasMore);
+
+      // Increment the page after successful fetch
+      setPage((prevPage) => prevPage + 1);
+    } catch (error) {
+      console.error("Error loading posts:", error);
+    }
   };
 
   const toggleModal = () => {
@@ -35,18 +52,17 @@ const Timeline = () => {
 
   return (
     // Infinite crolling for timeline
-    <div
+    <main
       id="posts-container"
-      className="flex-auto items-center px-auto px-6 pl-11  overflow-y-auto"
+      className="flex-auto bg-loomin-white flex-auto items-center px-auto px-6 pl-11 overflow-y-auto"
     >
-      {/* Header of the timeline */}
-      <div className="py-4 w-full bg-white-500 mb-2 flex items-center justify-between pl-0 pr-5 ">
+      {/* Header of the timeline*/}
+      <div className="w-full max-w-2xl py-4 mb-2 flex items-center justify-between">
         <h5 className="text-slate-800 text-4xl font-bold antialiased">Home</h5>
         <button
           onClick={toggleModal}
           className="bg-gradient-to-r from-loomin-yellow to-loomin-orange
-    text-white font-bold py-1 px-4 rounded-2xl hover:scale-105 transform transition-transform
-    "
+          text-white font-bold py-1 px-4 rounded-2xl hover:scale-105 transform transition-transform"
         >
           <i className="bx bx-plus font-sans"></i>
           Post
@@ -86,9 +102,8 @@ const Timeline = () => {
       >
         {displayPosts()}
       </InfiniteScroll>
-
-    </div>
+    </main>
   );
 };
 
-      export default Timeline;
+export default Timeline;

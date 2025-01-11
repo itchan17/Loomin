@@ -12,28 +12,44 @@ const useAuthStore = create((set) => ({
     firstName: "",
     lastName: "",
     email: "",
+    username: "",
     password: "",
     confirmPassword: "",
   },
 
-  errorMessage: {
+  signupErrorMessage: {
     firstName: "",
     lastName: "",
     email: "",
+    username: "",
     password: "",
     confirmPassword: "",
+    globalError: "",
+  },
+
+  loginErrorMessage: {
+    email: "",
+    password: "",
+    globalError: "",
   },
 
   isLoggedIn: null,
 
   clearErrors: () => {
     set({
-      errorMessage: {
+      loginErrorMessage: {
+        email: "",
+        password: "",
+        globalError: "",
+      },
+      signupErrorMessage: {
         firstName: "",
         lastName: "",
         email: "",
+        username: "",
         password: "",
         confirmPassword: "",
+        globalError: "",
       },
     });
   },
@@ -49,6 +65,7 @@ const useAuthStore = create((set) => ({
         firstName: "",
         lastName: "",
         email: "",
+        username: "",
         password: "",
         confirmPassword: "",
       },
@@ -63,142 +80,230 @@ const useAuthStore = create((set) => ({
         ...state.signupForm,
         [name]: value,
       },
+      signupErrorMessage: { ...state.signupErrorMessage, [name]: "" },
     }));
+    set({ signupErrorMessage: { globalError: "" } });
   },
 
   updateLoginField: (e) => {
     const { name, value, type, checked } = e.target;
+
+    set({});
 
     set((state) => ({
       loginForm: {
         ...state.loginForm,
         [name]: type === "checkbox" ? checked : value,
       },
+      loginErrorMessage: { ...state.loginErrorMessage, [name]: "" },
     }));
-  },
-
-  signup: async () => {
-    const { signupForm, errorMessage } = useAuthStore.getState();
-
-    const updateErrorMessage = (field, message) => {
-      set((state) => ({
-        errorMessage: {
-          ...state.errorMessage,
-          [field]: message,
-        },
-      }));
-    };
-
-    // Validations
-    if (!signupForm.firstName) {
-      updateErrorMessage("firstName", "This field is required");
-    } else {
-      updateErrorMessage("firstName", "");
-    }
-    if (!signupForm.lastName) {
-      updateErrorMessage("lastName", "This field is required");
-    } else {
-      updateErrorMessage("lastName", "");
-    }
-    if (!signupForm.email) {
-      updateErrorMessage("email", "This field is required");
-    } else {
-      updateErrorMessage("email", "");
-    }
-    if (!signupForm.password) {
-      updateErrorMessage("password", "This field is required");
-    } else {
-      if (signupForm.password.length < 8) {
-        updateErrorMessage("password", "Password must be atleast 8 characters");
-      } else updateErrorMessage("password", "");
-    }
-    if (!signupForm.confirmPassword) {
-      updateErrorMessage("confirmPassword", "This field is required");
-    } else {
-      if (signupForm.confirmPassword !== signupForm.password) {
-        updateErrorMessage("confirmPassword", "Password did not match");
-      } else {
-        updateErrorMessage("confirmPassword", "");
-
-        // If all valid input create the user
-        try {
-          const res = await axios.post("/signup", {
-            first_name: signupForm.firstName,
-            last_name: signupForm.lastName,
-            email: signupForm.email,
-            password: signupForm.password,
-          });
-          set({
-            signupForm: {
-              firstName: "",
-              lastName: "",
-              email: "",
-              password: "",
-              confirmPassword: "",
-            },
-          });
-        } catch (error) {
-          if (error.response.request.status === 409) {
-            updateErrorMessage("email", error.response.data.message);
-          }
-        }
-      }
-    }
+    set({ loginErrorMessage: { globalError: "" } });
   },
 
   login: async () => {
-    const { loginForm, errorMessage } = useAuthStore.getState();
+    const { loginForm } = useAuthStore.getState();
 
     const updateErrorMessage = (field, message) => {
       set((state) => ({
-        errorMessage: {
-          ...state.errorMessage,
+        loginErrorMessage: {
+          ...state.loginErrorMessage,
           [field]: message,
         },
       }));
     };
 
     // Validation
-    if (!loginForm.email) {
-      updateErrorMessage("email", "Email is required");
-    } else {
-      updateErrorMessage("email", "");
+    if (!loginForm.email || !loginForm.password) {
+      updateErrorMessage("globalError", "Please complete all required fields.");
+      return false; // Exit early
     }
 
-    if (!loginForm.password) {
-      updateErrorMessage("password", "Password is required");
-    } else {
-      updateErrorMessage("password", "");
+    // Validate email address
+    if (
+      !loginForm.email.trim() ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginForm.email)
+    ) {
+      updateErrorMessage("email", "Please enter a valid email address.");
+      return false; // Exit early
     }
 
-    // Check if there's empty field then throw error
-    if (!loginForm.email || !loginForm.password)
-      throw new Error("Login failed");
+    try {
+      // Send the user credentials
+      await axios.post("/login", loginForm);
+      set({ isLoggedIn: true });
+      set({
+        loginForm: {
+          email: "",
+          password: "",
+        },
+      });
+      return true; // Login successful
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        console.log(error);
+        updateErrorMessage("globalError", error.response.data.error);
+      } else {
+        console.error("Unexpected login error:", error.message);
+        updateErrorMessage(
+          "globalError",
+          "Something went wrong. Please try again."
+        );
+      }
+      set({ isLoggedIn: false });
+      return false; // Login failed
+    }
+  },
 
-    // Check if field is not empty
-    if (loginForm.email && loginForm.password) {
-      try {
-        // Send the user credentials
-        await axios.post("/login", loginForm);
-        set({ isLoggedIn: true });
-        set({
-          loginForm: {
-            email: "",
-            password: "",
-          },
-        });
-      } catch (error) {
-        if (error) {
-          set((state) => ({
-            isLoggedIn: false,
-            errorMessage: {
-              ...state.errorMessage,
-              email: "Invalid account credentials, please try again",
-              password: "Invalid account credentials, please try again",
-            },
-          }));
+  signup: async () => {
+    const { signupForm, signupErrorMessage } = useAuthStore.getState();
+    const nameRegex = /^[^\w\s]+$/;
+
+    const updateErrorMessage = (field, message) => {
+      set((state) => ({
+        signupErrorMessage: {
+          ...state.signupErrorMessage,
+          [field]: message,
+        },
+      }));
+    };
+
+    // Validations
+    if (
+      !signupForm.firstName ||
+      !signupForm.lastName ||
+      !signupForm.email ||
+      !signupForm.username ||
+      !signupForm.password ||
+      !signupForm.confirmPassword
+    ) {
+      updateErrorMessage("globalError", "Please complete all required fields.");
+      return;
+    }
+
+    // Validate first name field
+    if (/[^a-zA-Z\s'-]/.test(signupForm.firstName)) {
+      updateErrorMessage("firstName", "Please enter a valid name.");
+      return;
+    }
+    if (!signupForm.firstName.trim()) {
+      updateErrorMessage("firstName", "Please enter a valid name.");
+      return;
+    }
+
+    // Validate last name field
+    if (/[^a-zA-Z\s'-]/.test(signupForm.lastName)) {
+      updateErrorMessage("lastName", "Please enter a valid name.");
+      return;
+    }
+    if (!signupForm.lastName.trim()) {
+      updateErrorMessage("lastName", "Please enter a valid name.");
+      return;
+    }
+
+    // Validate email address
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(signupForm.email)) {
+      updateErrorMessage("email", "Please enter a valid email address.");
+      return;
+    }
+    if (!signupForm.email.trim()) {
+      updateErrorMessage("email", "Please enter a valid email address.");
+      return;
+    }
+
+    // Validate username
+    if (!/^(?=.*[a-z])[a-z0-9_-]{3,20}$/.test(signupForm.username)) {
+      updateErrorMessage(
+        "username",
+        "Username must be 3-20 characters long, lowercase, and may contain numbers, underscores, and hyphens."
+      );
+      return;
+    }
+
+    // Validate password
+    if (signupForm.password.length < 8) {
+      updateErrorMessage(
+        "password",
+        "Password must be at least 8 characters long."
+      );
+      return;
+    }
+    // Check for whitespace
+    if (/\s/.test(signupForm.password)) {
+      updateErrorMessage("password", "Password cannot contain spaces.");
+      return;
+    }
+    // Check for at least one special character
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(signupForm.password)) {
+      updateErrorMessage(
+        "password",
+        "Password must contain at least one special character."
+      );
+      return;
+    }
+    // Check for at least one number
+    if (!/\d/.test(signupForm.password)) {
+      updateErrorMessage(
+        "password",
+        "Password must contain at least one number."
+      );
+      return;
+    }
+    // Check for at least one lowercase letter
+    if (!/[a-z]/.test(signupForm.password)) {
+      updateErrorMessage(
+        "password",
+        "Password must contain at least one lowercase letter."
+      );
+      return;
+    }
+
+    // Check for at least one uppercase letter
+    if (!/[A-Z]/.test(signupForm.password)) {
+      updateErrorMessage(
+        "password",
+        "Password must contain at least one uppercase letter."
+      );
+      return;
+    }
+
+    // Check confirm password
+    if (signupForm.password !== signupForm.confirmPassword) {
+      updateErrorMessage("confirmPassword", "Password does not match.");
+      return;
+    }
+
+    // If all valid input create the user
+    try {
+      console.log(signupForm);
+      const res = await axios.post("/signup", signupForm);
+      console.log(res);
+      // Reset form state after successful signup
+      set({
+        signupForm: {
+          firstName: "",
+          lastName: "",
+          email: "",
+          username: "",
+          password: "",
+          confirmPassword: "",
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      // Handle errors from the API
+      if (error.response && error.response.request.status === 409) {
+        if (error.response.data.email) {
+          updateErrorMessage("email", error.response.data.email);
         }
-        throw new Error("Login failed");
+        if (error.response.data.username) {
+          updateErrorMessage("username", error.response.data.username);
+        }
+      } else {
+        // Handle unexpected errors
+        updateErrorMessage(
+          "globalError",
+          "Something went wrong. Please try again."
+        );
       }
     }
   },

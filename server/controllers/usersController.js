@@ -1,6 +1,6 @@
 const User = require("../models/user.js");
 
-const fetchUser = async (req, res) => {
+const fetchLoggedInUser = async (req, res) => {
   const userId = req.user._id;
 
   try {
@@ -64,4 +64,37 @@ const followUser = async (req, res) => {
   }
 };
 
-module.exports = { fetchUser, followUser };
+const fetchUser = async (req, res) => {
+  const username = req.params.username;
+  console.log(username);
+  try {
+    // Return the logged in user
+    const user = await User.findOne({ username }).select(
+      "-password -createdAt -updatedAt"
+    );
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const searchUser = async (req, res) => {
+  const keyword = req.query.keyword;
+
+  try {
+    const users = await User.find({
+      $or: [
+        { first_name: { $regex: keyword, $options: "i" } }, // case insensitive
+        { last_name: { $regex: keyword, $options: "i" } },
+        { username: { $regex: keyword, $options: "i" } },
+      ],
+    }).select("-password"); // Exclude password from results
+
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { fetchLoggedInUser, followUser, fetchUser, searchUser };

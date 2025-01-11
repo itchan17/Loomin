@@ -1,24 +1,101 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../global.css";
 import ChatBox from "./ChatBox";
+import useChatStore from "../stores/chatStore";
+import useUserStore from "../stores/UserStore";
+import Chat from "./Chat";
+import SearchResult from "./SearchResult";
+import useSocketStore from "../stores/socketStore";
+import axios from "axios";
+import debounce from "lodash.debounce";
 
 const Inbox = () => {
-  const [activeMessage, setActiveMessage] = useState(null);
-  const handleClick = (id) => {
-    setActiveMessage(id);
+  // Chat states
+  const chats = useChatStore((state) => state.chats);
+  const chatsLoading = useChatStore((state) => state.chatsLoading);
+  const getUserChats = useChatStore((state) => state.getUserChats);
+  const activeChat = useChatStore((state) => state.activeChat);
+  const setNewMessageNotif = useChatStore((state) => state.setNewMessageNotif);
+  const newMessageNotif = useChatStore((state) => state.newMessageNotif);
+  const sortChats = useChatStore((state) => state.sortChats);
+  const inboxSearchTerm = useChatStore((state) => state.inboxSearchTerm);
+  const updateSearchField = useChatStore((state) => state.updateSearchField);
+
+  // User states
+  const loggedInUser = useUserStore((state) => state.loggedInUser);
+
+  // Socket store
+  const socket = useSocketStore((state) => state.socket);
+
+  // Locat state
+  // const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState(null);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
+
+  // If this component get rendered will fetch all the chat created by the user
+  useEffect(() => {
+    getUserChats(loggedInUser._id);
+  }, [loggedInUser]);
+
+  // If there's new message and newMessageNotif get updated, it will sort the chats based on the latest message in the notif
+  useEffect(() => {
+    if (newMessageNotif.length !== 0) {
+      sortChats(newMessageNotif[newMessageNotif.length - 1].chatId);
+    }
+  }, [newMessageNotif]);
+
+  // Search for user with debounce delaying the trigger of request to the server for 300m
+  const debouncedSearch = debounce(async (term) => {
+    if (!term.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    setIsSearchLoading(true);
+    try {
+      const response = await axios.get(`/users/search?keyword=${term}`);
+      setSearchResults(response.data);
+      setIsSearchLoading(false);
+    } catch (error) {
+      console.error("Search error:", error);
+    }
+  }, 300);
+
+  // Run the debouncedSearch everytime there's a changes in searchTerm
+  useEffect(() => {
+    debouncedSearch(inboxSearchTerm);
+
+    // Cleanup
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [inboxSearchTerm]);
+
+  const displayChats = () => {
+    console.log(chats);
+    return chats.map((chat) => {
+      return <Chat key={chat._id} chat={chat} />;
+    });
   };
+
+  const displaySearchResults = () => {
+    if (isSearchLoading) return <div>Loading...</div>;
+    if (!isSearchLoading && searchResults.length === 0)
+      return <div>No results found.</div>;
+    return searchResults.map((user) => {
+      return <SearchResult key={user._id} user={user} />;
+    });
+  };
+
   return (
-    <div class="flex flex-row w-full justify-between bg-white shadow-inner">
-      <div class="flex flex-col w-3/5 border-r border-[#A4A4A4] overflow-y-auto px-4 py-10">
-        <div className="grid grid-cols-3 pb-5">
-          <h1 className="col-span-2 text-3xl font-bold pl-2 text-slate-800">Messages</h1>
-          <button className=" rounded-full hover:bg-gray-200 text-center col-start-3 ml-auto pr-6 font-2xl">
-            <i className=" pl-5 bx bxs-edit text-2xl"></i>
-          </button>
-        </div>
+    <div className="flex flex-row w-full justify-between bg-white">
+      <div className="flex flex-col w-3/5 border-r border-[#A4A4A4] overflow-y-auto px-4 py-10">
+        <h1 className="font-bold text-3xl mb-4">Messages</h1>
 
         <div className="relative hidden md:flex items-center mb-6">
           <input
+            onChange={updateSearchField}
+            value={inboxSearchTerm}
             type="text"
             placeholder="Search..."
             className="w-full bg-[#D9D9D9] bg-opacity-40 pl-10 pr-4 py-2 border border-slate-200 shadow-inner rounded-xl bg-white/80 focus:outline-none focus:ring-1 focus:ring-loomin-orange "
@@ -35,217 +112,20 @@ const Inbox = () => {
             <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </div>
-        {/* Messages */}
-        <div
-          key={1}
-          onClick={() => handleClick(1)}
-          className={`cursor-pointer flex w-full ${activeMessage === 1
-            ? "shadow-[-1px_7px_6px_-2px_#bfbfbf] bg-[#D9D9D9] bg-opacity-40"
-            : ""
-            } px-2 py-3 gap-4 items-center rounded`}
-        >
-          {" "}
-          <img
-            src={
-              "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg"
-            }
-            alt={"Profile"}
-            className="w-16 rounded-full flex-shrink-0"
-          />
-          <div className="flex-1 min-w-0">
-            {" "}
-            {/* Added flex-1 and min-w-0 */}
-            <div className="flex justify-between">
-              <span className="font-semibold">Aria Collins</span>
-              <span className="font-semibold text-sm antialiased text-slate-900 ml-2">10:30 AM</span>{" "}
-              {/* Added ml-2 */}
-            </div>
-            <div className="pr-16">
-              <p className="truncate">
-                {" "}
-                {/* Changed to truncate class */}
-                Hey! Found this cute café, let's
-                asdasdasdasdasdasdaasdasdasdasdasdsdasdasdcheck..
-              </p>
-            </div>
-          </div>
-        </div>
 
-        <div
-          key={2}
-          onClick={() => handleClick(2)}
-          className={`cursor-pointer flex w-full ${activeMessage === 2
-            ? "shadow-[-1px_7px_6px_-2px_#bfbfbf] bg-[#D9D9D9] bg-opacity-40"
-            : ""
-            } px-2 py-3 gap-4 items-center rounded`}
-        >
-          {" "}
-          <img
-            src={
-              "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg"
-            }
-            alt={"Profile"}
-            className="w-16 rounded-full flex-shrink-0"
-          />
-          <div className="flex-1 min-w-0">
-            {" "}
-            {/* Added flex-1 and min-w-0 */}
-            <div className="flex justify-between">
-              <span className="font-semibold">Aria Collins</span>
-              <span className="font-semibold text-sm antialiased text-slate-900 ml-2">10:30 AM</span>{" "}
-              {/* Added ml-2 */}
-            </div>
-            <div className="pr-16">
-              <p className="truncate">
-                {" "}
-                {/* Changed to truncate class */}
-                Hey! Found this cute café, let's
-                asdasdasdasdasdasdaasdasdasdasdasdsdasdasdcheck..
-              </p>
-            </div>
+        {chats && !inboxSearchTerm && displayChats()}
+        {inboxSearchTerm && (
+          <div>
+            <h1 className="font-bold mb-2">Search Results:</h1>
+            {displaySearchResults()}
           </div>
-        </div>
-        <div
-          key={3}
-          onClick={() => handleClick(3)}
-          className={`cursor-pointer flex w-full ${activeMessage === 3
-            ? "shadow-[-1px_7px_6px_-2px_#bfbfbf] bg-[#D9D9D9] bg-opacity-40"
-            : ""
-            } px-2 py-3 gap-4 items-center rounded`}
-        >
-          {" "}
-          <img
-            src={
-              "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg"
-            }
-            alt={"Profile"}
-            className="w-16 rounded-full flex-shrink-0"
-          />
-          <div className="flex-1 min-w-0">
-            {" "}
-            {/* Added flex-1 and min-w-0 */}
-            <div className="flex justify-between">
-              <span className="font-semibold">Aria Collins</span>
-              <span className="font-semibold text-sm antialiased text-slate-900 ml-2">10:30 AM</span>{" "}
-              {/* Added ml-2 */}
-            </div>
-            <div className="pr-16">
-              <p className="truncate">
-                {" "}
-                {/* Changed to truncate class */}
-                Hey! Found this cute café, let's
-                asdasdasdasdasdasdaasdasdasdasdasdsdasdasdcheck..
-              </p>
-            </div>
-          </div>
-        </div>
-        <div
-          key={4}
-          onClick={() => handleClick(4)}
-          className={`cursor-pointer flex w-full ${activeMessage === 4
-            ? "shadow-[-1px_7px_6px_-2px_#bfbfbf] bg-[#D9D9D9] bg-opacity-40"
-            : ""
-            } px-2 py-3 gap-4 items-center rounded`}
-        >
-          {" "}
-          <img
-            src={
-              "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg"
-            }
-            alt={"Profile"}
-            className="w-16 rounded-full flex-shrink-0"
-          />
-          <div className="flex-1 min-w-0">
-            {" "}
-            {/* Added flex-1 and min-w-0 */}
-            <div className="flex justify-between">
-              <span className="font-semibold">Aria Collins</span>
-              <span className="font-semibold text-sm antialiased text-slate-900 ml-2">10:30 AM</span>{" "}
-              {/* Added ml-2 */}
-            </div>
-            <div className="pr-16">
-              <p className="truncate">
-                {" "}
-                {/* Changed to truncate class */}
-                Hey! Found this cute café, let's
-                asdasdasdasdasdasdaasdasdasdasdasdsdasdasdcheck..
-              </p>
-            </div>
-          </div>
-        </div>
-        <div
-          key={5}
-          onClick={() => handleClick(5)}
-          className={`cursor-pointer flex w-full ${activeMessage === 5
-            ? "shadow-[-1px_7px_6px_-2px_#bfbfbf] bg-[#D9D9D9] bg-opacity-40"
-            : ""
-            } px-2 py-3 gap-4 items-center rounded`}
-        >
-          {" "}
-          <img
-            src={
-              "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg"
-            }
-            alt={"Profile"}
-            className="w-16 rounded-full flex-shrink-0"
-          />
-          <div className="flex-1 min-w-0">
-            {" "}
-            {/* Added flex-1 and min-w-0 */}
-            <div className="flex justify-between">
-              <span className="font-semibold">Aria Collins</span>
-              <span className="font-semibold text-sm antialiased text-slate-900 ml-2">10:30 AM</span>{" "}
-              {/* Added ml-2 */}
-            </div>
-            <div className="pr-16">
-              <p className="truncate">
-                {" "}
-                {/* Changed to truncate class */}
-                Hey! Found this cute café, let's
-                asdasdasdasdasdasdaasdasdasdasdasdsdasdasdcheck..
-              </p>
-            </div>
-          </div>
-        </div>
-        <div
-          key={6}
-          onClick={() => handleClick(6)}
-          className={`cursor-pointer flex w-full ${activeMessage === 6
-            ? "shadow-[-1px_7px_6px_-2px_#bfbfbf] bg-[#D9D9D9] bg-opacity-40"
-            : ""
-            } px-2 py-3 gap-4 items-center rounded`}
-        >
-          {" "}
-          <img
-            src={
-              "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg"
-            }
-            alt={"Profile"}
-            className="w-16 rounded-full flex-shrink-0"
-          />
-          <div className="flex-1 min-w-0">
-            {" "}
-            {/* Added flex-1 and min-w-0 */}
-            <div className="flex justify-between">
-              <span className="font-semibold">Aria Collins</span>
-              <span className="font-semibold text-sm antialiased text-slate-900 ml-2">10:30 AM</span>{" "}
-              {/* Added ml-2 */}
-            </div>
-            <div className="pr-16">
-              <p className="truncate">
-                {" "}
-                {/* Changed to truncate class */}
-                Hey! Found this cute café, let's
-                asdasdasdasdasdasdaasdasdasdasdasdsdasdasdcheck..
-              </p>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
-      {activeMessage ? (
+
+      {activeChat ? (
         <ChatBox></ChatBox>
       ) : (
-        <div className=" w-full flex flex-col items-center justify-center ">
+        <div className="w-full flex flex-col items-center justify-center">
           <h1 className="font-bold text-2xl">Select a conversation</h1>
           <p className="font-semibold">
             Choose from your existing conversations or start a new one.

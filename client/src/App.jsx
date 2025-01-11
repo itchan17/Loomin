@@ -12,8 +12,23 @@ import MessagePage from "./pages/MessagePage.jsx";
 import CheckAuth from "./components/checkAuth.jsx";
 import ComingSoon from "./pages/comingsoon.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import useSocketStore from "./stores/socketStore";
+import useUserStore from "./stores/UserStore";
 
 const App = () => {
+  const initializeSocket = useSocketStore((state) => state.initializeSocket);
+  const loggedInUser = useUserStore((state) => state.loggedInUser);
+
+  useEffect(() => {
+    if (loggedInUser?._id) {
+      initializeSocket();
+      console.log("App Running");
+    }
+    return () => {
+      useSocketStore.getState().disconnectSocket();
+    };
+  }, [loggedInUser]);
+
   return (
     <Router>
       <Routes>
@@ -26,12 +41,12 @@ const App = () => {
           }
         />
         <Route
-        path="/comingsoon"
-        element={
-          <CheckAuth>
-            <ComingSoon></ComingSoon>
-          </CheckAuth>
-        }
+          path="/comingsoon"
+          element={
+            <CheckAuth>
+              <ComingSoon></ComingSoon>
+            </CheckAuth>
+          }
         />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -44,14 +59,13 @@ const App = () => {
           }
         />
         <Route
-          path="/profile"
+          path="/profile/:username"
           element={
             <CheckAuth>
               <ProfilePage></ProfilePage>
             </CheckAuth>
           }
         />
-
       </Routes>
     </Router>
   );

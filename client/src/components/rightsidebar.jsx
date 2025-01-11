@@ -45,7 +45,7 @@ const Rightsidebar = ({ isOpen }) => {
       return followingToDisplay.map((following) => (
         <div
           class="flex items-center justify-between pb-3 pt-3 last:pb-0"
-          key={following.id} // Assuming `following.id` is unique
+          key={following._id} // Assuming `following.id` is unique
         >
           <div class="flex items-center gap-x-3">
             <img
