@@ -120,15 +120,19 @@ const LoginPage = ({ onSwitch }) => {
             )}
           </div>
 
-          <div className="flex justify-between items-center w-full text-sm text-[#1A1A1A]">
-            <label className="flex items-center gap-2 pb-2">
-              <input type="checkbox" className="rounded border-gray-300" />
+<div className="flex justify-between items-center w-10/12 mx-auto text-sm text-[#1A1A1A]">
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                name="rememberMe"
+                onChange={updateLoginField}
+                className="rounded border-gray-300"
+              />
               Remember Me
             </label>
             <a href="/forgot-password" className="text-black hover:underline">
               Forgot Password?
             </a>
-          </div>
 
           <button
             type="submit"

@@ -3,23 +3,24 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const CheckAuth = (props) => {
-  const store = useAuthStore();
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const checkAuth = useAuthStore((state) => state.checkAuth);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (store.isLoggedIn === null) {
-      store.checkAuth();
+    if (isLoggedIn === null) {
+      checkAuth();
     }
   }, []);
 
-  if (store.isLoggedIn === null) {
+  if (isLoggedIn === null) {
     return navigate("/login");
   }
-  if (!store.isLoggedIn) {
+  if (!isLoggedIn) {
     return navigate("/login");
   }
 
-  return <div>{props.children}</div>;
+  return isLoggedIn ? <div>{props.children}</div> : null;
 };
 
 export default CheckAuth;

@@ -1,14 +1,14 @@
 import useCommentStore from "../stores/CommentStore";
 import React, { useState } from "react";
 
-const CreateCommentForm = ({ postId, setCommentsCount }) => {
+const CreateCommentForm = ({ postId, setCommentsCount, setComments }) => {
   const [comment, setComment] = useState("");
   const createComment = useCommentStore((state) => state.createComment);
 
   const handleCreateComment = async (e) => {
     e.preventDefault();
 
-    await createComment(postId, comment);
+    await createComment(postId, comment, setComments);
     setCommentsCount((prevCount) => prevCount + 1);
     setComment("");
   };
@@ -28,8 +28,11 @@ const CreateCommentForm = ({ postId, setCommentsCount }) => {
       />
 
       <button
+        disabled={comment ? false : true}
         type="submit"
-        className="px-4 py-1 bg-loomin-yellow text-white rounded-3xl hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange"
+        className={`px-4 py-1 bg-loomin-yellow text-white rounded-3xl hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange ${
+          comment ? "" : "cursor-not-allowed"
+        }`}
       >
         {"Comment"}
       </button>

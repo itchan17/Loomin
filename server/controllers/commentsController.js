@@ -42,18 +42,32 @@ const createComment = async (req, res) => {
 };
 
 const fetchPostComments = async (req, res) => {
-  const postId = req.params.id;
   try {
+    const postId = req.params.id;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
+
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
 
-    const comments = await Comment.find({ post_id: postId }).populate(
-      "user_id"
-    );
+    const comments = await Comment.find({ post_id: postId })
+      .skip(skip)
+      .limit(limit)
+      .populate("user_id");
 
-    res.status(200).json({ comments }); // Success response with comments
+    const totalComments = await Comment.countDocuments({ post_id: postId });
+    const hasMore = totalComments > skip + comments.length;
+
+    // Send post to the client
+    res.json({
+      comments,
+      hasMore,
+      currentPage: page,
+      totalComments,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "An internal server error occurred" }); // Server error
