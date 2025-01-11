@@ -9,6 +9,9 @@ import useSocketStore from "../stores/socketStore";
 import useChatStore from "../stores/chatStore";
 
 const HomePage = () => {
+  // State functions
+  const fetchLoggedInUser = useUserStore((state) => state.fetchLoggedInUser);
+
   const setOnlineUsers = useUserStore((state) => state.setOnlineUsers);
   const loggedInUser = useUserStore((state) => state.loggedInUser);
 
@@ -21,6 +24,10 @@ const HomePage = () => {
   const socket = useSocketStore((state) => state.socket);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    fetchLoggedInUser();
+  }, []);
 
   useEffect(() => {
     if (!socket || !loggedInUser?._id) return;

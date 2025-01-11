@@ -7,7 +7,6 @@ import InfiniteScroll from "react-infinite-scroll-component";
 const Timeline = () => {
   // States
   const posts = usePostStore((state) => state.posts);
-  const hasMore = usePostStore((state) => state.hasMore);
 
   // State functions
   const fetchPosts = usePostStore((state) => state.fetchPosts);
@@ -18,29 +17,29 @@ const Timeline = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [page, setPage] = useState(1);
 
+  const [hasMore, setHasMore] = useState(true);
+
   useEffect(() => {
     if (isInitialLoad) {
       clearPosts();
-      fetchPosts(page);
+      fetchPosts(page, setHasMore);
       setIsInitialLoad(false);
       setPage(2);
     }
   }, []);
 
-  const loadMorePosts = () => {
+  const loadMorePosts = async () => {
     console.log(page);
 
-    setTimeout(async () => {
-      try {
-        // Fetch posts and wait for the result
-        await fetchPosts(page);
+    try {
+      // Fetch posts and wait for the result
+      await fetchPosts(page, setHasMore);
 
-        // Increment the page after successful fetch
-        setPage((prevPage) => prevPage + 1);
-      } catch (error) {
-        console.error("Error loading posts:", error);
-      }
-    }, 500);
+      // Increment the page after successful fetch
+      setPage((prevPage) => prevPage + 1);
+    } catch (error) {
+      console.error("Error loading posts:", error);
+    }
   };
 
   const toggleModal = () => {

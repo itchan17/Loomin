@@ -22,6 +22,11 @@ router.put("/posts/:id", authMiddleware, postsController.editPost);
 router.delete("/posts/:id", authMiddleware, postsController.deletePost);
 router.get("/posts", authMiddleware, postsController.fetchPosts);
 router.put("/posts/:id/archive", authMiddleware, postsController.archivePost);
+router.get(
+  "/posts/profile/:id",
+  authMiddleware,
+  postsController.fetchProfilePosts
+);
 
 // Like / Unlike post route
 router.post("/posts/:id/like", authMiddleware, postsController.likeUnlikePost);
@@ -51,7 +56,7 @@ router.delete(
 // User routes
 router.get("/users", authMiddleware, usersController.fetchLoggedInUser);
 router.get("/users/search", authMiddleware, usersController.searchUser);
-router.get("/users/:id", authMiddleware, usersController.fetchUser);
+router.get("/users/:username", authMiddleware, usersController.fetchUser);
 router.post("/users/:id/following", authMiddleware, usersController.followUser);
 
 // Chat routes

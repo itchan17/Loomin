@@ -19,42 +19,12 @@ const Header = ({ toggleSidebar }) => {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const logoutAlert = async () => {
-    return Swal.fire({
-      title: "Logout?",
-      text: "Are you sure you want to logout?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#FF6F61",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Log out",
-    })
-      .then(async (result) => {
-        if (result.isConfirmed) {
-          await logout();
-
-          return Swal.fire({
-            title: "Logged out!",
-            text: "You have been logged out successfully.",
-            icon: "success",
-            confirmButtonColor: "#FF6F61",
-            confirmButtonText: "Okay",
-          });
-        }
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          clearUser();
-          clearActiveChat();
-          socket.disconnect();
-          navigate("/login");
-        }
-      });
-  };
-
   const handleLogout = async () => {
     try {
       await logout();
+      clearUser();
+      clearActiveChat();
+      socket.disconnect();
       navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
