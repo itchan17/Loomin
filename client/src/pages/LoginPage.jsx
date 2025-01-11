@@ -134,7 +134,6 @@ const LoginPage = ({ onSwitch }) => {
               Forgot Password?
             </a>
           </div>
-
           <button
             type="submit"
             className="w-full max-w-[50%] mx-auto bg-gradient-to-r from-[#FF6F61] to-[#FFD23F] text-white font-bold py-2 rounded-full shadow-md hover:shadow-lg transition"
