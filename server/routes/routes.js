@@ -10,6 +10,7 @@ const messagesController = require("../controllers/messagesController.js");
 
 // User registration routes
 router.post("/signup", authController.signup);
+router.get("/api/verify/:token", authController.verifyEmail);
 
 // User authentication routes
 router.post("/login", authController.login);

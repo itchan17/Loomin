@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import useAuthStore from "../stores/AuthStore";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const SignupPage = ({ onSwitch }) => {
   const navigate = useNavigate();
@@ -27,7 +28,9 @@ const SignupPage = ({ onSwitch }) => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     await signup();
+    setIsLoading(false);
   };
 
   // Navigate to login page
@@ -251,10 +254,22 @@ const SignupPage = ({ onSwitch }) => {
           {/* Submit Button */}
           <button
             type="submit"
+            disabled={isLoading}
             className="mt-8  relative w-6/12 mx-auto text-[#1A1A1A] font-bold rounded-full shadow-md hover:shadow-lg transition overflow-hidden bg-gradient-to-r from-[#FF6F61] to-[#FFD23F] p-[2px]"
           >
             <div className="flex items-center justify-center w-full h-[40px] bg-white rounded-full">
-              SIGN UP
+              {isLoading ? (
+                <div
+                  class="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] text-loomin-orange"
+                  role="status"
+                >
+                  <span class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                    Loading...
+                  </span>
+                </div>
+              ) : (
+                "SIGN UP"
+              )}
             </div>
           </button>
         </form>

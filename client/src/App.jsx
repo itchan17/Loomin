@@ -14,6 +14,7 @@ import ComingSoon from "./pages/comingsoon.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import useSocketStore from "./stores/socketStore";
 import useUserStore from "./stores/UserStore";
+import VerifyEmail from "./components/VerifyEmail.jsx";
 
 const App = () => {
   const initializeSocket = useSocketStore((state) => state.initializeSocket);
@@ -66,6 +67,7 @@ const App = () => {
             </CheckAuth>
           }
         />
+        <Route path="/verify/:token" element={<VerifyEmail />} />
       </Routes>
     </Router>
   );
