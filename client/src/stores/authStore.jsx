@@ -136,12 +136,23 @@ const useAuthStore = create((set) => ({
           email: "",
           password: "",
         },
+        loginErrorMessage: {
+          email: "",
+          password: "",
+          globalError: "",
+        },
       });
       return true; // Login successful
     } catch (error) {
       if (error.response && error.response.status === 401) {
         console.log(error);
         updateErrorMessage("globalError", error.response.data.error);
+      } else if (
+        error.response.data.notVerified &&
+        error.response.status === 400
+      ) {
+        console.log(error);
+        updateErrorMessage("email", error.response.data.notVerified);
       } else {
         console.error("Unexpected login error:", error.message);
         updateErrorMessage(
@@ -286,6 +297,15 @@ const useAuthStore = create((set) => ({
           username: "",
           password: "",
           confirmPassword: "",
+        },
+        signupErrorMessage: {
+          firstName: "",
+          lastName: "",
+          email: "",
+          username: "",
+          password: "",
+          confirmPassword: "",
+          globalError: "",
         },
       });
     } catch (error) {

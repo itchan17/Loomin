@@ -7,15 +7,22 @@ const commentsController = require("../controllers/commentsController.js");
 const usersController = require("../controllers/usersController.js");
 const chatsController = require("../controllers/chatsController.js");
 const messagesController = require("../controllers/messagesController.js");
-
-// User registration routes
-router.post("/signup", authController.signup);
-router.get("/api/verify/:token", authController.verifyEmail);
+const forgotPasswordController = require("../controllers/forgotPasswordController.js");
 
 // User authentication routes
+router.post("/signup", authController.signup);
+router.get("/users/:id/verify/:token", authController.verifyEmail);
+router.post(
+  "/users/:id/resend-verification",
+  authController.resendVerification
+);
 router.post("/login", authController.login);
 router.get("/check-auth", authMiddleware, authController.checkAuth);
 router.get("/logout", authMiddleware, authController.logout);
+
+// Forgot password routes
+router.post("/forgot-password", forgotPasswordController.forgotPassword);
+router.post("/reset-password/:token", forgotPasswordController.resetPassword);
 
 // Post routes
 router.post("/create-post", authMiddleware, postsController.createPost);

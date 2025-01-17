@@ -12,6 +12,8 @@ import MessagePage from "./pages/MessagePage.jsx";
 import CheckAuth from "./components/checkAuth.jsx";
 import ComingSoon from "./pages/comingsoon.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import CreateNewPasswordPage from "./pages/CreateNewPasswordPage.jsx";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage.jsx";
 import useSocketStore from "./stores/socketStore";
 import useUserStore from "./stores/UserStore";
 import VerifyEmail from "./components/VerifyEmail.jsx";
@@ -67,7 +69,12 @@ const App = () => {
             </CheckAuth>
           }
         />
-        <Route path="/verify/:token" element={<VerifyEmail />} />
+        <Route path="/users/:id/verify/:token" element={<VerifyEmail />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route
+          path="/reset-password/:token"
+          element={<CreateNewPasswordPage />}
+        />
       </Routes>
     </Router>
   );

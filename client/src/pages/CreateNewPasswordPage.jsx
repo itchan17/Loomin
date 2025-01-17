@@ -1,11 +1,17 @@
 import React, { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const CreateNewPassword = () => {
+  const { token } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [message, setMessage] = useState("");
   const [passwordForm, setPasswordForm] = useState({
     password: "",
     confirmPassword: "",
   });
-  const [errorMessage, setErrorMessage] = useState({
+  const [formErrorMessage, setFormErrorMessage] = useState({
     password: "",
     confirmPassword: "",
   });
@@ -15,39 +21,75 @@ const CreateNewPassword = () => {
   const updatePasswordField = (e) => {
     const { name, value } = e.target;
     setPasswordForm((prev) => ({ ...prev, [name]: value }));
-    setErrorMessage((prev) => ({ ...prev, [name]: "" }));
+    setFormErrorMessage((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const validateAndSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    let hasError = false;
 
-    if (!passwordForm.password) {
-      setErrorMessage((prev) => ({
-        ...prev,
-        password: "Password is required",
-      }));
-      hasError = true;
+    // Validate password
+    if (passwordForm.password.length < 8) {
+      setFormErrorMessage({
+        password: "Password must be at least 8 characters long.",
+      });
+      return;
+    }
+    // Check for whitespace
+    if (/\s/.test(passwordForm.password)) {
+      setFormErrorMessage({ password: "Password cannot contain spaces." });
+      return;
+    }
+    // Check for at least one special character
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(passwordForm.password)) {
+      setFormErrorMessage({
+        password: "Password must contain at least one special character.",
+      });
+      return;
+    }
+    // Check for at least one number
+    if (!/\d/.test(passwordForm.password)) {
+      setFormErrorMessage({
+        password: "Password must contain at least one number.",
+      });
+      return;
+    }
+    // Check for at least one lowercase letter
+    if (!/[a-z]/.test(passwordForm.password)) {
+      setFormErrorMessage({
+        password: "Password must contain at least one lowercase letter.",
+      });
+      return;
     }
 
+    // Check for at least one uppercase letter
+    if (!/[A-Z]/.test(passwordForm.password)) {
+      setFormErrorMessage({
+        password: "Password must contain at least one uppercase letter.",
+      });
+      return;
+    }
+
+    // Check confirm password
     if (passwordForm.password !== passwordForm.confirmPassword) {
-      setErrorMessage((prev) => ({
-        ...prev,
-        confirmPassword: "Passwords do not match",
-      }));
-      hasError = true;
+      setFormErrorMessage({ confirmPassword: "Password does not match." });
+      return;
     }
 
-    if (!passwordForm.confirmPassword) {
-      setErrorMessage((prev) => ({
-        ...prev,
-        confirmPassword: "Please confirm your password",
-      }));
-      hasError = true;
-    }
+    try {
+      setIsLoading(true);
+      const response = await axios.post(`/reset-password/${token}`, {
+        password: passwordForm.password,
+      });
+      console.log(response);
 
-    if (!hasError) {
-      alert("Password reset successfully!");
+      // Reset states
+      setPasswordForm({ password: "", confirmPassword: "" });
+      setFormErrorMessage({ password: "", confirmPassword: "" });
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+      setErrorMessage(error.response.data.error);
+      setIsLoading(false);
     }
   };
 
@@ -61,7 +103,7 @@ const CreateNewPassword = () => {
           </p>
         </div>
 
-        <div className="flex flex-col items-center px-14 pt-2">
+        <div className="flex flex-col items-center px-6 pt-2">
           <img
             src="/create-new-pass.svg"
             alt="Create New Password"
@@ -73,87 +115,85 @@ const CreateNewPassword = () => {
         </div>
 
         <form
-          className="flex flex-col px-16 space-y-8 pb-8"
-          onSubmit={validateAndSubmit}
+          onSubmit={handleSubmit}
+          className="flex flex-col px-6 space-y-4 pb-8"
         >
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              id="password"
-              className={`block w-full pr-12 pl-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 ${
-                errorMessage.password ? "border-red-500" : "border-gray-300"
-              }`}
-              placeholder=""
-              value={passwordForm.password}
-              onChange={updatePasswordField}
-            />
-            <label
-              htmlFor="password"
-              className={`absolute left-2 text-sm text-black transition-all duration-200 transform scale-100 top-1 origin-[0] ${
-                passwordForm.password
-                  ? "translate-y-[-0.2rem] scale-90 text-gray-500"
-                  : "translate-y-2 scale-100"
-              }`}
-            >
-              New Password
-            </label>
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-4 flex items-center justify-center text-gray-500 hover:text-gray-700"
-            >
-              <img
-                src={showPassword ? "/eye-fill.svg" : "/Vector.svg"}
-                alt="Toggle Password Visibility"
-                className="w-5 h-5"
+          <div>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                id="password"
+                className={`[&::-ms-reveal]:hidden [&::-webkit-contacts-auto-fill-button]:hidden [&::-webkit-credentials-auto-fill-button]:hidden block rounded-lg px-2.5 pb-2.5 pt-5 w-full  shadow-md text-sm text-[#1A1A1A] bg-gray-200 border appearance-none border focus:outline-none focus:ring-2 focus:ring-orange-400 peer ${
+                  formErrorMessage.password
+                    ? "border-red-500"
+                    : "border-gray-300"
+                }`}
+                placeholder=""
+                value={passwordForm.password}
+                onChange={updatePasswordField}
               />
-            </button>
-            {errorMessage.password && (
-              <p className="absolute left-0 w-full text-sm text-red-500 top-full text-left ml-1">
-                {errorMessage.password}
+              <label
+                htmlFor="password"
+                className={`absolute text-sm text-gray-500 dark:text-gray-600 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] start-2.5 peer-focus:text-gray-600 peer-focus:dark:text-gray-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto`}
+              >
+                New Password
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-4 flex items-center justify-center text-gray-500 hover:text-gray-700"
+              >
+                <img
+                  src={showPassword ? "/eye-fill.svg" : "/Vector.svg"}
+                  alt="Toggle Password Visibility"
+                  className="w-5 h-5"
+                />
+              </button>
+            </div>
+            {formErrorMessage.password && (
+              <p className="left-0 w-full text-sm text-red-500 top-full text-left ml-1">
+                {formErrorMessage.password}
               </p>
             )}
           </div>
 
-          <div className="relative">
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              name="confirmPassword"
-              id="confirmPassword"
-              className={`block w-full pr-12 pl-2.5 pt-4 pb-2 text-sm text-[#1A1A1A] bg-gray-200 border rounded-lg shadow-md appearance-none focus:outline-none focus:ring-2 focus:ring-orange-400 ${
-                errorMessage.confirmPassword
-                  ? "border-red-500"
-                  : "border-gray-300"
-              }`}
-              placeholder=""
-              value={passwordForm.confirmPassword}
-              onChange={updatePasswordField}
-            />
-            <label
-              htmlFor="confirmPassword"
-              className={`absolute left-2 text-sm text-black transition-all duration-200 transform scale-100 top-1 origin-[0] ${
-                passwordForm.confirmPassword
-                  ? "translate-y-[-0.2rem] scale-90 text-gray-500"
-                  : "translate-y-2 scale-100"
-              }`}
-            >
-              Confirm Password
-            </label>
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute inset-y-0 right-4 flex items-center justify-center text-gray-500 hover:text-gray-700"
-            >
-              <img
-                src={showConfirmPassword ? "/eye-fill.svg" : "/Vector.svg"}
-                alt="Toggle Confirm Password Visibility"
-                className="w-5 h-5"
+          <div>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="confirmPassword"
+                id="confirmPassword"
+                className={`[&::-ms-reveal]:hidden [&::-webkit-contacts-auto-fill-button]:hidden [&::-webkit-credentials-auto-fill-button]:hidden block rounded-lg px-2.5 pb-2.5 pt-5 w-full  shadow-md text-sm text-[#1A1A1A] bg-gray-200 border appearance-none border focus:outline-none focus:ring-2 focus:ring-orange-400 peer ${
+                  formErrorMessage.confirmPassword
+                    ? "border-red-500"
+                    : "border-gray-300"
+                }`}
+                placeholder=""
+                value={passwordForm.confirmPassword}
+                onChange={updatePasswordField}
               />
-            </button>
-            {errorMessage.confirmPassword && (
-              <p className="absolute left-0 w-full text-sm text-red-500 top-full text-left ml-1">
-                {errorMessage.confirmPassword}
+              <label
+                htmlFor="password"
+                className={`absolute text-sm text-gray-500 dark:text-gray-600 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] start-2.5 peer-focus:text-gray-600 peer-focus:dark:text-gray-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto`}
+              >
+                Confirm New Password
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute inset-y-0 right-4 flex items-center justify-center text-gray-500 hover:text-gray-700"
+              >
+                <img
+                  src={showConfirmPassword ? "/eye-fill.svg" : "/Vector.svg"}
+                  alt="Toggle Confirm Password Visibility"
+                  className="w-5 h-5"
+                />
+              </button>
+            </div>
+            {formErrorMessage.confirmPassword && (
+              <p className="left-0 w-full text-sm text-red-500 top-full text-left ml-1">
+                {formErrorMessage.confirmPassword}
               </p>
             )}
           </div>
@@ -162,7 +202,18 @@ const CreateNewPassword = () => {
             type="submit"
             className="w-full max-w-[50%] mx-auto bg-gradient-to-r from-[#FF6F61] to-[#FFD23F] text-white font-bold py-2 rounded-full shadow-md hover:shadow-lg transition mb-6"
           >
-            SAVE
+            {isLoading ? (
+              <div
+                class="inline-block h-6 w-6 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
+                role="status"
+              >
+                <span class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                  Loading...
+                </span>
+              </div>
+            ) : (
+              "SUBMIT"
+            )}
           </button>
         </form>
       </div>
