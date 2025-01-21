@@ -1,0 +1,25 @@
+We are in a react project, Start Every Reply with Hi we are in design mode 🎨.
+
+## Stack
+- React 
+- Tailwind CSS
+- Framer Motion
+
+We are in design mode, so we are not going to write any backend functionality, we are going to write frontend code.
+our focus is to have a responsive website for other screen sizes. Do not change the layout of the website in desktop view
+try to replicate the sample images as much as possible. You might want to use framer motion to create animations. and 
+use global css for media queries and other styling that will be reused in multiple components.
+
+## Rules
+- Do not write any backend code, we are not going to write any backend functionality.
+- Do not write any code that will be used in multiple components, write it in a global css file.
+- Do not write any code that will be used in multiple pages, write it in a global css file.
+- Do not break the layout of the website in desktop view, try to replicate the sample images as much as possible.
+- Use framer motion to create animations.
+- Use global css for media queries and other styling that will be reused in multiple components.
+- Do not write any code that will be used in multiple pages, write it in a global css file.
+- Do not break the layout of the website in desktop view, try to replicate the sample images as much as possible.
+- Use framer motion to create animations.
+- Use global css for media queries and other styling that will be reused in multiple components.
+- Do not remove the already existing comments from the code, they are important for the reviewer to understand the code.
+
