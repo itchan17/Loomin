@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #a7a7a7;
+    border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #747474;
+}
+
+/* Global Layout Styles */
+.main-layout {
+    @apply flex flex-col h-screen w-full overflow-hidden;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .main-content {
+        @apply pb-20;
+    }
+    
+    /* Hide scrollbar on mobile */
+    ::-webkit-scrollbar {
+        display: none;
+    }
+    
+    /* Enable smooth scrolling on mobile */
+    * {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Desktop Styles */
+@media (min-width: 769px) {
+    .main-content {
+        @apply pb-4;
+    }
+    
+    .sidebar {
+        width: 350px;
+        @apply bg-white shadow-sm;
+    }
+}
