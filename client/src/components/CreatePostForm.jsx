@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import usePostStore from "../stores/PostStore";
 import useUserStore from "../stores/UserStore";
 import { useFilePicker } from "use-file-picker";
@@ -21,6 +21,9 @@ const Createpost = ({ onClose }) => {
     (state) => state.updateCreateFormField
   );
   const clearForm = usePostStore((state) => state.clearForm);
+
+  // Local state
+  const [previewImage, setPreviewImage] = useState([]);
 
   const { openFilePicker, filesContent, loading, errors } = useFilePicker({
     readAs: "DataURL",
@@ -58,9 +61,21 @@ const Createpost = ({ onClose }) => {
     }
   };
 
+  const displayPreview = () => {
+    console.log("Working");
+    return previewImage.map((image, index) => (
+      <img
+        key={index}
+        className="rounded object-fill object-cover w-44 h-32 border-black border"
+        src={image}
+        alt={`Preview ${index}`}
+      />
+    ));
+  };
+
   return (
     <form onSubmit={handleSubmit}>
-      <div className=" rounded-xl mx-auto bg-white md:w-3/4 lg:w-2/3">
+      <div className=" rounded-lg mx-auto bg-white md:w-3/4">
         <div className="flex justify-between px-2 py-2 ml-auto">
           <button
             type="button"
@@ -83,21 +98,53 @@ const Createpost = ({ onClose }) => {
               name="content"
               onChange={updateCreateFormField}
               placeholder="It's Shrekin time"
-              className="w-full text-xl resize-none outline-none h-32"
+              className="w-full text-md resize-none outline-none h-32"
             ></textarea>
+          </div>
+        </div>
+
+        <div className="p-4">
+          <div className="flex overflow-x-auto space-x-2">
+            {previewImage.length > 0 && displayPreview()}
           </div>
         </div>
 
         <div class="flex items-center text-loomin-orange justify-between py-2 px-4 mr-auto border-t">
           <div class="flex text-2xl pl-0.5">
+            {/* File input here */}
             <div class="flex items-center justify-center p-3 hover:bg-orange-100 rounded-full cursor-pointer">
               <button
-                onClick={() => openFilePicker()}
+                type="button"
+                onClick={() => document.getElementById("postImage").click()}
                 className="bx bxs-image"
               ></button>
-            </div>
-            <div class="flex items-center justify-center p-3 hover:bg-orange-100 rounded-full cursor-pointer">
-              <button className="bx bxs-happy"></button>
+              <input
+                type="file"
+                id="postImage"
+                className="hidden"
+                accept="image/*"
+                multiple
+                onChange={(e) => {
+                  const files = e.target.files;
+                  console.log(files);
+                  if (files.length > 0) {
+                    const imageArray = [];
+
+                    for (let i = 0; i < files.length; i++) {
+                      const reader = new FileReader();
+
+                      reader.onloadend = () => {
+                        imageArray.push(reader.result);
+                        if (imageArray.length === files.length) {
+                          setPreviewImage(imageArray);
+                        }
+                      };
+
+                      reader.readAsDataURL(files[i]); // Read each file as Data URL
+                    }
+                  }
+                }}
+              />
             </div>
           </div>
           <div>
