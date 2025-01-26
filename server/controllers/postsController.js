@@ -1,13 +1,17 @@
 const Post = require("../models/post.js");
 const User = require("../models/user.js");
 const Comment = require("../models/comment.js");
+const fs = require("fs");
+const path = require("path");
 
 const createPost = async (req, res) => {
-  const { content, images } = req.body;
-
+  // Post details
+  const { content } = req.body;
+  const images = req.files.map((file) => file.path);
+  console.log(req.files);
   // Get the creator of the post
   const creator = req.user._id;
-  console.log(req.body);
+
   try {
     // Create post
     const newPost = await Post.create({ creator, content, images });
@@ -31,17 +35,52 @@ const createPost = async (req, res) => {
 
 const editPost = async (req, res) => {
   const postId = req.params.id;
-  const { content, images } = req.body;
+  const { content } = req.body;
+  const newImages = req.files.map((file) => file.path);
+
+  // Delete the removed images
+  if (req.body.removedImages) {
+    const removedImages = Array.isArray(req.body.removedImages)
+      ? req.body.removedImages
+      : [req.body.removedImages];
+    console.log(removedImages);
+    removedImages.forEach((imagePath) => {
+      const fullPath = path.resolve(imagePath);
+
+      try {
+        if (fs.existsSync(fullPath)) {
+          fs.unlinkSync(fullPath);
+          console.log(`Deleted: ${fullPath}`);
+        } else {
+          console.log(`File not found: ${fullPath}`);
+        }
+      } catch (error) {
+        console.error(`Error deleting ${fullPath}:`, error);
+      }
+    });
+  }
 
   try {
     // Update post
-    const newPost = await Post.findOneAndUpdate(
-      { _id: postId, creator: req.user._id }, // Get post where id == selected id && creator == authorized user
-      { content, images },
-      { new: true }
+    const newPost = await Post.findOne(
+      { _id: postId, creator: req.user._id } // Get post where id == selected id && creator == authorized user
     ).populate("creator");
 
-    console.log(newPost);
+    // Update the post
+    newPost.content = content;
+
+    if (req.body.removedImages) {
+      newPost.images = [
+        ...newPost.images.filter(
+          (image) => !req.body.removedImages.includes(image)
+        ),
+        ...newImages,
+      ];
+    } else if (newImages) {
+      newPost.images = [...newPost.images, ...newImages];
+    }
+
+    newPost.save();
 
     res.status(200).json({ newPost, success: "Post edited successfully." });
   } catch (error) {
@@ -57,6 +96,24 @@ const deletePost = async (req, res) => {
       _id: postId,
       creator: req.user._id,
     });
+
+    // Delete images of the post
+    if (deletedPost && deletedPost.images.length > 0) {
+      deletedPost.images.forEach((imagePath) => {
+        const fullPath = path.resolve(imagePath);
+
+        try {
+          if (fs.existsSync(fullPath)) {
+            fs.unlinkSync(fullPath);
+            console.log(`Deleted: ${fullPath}`);
+          } else {
+            console.log(`File not found: ${fullPath}`);
+          }
+        } catch (error) {
+          console.error(`Error deleting ${fullPath}:`, error);
+        }
+      });
+    }
 
     // Delete comments associated with the post
     await Comment.deleteMany({ post_id: postId });

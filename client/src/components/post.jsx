@@ -9,6 +9,9 @@ import testImage from "../assets/placeholder.png";
 import CreateCommentForm from "./CreateCommentForm";
 import EditCommentForm from "./EditCommentForm";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const Post = ({ post }) => {
   //User state
@@ -41,6 +44,8 @@ const Post = ({ post }) => {
   const [comments, setComments] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     setLikesCount(post.likes.length);
@@ -193,6 +198,28 @@ const Post = ({ post }) => {
     setCommentToEdit(comment.comment);
     setCommentId(comment._id);
   };
+
+  const SimpleSlider = () => {
+    const settings = {
+      arrows: post.images.length > 1,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      fade: true,
+    };
+    return (
+      <Slider {...settings}>
+        {post.images.map((image) => (
+          <img
+            src={`http://localhost:3000/${image}`}
+            alt="image"
+            className="w-full h-96 object-contain"
+          />
+        ))}
+      </Slider>
+    );
+  };
   return (
     <div className="border rounded-2xl max-w-2xl mb-6" key={post._id}>
       <div className="bg-white shadow-md rounded-2xl  w-full">
@@ -231,13 +258,11 @@ const Post = ({ post }) => {
           {post.content}
         </p>
 
-        <div className="relative " onDoubleClick={handleDoubleTap}>
-          {testImage ? (
-            <img
-              src={testImage}
-              alt="Post content"
-              className="w-11/12 mx-7 rounded-2xl justify-center"
-            />
+        <div className="relative" onDoubleClick={handleDoubleTap}>
+          {post.images.length > 0 ? (
+            <div className="bg-black py-2 px-10">
+              <SimpleSlider />
+            </div>
           ) : null}
 
           <AnimatePresence>

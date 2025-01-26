@@ -8,6 +8,7 @@ const usersController = require("../controllers/usersController.js");
 const chatsController = require("../controllers/chatsController.js");
 const messagesController = require("../controllers/messagesController.js");
 const forgotPasswordController = require("../controllers/forgotPasswordController.js");
+const upload = require("../middlewares/uploadImagesMiddleware.js");
 
 // User authentication routes
 router.post("/signup", authController.signup);
@@ -25,8 +26,18 @@ router.post("/forgot-password", forgotPasswordController.forgotPassword);
 router.post("/reset-password/:token", forgotPasswordController.resetPassword);
 
 // Post routes
-router.post("/create-post", authMiddleware, postsController.createPost);
-router.put("/posts/:id", authMiddleware, postsController.editPost);
+router.post(
+  "/create-post",
+  authMiddleware,
+  upload.array("images"),
+  postsController.createPost
+);
+router.put(
+  "/posts/:id",
+  authMiddleware,
+  upload.array("newImages"),
+  postsController.editPost
+);
 router.delete("/posts/:id", authMiddleware, postsController.deletePost);
 router.get("/posts", authMiddleware, postsController.fetchPosts);
 router.put("/posts/:id/archive", authMiddleware, postsController.archivePost);
