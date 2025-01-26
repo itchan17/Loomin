@@ -97,10 +97,4 @@ const searchUser = async (req, res) => {
   }
 };
 
-const editProfile = async (req, res) => {
-  const userId = req.user._id;
-
-  const user = await User.findById({ _id: userId });
-};
-
 module.exports = { fetchLoggedInUser, followUser, fetchUser, searchUser };

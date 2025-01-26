@@ -12,7 +12,6 @@ const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
 const { handleSocketConnection } = require("./socket.js");
-const path = require("path");
 
 // Connect to db
 connectToDb();
@@ -36,9 +35,6 @@ app.use(
     credentials: true,
   })
 );
-
-// Serve static files from the "public" directory
-app.use("/public", express.static(path.join(__dirname, "public")));
 
 //Routes
 app.use(routes);

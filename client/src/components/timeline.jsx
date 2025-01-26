@@ -47,7 +47,7 @@ const Timeline = () => {
   return (
     <main
       id="posts-container"
-      className="border-2 bg-loomin-white flex-auto justify-center items-center px-auto px-6 overflow-y-auto"
+      className="flex-auto bg-loomin-white flex-auto items-center px-auto px-6 pl-11 overflow-y-auto"
     >
       {/* Header of the timeline*/}
       <div className="w-full py-4 mb-2 flex items-center justify-between px-3 md:px-6">
