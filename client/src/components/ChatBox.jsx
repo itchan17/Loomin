@@ -5,7 +5,8 @@ import useUserStore from "../stores/UserStore";
 import useSocketStore from "../stores/socketStore";
 import moment from "moment";
 import EmojiPicker from "emoji-picker-react";
-const ChatBox = () => {
+
+const ChatBox = ({ onBack }) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   // Chat states
   const messages = useChatStore((state) => state.messages);
@@ -119,39 +120,48 @@ const ChatBox = () => {
     });
   };
   return (
-    <div class="w-full flex flex-col justify-between">
-      <div class="border-b border-[#A4A4A4] bg-[#D9D9D9] bg-opacity-40 py-3 flex flex-col items-center justify-center">
-        <h1 class="text-2xl font-bold">{`${currentRecipient.first_name} ${currentRecipient.last_name}`}</h1>
+    <div className="w-full flex flex-col justify-between h-[calc(100vh-8rem)] md:h-[calc(100vh-4rem)]">
+      <div className="border-b border-[#A4A4A4] bg-[#D9D9D9] bg-opacity-40 py-3 flex flex-col items-center justify-center relative">
+        {onBack && (
+          <button 
+            onClick={onBack}
+            className="absolute left-4 md:hidden z-10 text-gray-600 hover:text-gray-900"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+        )}
+        <h1 className="text-2xl font-bold">{`${currentRecipient.first_name} ${currentRecipient.last_name}`}</h1>
         {onlineUsers.some((user) => user.userId === currentRecipient._id) ? (
-          <p>Online</p>
+          <p className="text-sm text-green-600">Online</p>
         ) : (
           ""
         )}
       </div>
       {/* Messages */}
-      <div class="flex flex-col overflow-y-auto px-5 ">
+      <div className="flex-1 flex flex-col overflow-y-auto px-5 py-4 min-h-0">
         {messages && dsiplayMessages()}
         <div ref={messagesEndRef} />
       </div>
-      <form onSubmit={handleSubmit} class="py-2 px-5">
-        <div class="relative hidden md:flex items-center">
+      <form onSubmit={handleSubmit} className="py-3 px-5 bg-white border-t">
+        <div className="relative flex items-center">
           <input
             type="text"
             name="message"
             placeholder="Type a message ..."
             value={message}
             onChange={(e) => updateMessageField(e)}
-            class="w-full bg-[#D9D9D9] bg-opacity-40 px-4 py-2 border border-black rounded-xl bg-white/80"
+            className="w-full bg-[#D9D9D9] bg-opacity-40 px-4 py-2 border border-gray-300 rounded-xl bg-white/80 focus:outline-none focus:border-blue-400"
           />
           <div className="flex absolute right-3 gap-2">
             <button
               onClick={() => setShowEmojiPicker(!showEmojiPicker)}
               type="button"
-              className=" w-7 text-gray-500 cursor-pointer"
+              className="w-7 text-gray-500 cursor-pointer"
             >
-              {" "}
               <svg
-                class="text-black"
+                className="text-black"
                 role="img"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 496 512"
@@ -170,7 +180,7 @@ const ChatBox = () => {
             <button
               type="submit"
               disabled={!message}
-              class=" w-7 text-gray-500 cursor-pointer"
+              className="w-7 text-gray-500 cursor-pointer"
               aria-label="Send message"
             >
               <svg

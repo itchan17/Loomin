@@ -76,11 +76,21 @@ const MessagePage = () => {
   }, []);
 
   return (
-    <div className="flex flex-col h-screen w-full">
+    <div className="flex flex-col h-screen w-full overflow-hidden">
       <Header />
-      <div className="flex flex-1 overflow-hidden">
-        <LeftSidebar />
-        <Inbox />
+      
+      <div className="flex flex-1 h-[calc(100vh-4rem)]">
+        {/* Left Sidebar - Hidden on mobile */}
+        <aside className="hidden md:block w-[320px] min-w-[320px] bg-loomin-white shadow-inner h-screen transition-transform border-r border-gray-200">
+          <LeftSidebar />
+        </aside>
+        
+        {/* Main Content */}
+        <main className="flex-1 overflow-y-auto bg-gray-50">
+          <div className="w-full mx-auto">
+            <Inbox />
+          </div>
+        </main>
       </div>
     </div>
   );

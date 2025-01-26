@@ -221,13 +221,13 @@ const Post = ({ post }) => {
     );
   };
   return (
-    <div className="border rounded-2xl max-w-2xl mb-6" key={post._id}>
-      <div className="bg-white shadow-md rounded-2xl  w-full">
-        <div className="flex items-center p-4">
+    <div className="border-b md:border md:rounded-2xl max-w-full md:max-w-2xl mb-0 md:mb-4" key={post._id}>
+      <div className="bg-white md:shadow-md md:rounded-2xl w-full">
+        <div className="flex items-center p-3 md:p-4">
           <img
             src={post.creator.profile_picture}
             alt={`${post.creator.first_name} ${post.creator.last_name}`}
-            className="w-10 h-10 rounded-full cursor-pointer"
+            className="w-10 h-10 rounded-full cursor-pointer object-cover"
           />
           <div className="ml-2 flex flex-col">
             <div className="flex gap-1 items-center">
@@ -254,17 +254,16 @@ const Post = ({ post }) => {
             ""
           )}
         </div>
-        <p className="mt-2 pl-8 mb-2 text-semibold antialiased">
+        <p className="mt-1 px-4 md:px-6 mb-2 text-semibold antialiased">
           {post.content}
         </p>
-
         <div className="relative" onDoubleClick={handleDoubleTap}>
           {post.images.length > 0 ? (
             <div className="bg-black py-2 px-10">
               <SimpleSlider />
             </div>
-          ) : null}
 
+          ) : null}
           <AnimatePresence>
             {showHeart && (
               <motion.div
@@ -285,7 +284,7 @@ const Post = ({ post }) => {
           </AnimatePresence>
         </div>
 
-        <div className="p-4 pl-8">
+        <div className="px-4 md:px-6 py-3">
           <div className="flex gap-4">
             <div className="flex items-center gap-1">
               <button onClick={handleLike}>
@@ -309,9 +308,9 @@ const Post = ({ post }) => {
             </div>
           </div>
         </div>
-        {/* Check if showComments is true, then display the comments the comment text field */}
+        {/* Comments section */}
         {showComments && (
-          <div className="px-4 pb-4">
+          <div className="px-4 md:px-6 pb-4">
             <div
               id="comments-container"
               className="max-h-40 overflow-y-auto mb-4"

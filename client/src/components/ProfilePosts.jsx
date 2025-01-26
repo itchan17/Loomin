@@ -68,35 +68,46 @@ const ProfilePosts = () => {
   const displayPosts = () => {
     return posts.map((post) => <Post post={post} key={post._id} />);
   };
-  return (
-    <div className="flex gap-8 bg-[#D9D9D9]">
-      {/* Left side - Details */}
-      <div className="w-1/3">
-        <div className="bg-white rounded-lg shadow p-4">
-          <h2 className="text-xl font-semibold mb-4">Details</h2>
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <i className="bx bx-map text-gray-500 text-xl"></i>
-              <span className="text-gray-600">Amsterdam, Netherlands</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <i className="bx bx-book text-gray-500 text-xl"></i>
-              <span className="text-gray-600">University of Amsterdam</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <i className="bx bx-briefcase text-gray-500 text-xl"></i>
-              <span className="text-gray-600">Fishball Chef</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <i className="bx bx-calendar text-gray-500 text-xl"></i>
-              <span className="text-gray-600">January 17, 1999</span>
-            </div>
-          </div>
+
+  const DetailsCard = () => (
+    <div className="bg-white rounded-lg shadow p-4">
+      <h2 className="text-xl font-semibold mb-4">Details</h2>
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <i className="bx bx-map text-gray-500 text-xl"></i>
+          <span className="text-gray-600">Amsterdam, Netherlands</span>
         </div>
+        <div className="flex items-center gap-2">
+          <i className="bx bx-book text-gray-500 text-xl"></i>
+          <span className="text-gray-600">University of Amsterdam</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <i className="bx bx-briefcase text-gray-500 text-xl"></i>
+          <span className="text-gray-600">Fishball Chef</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <i className="bx bx-calendar text-gray-500 text-xl"></i>
+          <span className="text-gray-600">January 17, 1999</span>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col md:flex-row gap-8 bg-[#D9D9D9]">
+      {/* Left side - Details - Hidden on desktop */}
+      <div className="hidden md:block w-1/3">
+        <DetailsCard />
       </div>
 
       {/* Right side - Posts */}
       <div className="flex-1">
+        {/* Mobile Details Card */}
+        <div className="block md:hidden mb-4">
+          <DetailsCard />
+        </div>
+
+        {/* What's on your mind box */}
         <div className="bg-white rounded-lg shadow p-4 mb-4">
           <div className="flex items-center gap-3">
             <img src={userIcon} alt="User" className="w-10 h-10 rounded-full" />
@@ -114,6 +125,7 @@ const ProfilePosts = () => {
           </div>
         </div>
 
+        {/* Posts */}
         <InfiniteScroll
           dataLength={posts.length}
           next={loadMorePosts}
