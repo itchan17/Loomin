@@ -1,4 +1,8 @@
 node_modules
 .env
-.cursorrules
+..cursorrules
 cursorrules 
+.cursorrules
+cursorrules
+**/.cursorrules
+**/cursorrules
