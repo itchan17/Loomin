@@ -9,6 +9,7 @@ import {
 import EditPostForm from "./EditPostForm";
 import React, { useState } from "react";
 import usePostStore from "../stores/PostStore";
+import Swal from "sweetalert2";
 
 export default function Dropdown({ post }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,17 +20,84 @@ export default function Dropdown({ post }) {
   const archivePost = usePostStore((state) => state.archivePost);
 
   const handleArchivePost = async () => {
-    await archivePost(post._id);
+    const result = await Swal.fire({
+      title: 'Archive Post?',
+      text: "You can find this post in your archive later",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#FF6F61',
+      cancelButtonColor: '#d1d5db',
+      confirmButtonText: 'Yes, archive it!',
+      background: '#fff',
+      customClass: {
+        popup: 'rounded-2xl',
+        title: 'font-bold text-gray-900',
+        htmlContainer: 'text-gray-600',
+        confirmButton: 'rounded-full',
+        cancelButton: 'rounded-full'
+      }
+    });
+
+    if (result.isConfirmed) {
+      await archivePost(post._id);
+      Swal.fire({
+        title: 'Archived!',
+        text: 'Your post has been archived.',
+        icon: 'success',
+        confirmButtonColor: '#FF6F61',
+        background: '#fff',
+        customClass: {
+          popup: 'rounded-2xl',
+          title: 'font-bold text-gray-900',
+          htmlContainer: 'text-gray-600',
+          confirmButton: 'rounded-full'
+        }
+      });
+    }
   };
+
   const handleDeletePost = async () => {
-    await deletePost(post._id);
+    const result = await Swal.fire({
+      title: 'Delete Post?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#FF6F61',
+      cancelButtonColor: '#d1d5db',
+      confirmButtonText: 'Yes, delete it!',
+      background: '#fff',
+      customClass: {
+        popup: 'rounded-2xl',
+        title: 'font-bold text-gray-900',
+        htmlContainer: 'text-gray-600',
+        confirmButton: 'rounded-full',
+        cancelButton: 'rounded-full'
+      }
+    });
+
+    if (result.isConfirmed) {
+      await deletePost(post._id);
+      Swal.fire({
+        title: 'Deleted!',
+        text: 'Your post has been deleted.',
+        icon: 'success',
+        confirmButtonColor: '#FF6F61',
+        background: '#fff',
+        customClass: {
+          popup: 'rounded-2xl',
+          title: 'font-bold text-gray-900',
+          htmlContainer: 'text-gray-600',
+          confirmButton: 'rounded-full'
+        }
+      });
+    }
   };
 
   const handleEditPost = async () => {
     setIsModalOpen(!isModalOpen);
-
     await getPost(post);
   };
+
   return (
     <>
       <Menu>

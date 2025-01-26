@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import usePostStore from "../stores/PostStore";
 import useUserStore from "../stores/UserStore";
 import { useFilePicker } from "use-file-picker";
@@ -8,6 +8,7 @@ import {
   FileSizeValidator,
   ImageDimensionsValidator,
 } from "use-file-picker/validators";
+import Swal from "sweetalert2";
 
 const EditPostForm = ({ onClose, post }) => {
   // Post states
@@ -44,11 +45,61 @@ const EditPostForm = ({ onClose, post }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // First show confirmation alert
+    const result = await Swal.fire({
+      title: 'Save Changes?',
+      text: "Are you sure you want to edit this post?",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#FF6F61',
+      cancelButtonColor: '#d1d5db',
+      confirmButtonText: 'Yes, save it!',
+      background: '#fff',
+      customClass: {
+        popup: 'rounded-2xl',
+        title: 'font-bold text-gray-900',
+        htmlContainer: 'text-gray-600',
+        confirmButton: 'rounded-full',
+        cancelButton: 'rounded-full'
+      }
+    });
 
-    await updatePost(post._id);
-
-    if (onClose()) {
-      onClose();
+    if (result.isConfirmed) {
+      try {
+        await updatePost(post._id);
+        Swal.fire({
+          title: 'Post Updated!',
+          text: 'Your changes have been saved successfully.',
+          icon: 'success',
+          confirmButtonColor: '#FF6F61',
+          background: '#fff',
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+          customClass: {
+            popup: 'rounded-2xl',
+            title: 'font-bold text-gray-900',
+            htmlContainer: 'text-gray-600'
+          }
+        });
+        onClose();
+      } catch (error) {
+        console.error("Error editing post:", error);
+        Swal.fire({
+          title: 'Error!',
+          text: 'Failed to update the post. Please try again.',
+          icon: 'error',
+          confirmButtonColor: '#FF6F61',
+          background: '#fff',
+          customClass: {
+            popup: 'rounded-2xl',
+            title: 'font-bold text-gray-900',
+            htmlContainer: 'text-gray-600',
+            confirmButton: 'rounded-full'
+          }
+        });
+      }
     }
   };
 

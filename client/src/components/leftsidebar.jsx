@@ -90,9 +90,19 @@ const Leftsidebar = ({ isOpen }) => {
             <span className="text-xl">My Profile</span>
           </div>
         </Link>
-        <Link to="/comingsoon">
+        <Link to="/following">
           <div className={`flex items-center gap-4 px-4 py-2 rounded-lg w-full
-            ${isComingSoon
+            ${location.pathname === "/following"
+              ? "bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] text-white"
+              : "hover:bg-gradient-to-r hover:from-[#FFD23F] hover:to-[#FF6F61] hover:text-white"
+            }`}>
+            <i alt="Feed" className="bx bx-group text-xl"></i>
+            <span className="text-xl">Following</span>
+          </div>
+        </Link>
+        <Link to="/notifications">
+          <div className={`flex items-center gap-4 px-4 py-2 rounded-lg w-full
+            ${location.pathname === "/notifications"
               ? "bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] text-white"
               : "hover:bg-gradient-to-r hover:from-[#FFD23F] hover:to-[#FF6F61] hover:text-white"
             }`}>

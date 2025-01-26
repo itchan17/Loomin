@@ -55,44 +55,50 @@ const HomePage = () => {
   return (
     <div className="flex flex-col h-screen w-full overflow-hidden">
       <Header />
-      
+
       <div className="flex flex-1 h-[calc(100vh-4rem)]">
-        {/* Left Sidebar - Hidden on mobile */}
-        <aside className="hidden md:block w-[320px] min-w-[320px] bg-loomin-white shadow-inner h-screen transition-transform border-r border-gray-200">
+
+        <aside className="hidden xl:block w-[320px] min-w-[320px] bg-loomin-white shadow-inner h-screen transition-transform border-r border-gray-200">
           <LeftSidebar />
         </aside>
-        
-        {/* Main Content */}
+
+
         <main className="flex-1 overflow-y-auto bg-gray-50">
-          <div className="w-full md:max-w-[650px] mx-auto px-0 md:px-4 pb-20 md:pb-4">
+          <div className="w-full mx-auto px-4 pb-20 xl:pb-4 
+            max-w-[100%] md:max-w-[700px] xl:max-w-[650px] 
+            md:px-6 xl:px-4">
             <Timeline />
           </div>
         </main>
-        
-        {/* Right Sidebar - Hidden on mobile */}
-        <aside className="hidden md:block w-[320px] min-w-[320px] bg-loomin-white shadow-inner h-screen transition-transform border-l border-gray-200">
+
+
+        <aside className="hidden xl:block w-[320px] min-w-[320px] bg-loomin-white shadow-inner h-screen transition-transform border-l border-gray-200">
           <RightSideBar />
         </aside>
       </div>
 
-      {/* Mobile Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 md:hidden">
-        <div className="grid h-full max-w-lg grid-cols-4 mx-auto">
+      {/* Mobile and Tablet Bottom Navigation (including iPad Pro portrait) */}
+      <div className="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 xl:hidden">
+        <div className="grid h-full max-w-lg grid-cols-5 mx-auto">
           <Link to="/" className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group">
             <i className={`bx bxs-home-heart text-2xl ${location.pathname === '/' ? 'text-loomin-orange' : 'text-gray-500'}`}></i>
-            <span className="text-xs text-gray-500 group-hover:text-loomin-orange">Home</span>
+            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">Home</span>
           </Link>
           <Link to={`/profile/${loggedInUser?.username}`} className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group">
             <i className={`bx bx-user text-2xl ${location.pathname.includes('/profile') ? 'text-loomin-orange' : 'text-gray-500'}`}></i>
-            <span className="text-xs text-gray-500 group-hover:text-loomin-orange">Profile</span>
+            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">Profile</span>
+          </Link>
+          <Link to="/following" className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group">
+            <i className={`bx bx-group text-2xl ${location.pathname === '/following' ? 'text-loomin-orange' : 'text-gray-500'}`}></i>
+            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">Following</span>
           </Link>
           <Link to="/inbox" className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group">
             <i className={`bx bx-message-dots text-2xl ${location.pathname === '/inbox' ? 'text-loomin-orange' : 'text-gray-500'}`}></i>
-            <span className="text-xs text-gray-500 group-hover:text-loomin-orange">Messages</span>
+            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">Messages</span>
           </Link>
-          <Link to="/comingsoon" className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group">
-            <i className={`bx bx-notification text-2xl ${location.pathname === '/comingsoon' ? 'text-loomin-orange' : 'text-gray-500'}`}></i>
-            <span className="text-xs text-gray-500 group-hover:text-loomin-orange">Notifications</span>
+          <Link to="/notifications" className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group">
+            <i className={`bx bx-notification text-2xl ${location.pathname === '/notifications' ? 'text-loomin-orange' : 'text-gray-500'}`}></i>
+            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">Alerts</span>
           </Link>
         </div>
       </div>
