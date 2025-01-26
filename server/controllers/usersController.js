@@ -100,7 +100,31 @@ const searchUser = async (req, res) => {
 const editProfile = async (req, res) => {
   const userId = req.user._id;
 
-  const user = await User.findById({ _id: userId });
+  const { profileImage, coverImage } = req.files;
+  console.log(profileImage);
+  console.log(coverImage);
+  try {
+    const user = await User.findById({ _id: userId });
+
+    if (profileImage) {
+      user.profile_picture = profileImage[0].path;
+    }
+    if (coverImage) {
+      user.background_picture = coverImage[0].path;
+    }
+
+    user.save();
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 };
 
-module.exports = { fetchLoggedInUser, followUser, fetchUser, searchUser };
+module.exports = {
+  fetchLoggedInUser,
+  followUser,
+  fetchUser,
+  searchUser,
+  editProfile,
+};

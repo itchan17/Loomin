@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import userIcon from "../assets/user.png";
 import banner from "../assets/banner.png";
+import useUserStore from "../stores/userStore";
 
 const EditProfileModal = ({ isOpen, onClose }) => {
-  const [profileImage, setProfileImage] = useState();
-  const [coverImage, setCoverImage] = useState();
+  const [profileImage, setProfileImage] = useState(null);
+  const [coverImage, setCoverImage] = useState(null);
+
+  const editProfile = useUserStore((state) => state.editProfile);
 
   const [profile, setProfile] = useState({
     profileImage: null,
@@ -13,7 +16,20 @@ const EditProfileModal = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  const handleSubmit = () => {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(profile);
+
+    await editProfile(profile);
+    console.log("Close");
+    onClose();
+    setProfile({
+      profileImage: null,
+      coverImage: null,
+    });
+    setProfileImage(null);
+    setCoverImage(null);
+  };
 
   return (
     <form
@@ -38,6 +54,7 @@ const EditProfileModal = ({ isOpen, onClose }) => {
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-medium">Profile picture</h3>
               <button
+                type="button"
                 className="text-loomin-orange font-medium hover:text-orange-600"
                 onClick={() =>
                   document.getElementById("profilePicture").click()
@@ -49,12 +66,16 @@ const EditProfileModal = ({ isOpen, onClose }) => {
             <div className="flex justify-center">
               <div className="relative">
                 <img
-                  src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                  src={
+                    profileImage ||
+                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                  }
                   alt="Profile"
                   className="w-24 h-24 rounded-full object-cover"
                 />
                 <input
                   type="file"
+                  name="profileImage"
                   id="profilePicture"
                   className="hidden"
                   accept="image/*"
@@ -79,6 +100,7 @@ const EditProfileModal = ({ isOpen, onClose }) => {
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-medium">Cover photo</h3>
               <button
+                type="button"
                 className="text-loomin-orange font-medium hover:text-orange-600"
                 onClick={() => document.getElementById("coverPhoto").click()}
               >
@@ -87,12 +109,16 @@ const EditProfileModal = ({ isOpen, onClose }) => {
             </div>
             <div className="relative">
               <img
-                src="https://img.freepik.com/free-photo/gray-wall-textures-background_74190-4389.jpg"
+                src={
+                  coverImage ||
+                  "https://img.freepik.com/free-photo/gray-wall-textures-background_74190-4389.jpg"
+                }
                 alt="Cover"
                 className="w-full h-40 rounded-lg object-cover"
               />
               <input
                 type="file"
+                name="coverImage"
                 id="coverPhoto"
                 className="hidden"
                 accept="image/*"
@@ -113,10 +139,8 @@ const EditProfileModal = ({ isOpen, onClose }) => {
         </div>
         <div className="p-4 border-t flex justify-center">
           <button
+            type="submit"
             className="w-full bg-gradient-to-r from-loomin-yellow to-loomin-orange text-white font-semibold py-2 px-6 rounded-lg hover:opacity-90"
-            onClick={() => {
-              onClose();
-            }}
           >
             Save Changes
           </button>

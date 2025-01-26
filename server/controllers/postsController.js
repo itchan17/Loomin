@@ -7,7 +7,8 @@ const path = require("path");
 const createPost = async (req, res) => {
   // Post details
   const { content } = req.body;
-  const images = req.files.map((file) => file.path);
+  // console.log(req.files);
+  const images = req.files.images.map((file) => file.path);
   console.log(req.files);
   // Get the creator of the post
   const creator = req.user._id;
@@ -36,7 +37,7 @@ const createPost = async (req, res) => {
 const editPost = async (req, res) => {
   const postId = req.params.id;
   const { content } = req.body;
-  const newImages = req.files.map((file) => file.path);
+  const newImages = req.files.newImages.map((file) => file.path);
 
   // Delete the removed images
   if (req.body.removedImages) {

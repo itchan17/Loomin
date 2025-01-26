@@ -13,6 +13,8 @@ const useUserStore = create((set) => ({
   isLoading: true, // Add loading state
   error: null, // Add error state
   onlineUsers: [],
+  profile: null,
+  background: null,
 
   fetchLoggedInUser: async () => {
     try {
@@ -32,6 +34,8 @@ const useUserStore = create((set) => ({
           followingToDisplay: res.data.followingToDisplay,
           suggestedUser: res.data.suggestedUser,
           isLoading: false,
+          profile: res.data.user.profile_picture,
+          background: res.data.user.background_picture,
         });
       }
     } catch (error) {
@@ -94,6 +98,26 @@ const useUserStore = create((set) => ({
 
   setOnlineUsers: (onlineUsers) => {
     set({ onlineUsers });
+  },
+
+  editProfile: async (profile) => {
+    const formData = new FormData();
+
+    formData.append("profileImage", profile.profileImage);
+    formData.append("coverImage", profile.coverImage);
+
+    try {
+      const res = await axios.post(`/users/edit-profile`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      set({
+        profile: res.data.profile_picture,
+        background: res.data.background_picture,
+      });
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
   },
 }));
 

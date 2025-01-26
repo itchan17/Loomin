@@ -24,6 +24,7 @@ const Createpost = ({ onClose }) => {
 
     console.log(postForm);
     await createPost(postForm);
+    console.log("Close");
     if (onClose) {
       onClose();
     }

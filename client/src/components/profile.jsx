@@ -6,7 +6,7 @@ import ProfilePosts from "./ProfilePosts";
 import ProfileAbout from "./ProfileAbout";
 import EditProfileModal from "./EditProfileModal";
 import useProfileStore from "../stores/profileStore";
-import useUserStore from "../stores/UserStore";
+import useUserStore from "../stores/userStore";
 import numeral from "numeral";
 
 const Profile = () => {
@@ -16,6 +16,9 @@ const Profile = () => {
   const loggedInUser = useUserStore((state) => state.loggedInUser);
 
   const userProfileData = useProfileStore((state) => state.userProfileData);
+
+  const profile = useUserStore((state) => state.profile);
+  const background = useUserStore((state) => state.background);
 
   // Format the number
   const formatNumber = (count) => {
@@ -30,12 +33,13 @@ const Profile = () => {
       className="flex flex-col w-full h-full bg-loomin-white overflow-y-auto"
     >
       <div className="flex flex-col items-center px-6 py-0 bg-loomin-white pb-6">
-        <div className="relative">
+        <div className="relative w-full">
           <img
-            src={banner}
+            src={background ? `http://localhost:3000/${background}` : banner}
             alt="banner"
             className="rounded-b-xl h-64 w-full object-cover"
           />
+
           <div className="mt-2">
             <button
               onClick={() => setIsEditModalOpen(true)}
@@ -49,9 +53,7 @@ const Profile = () => {
           <div className="flex flex-col-3 ml-16 items-left gap-4 -mt-10">
             <div className="col-span-2">
               <img
-                src={
-                  userProfileData ? userProfileData.profile_picture : userIcon
-                }
+                src={profile ? `http://localhost:3000/${profile}` : banner}
                 alt="User"
                 className="w-24 h-24 rounded-full shadow-lg"
               />

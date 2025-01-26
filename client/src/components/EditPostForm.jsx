@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import usePostStore from "../stores/PostStore";
-import useUserStore from "../stores/UserStore";
+import useUserStore from "../stores/userStore";
 
 const EditPostForm = ({ onClose, post }) => {
   // Post states
