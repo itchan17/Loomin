@@ -45,10 +45,7 @@ const Timeline = () => {
   };
 
   return (
-    <main
-      id="posts-container"
-      className="flex-auto bg-loomin-white flex-auto items-center px-auto px-6 pl-11 overflow-y-auto"
-    >
+    <main className="flex-auto bg-loomin-white flex-auto items-center px-2 md:px-6 lg:pl-11 overflow-y-auto">
       {/* Header of the timeline*/}
       <div className="w-full py-4 mb-2 flex items-center justify-between px-3 md:px-6">
         <h5 className="text-slate-800 text-4xl font-bold antialiased">Home</h5>
@@ -70,12 +67,11 @@ const Timeline = () => {
         </div>
       )}
       
-      <div className="px-0">
+      <div className="px-1 md:px-4 w-full">
         <InfiniteScroll
           dataLength={posts.length}
           next={loadMorePosts}
           hasMore={hasMore}
-          scrollableTarget="posts-container"
           loader={
             <div className="flex justify-center mb-4">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>

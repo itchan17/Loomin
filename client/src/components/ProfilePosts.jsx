@@ -107,24 +107,6 @@ const ProfilePosts = () => {
           <DetailsCard />
         </div>
 
-        {/* What's on your mind box */}
-        <div className="bg-white rounded-lg shadow p-4 mb-4">
-          <div className="flex items-center gap-3">
-            <img src={userIcon} alt="User" className="w-10 h-10 rounded-full" />
-            <input
-              type="text"
-              placeholder="What's on your mind? Share your thoughts, moments, or creativity with the world!"
-              className="w-full p-2 bg-gray-100 rounded-lg"
-            />
-          </div>
-          <div className="flex gap-4 mt-4">
-            <button className="flex items-center gap-2 text-gray-500">
-              <i className="bx bx-image-alt text-xl"></i>
-              Photo
-            </button>
-          </div>
-        </div>
-
         {/* Posts */}
         <InfiniteScroll
           dataLength={posts.length}
