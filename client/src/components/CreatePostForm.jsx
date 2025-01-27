@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import usePostStore from "../stores/PostStore";
-import useUserStore from "../stores/UserStore";
+import useUserStore from "../stores/userStore";
 import { useFilePicker } from "use-file-picker";
 import {
   FileAmountLimitValidator,
@@ -48,8 +48,8 @@ const Createpost = ({ onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(postForm);
-    await createPost(postForm);
+    console.log(createForm);
+    await createPost(createForm);
     console.log("Close");
     if (onClose) {
       onClose();

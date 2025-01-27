@@ -48,8 +48,6 @@ const Profile = () => {
       <div className="flex flex-col items-center bg-loomin-white">
         <div className="relative w-full px-0 2xl:px-6">
           {/* Banner Image - Full width on mobile and tablet */}
-      <div className="flex flex-col items-center px-6 py-0 bg-loomin-white pb-6">
-        <div className="relative w-full">
           <img
             src={
               profile.background_picture

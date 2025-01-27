@@ -6,9 +6,9 @@ const createPost = async (req, res) => {
   // Post details
   const { content } = req.body;
   // console.log(req.files);
-  let images;
-  if (req.files.images) {
-    const images = req.files.images.map((file) => file.path);
+  let images = [];
+  if (req.files && req.files.images) {
+    images = req.files.images.map((file) => file.path);
   }
   console.log(req.files);
   // Get the creator of the post

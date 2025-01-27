@@ -66,6 +66,8 @@ const Post = ({ post }) => {
     }
   };
 
+  
+
   // Handle the like button
   const handleLike = () => {
     if (!isLiked) {
