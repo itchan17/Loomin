@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
-import useUserStore from "./UserStore";
+import useUserStore from "./userStore";
 
 const usePostStore = create((set) => ({
   posts: [],

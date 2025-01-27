@@ -6,7 +6,7 @@ import ProfilePosts from "./ProfilePosts";
 import ProfileAbout from "./ProfileAbout";
 import EditProfileModal from "./EditProfileModal";
 import useProfileStore from "../stores/profileStore";
-import useUserStore from "../stores/UserStore";
+import useUserStore from "../stores/userStore";
 import numeral from "numeral";
 
 const Profile = () => {
@@ -16,6 +16,8 @@ const Profile = () => {
 
   const loggedInUser = useUserStore((state) => state.loggedInUser);
   const userProfileData = useProfileStore((state) => state.userProfileData);
+
+  const profile = useUserStore((state) => state.profile);
 
   // Format the number
   const formatNumber = (count) => {
@@ -46,8 +48,14 @@ const Profile = () => {
       <div className="flex flex-col items-center bg-loomin-white">
         <div className="relative w-full px-0 2xl:px-6">
           {/* Banner Image - Full width on mobile and tablet */}
+      <div className="flex flex-col items-center px-6 py-0 bg-loomin-white pb-6">
+        <div className="relative w-full">
           <img
-            src={banner}
+            src={
+              profile.background_picture
+                ? `http://localhost:3000/${profile.background_picture}`
+                : banner
+            }
             alt="banner"
             className="h-48 2xl:h-64 w-full object-cover 2xl:rounded-b-lg"
           />

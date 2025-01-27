@@ -1,14 +1,6 @@
 import React, { useState } from "react";
 import usePostStore from "../stores/PostStore";
-import useUserStore from "../stores/UserStore";
-import { useFilePicker } from "use-file-picker";
-import {
-  FileAmountLimitValidator,
-  FileTypeValidator,
-  FileSizeValidator,
-  ImageDimensionsValidator,
-} from "use-file-picker/validators";
-import Swal from "sweetalert2";
+import useUserStore from "../stores/userStore";
 
 const EditPostForm = ({ onClose, post }) => {
   // Post states

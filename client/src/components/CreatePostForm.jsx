@@ -48,7 +48,9 @@ const Createpost = ({ onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await createPost();
+    console.log(postForm);
+    await createPost(postForm);
+    console.log("Close");
     if (onClose) {
       onClose();
     }

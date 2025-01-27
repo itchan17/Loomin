@@ -3,8 +3,14 @@ const User = require("../models/user.js");
 const Comment = require("../models/comment.js");
 
 const createPost = async (req, res) => {
-  const { content, images } = req.body;
-
+  // Post details
+  const { content } = req.body;
+  // console.log(req.files);
+  let images;
+  if (req.files.images) {
+    const images = req.files.images.map((file) => file.path);
+  }
+  console.log(req.files);
   // Get the creator of the post
   const creator = req.user._id;
   console.log(req.body);
@@ -31,7 +37,35 @@ const createPost = async (req, res) => {
 
 const editPost = async (req, res) => {
   const postId = req.params.id;
-  const { content, images } = req.body;
+  const { content } = req.body;
+  console.log(req.files.newImages);
+  let newImages;
+  if (req.files.newImages) {
+    newImages = req.files.newImages.map((file) => file.path);
+  }
+
+  console.log(req.body.removedImages);
+  // Delete the removed images
+  if (req.body.removedImages) {
+    const removedImages = Array.isArray(req.body.removedImages)
+      ? req.body.removedImages
+      : [req.body.removedImages];
+    console.log(removedImages);
+    removedImages.forEach((imagePath) => {
+      const fullPath = path.resolve(imagePath);
+
+      try {
+        if (fs.existsSync(fullPath)) {
+          fs.unlinkSync(fullPath);
+          console.log(`Deleted: ${fullPath}`);
+        } else {
+          console.log(`File not found: ${fullPath}`);
+        }
+      } catch (error) {
+        console.error(`Error deleting ${fullPath}:`, error);
+      }
+    });
+  }
 
   try {
     // Update post
@@ -41,7 +75,18 @@ const editPost = async (req, res) => {
       { new: true }
     ).populate("creator");
 
-    console.log(newPost);
+    // Update the post
+    if (req.body.removedImages) {
+      newPost.images = newPost.images.filter(
+        (image) => !req.body.removedImages.includes(image)
+      );
+    }
+
+    if (newImages) {
+      newPost.images = [...newPost.images, ...newImages];
+    }
+
+    newPost.save();
 
     res.status(200).json({ newPost, success: "Post edited successfully." });
   } catch (error) {
