@@ -4,6 +4,7 @@ import Dropdown from "./PostDropdown";
 import useCommentStore from "../stores/CommentStore";
 import useUserStore from "../stores/userStore";
 import usePostStore from "../stores/PostStore";
+import useNotificationStore from "../stores/notificationStore";
 import numeral from "numeral";
 import testImage from "../assets/placeholder.png";
 import CreateCommentForm from "./CreateCommentForm";
@@ -14,6 +15,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 const Post = ({ post }) => {
+  //Notification state
+  const makeNotifcation = useUserStore((state) => state.makeNotifcation);
+
   //User state
   const loggedInUser = useUserStore((state) => state.loggedInUser);
   const following = useUserStore((state) => state.following);
@@ -45,6 +49,12 @@ const Post = ({ post }) => {
   const [comments, setComments] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [notif, setNotif] = useState({
+    senderId: null,
+    recipientId: null,
+    type: null,
+    content: null,
+  });
 
   useEffect(() => {
     setLikesCount(post.likes.length);
@@ -72,6 +82,7 @@ const Post = ({ post }) => {
   // Handle the like button
   const handleLike = () => {
     if (!isLiked) {
+      //Like post
       setIsLiked(!isLiked);
       setShowHeart(true);
       setTimeout(() => {

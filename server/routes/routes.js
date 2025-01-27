@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
+// Middleware
 const authMiddleware = require("../middlewares/authMiddleware.js");
+const multiUpload = require("../middlewares/uploadImagesMiddleware.js");
+
+// Controllers
 const authController = require("../controllers/authController.js");
 const postsController = require("../controllers/postsController.js");
 const commentsController = require("../controllers/commentsController.js");
@@ -8,7 +12,7 @@ const usersController = require("../controllers/usersController.js");
 const chatsController = require("../controllers/chatsController.js");
 const messagesController = require("../controllers/messagesController.js");
 const forgotPasswordController = require("../controllers/forgotPasswordController.js");
-const multiUpload = require("../middlewares/uploadImagesMiddleware.js");
+const notificationsController = require("../controllers/notificationsController.js");
 
 // User authentication routes
 router.post("/signup", authController.signup);
@@ -96,6 +100,13 @@ router.put(
   "/messages/mark-as-read",
   authMiddleware,
   messagesController.getAndUpdateMessageStatus
+);
+
+// Notification routes
+router.post(
+  "/notifications",
+  authMiddleware,
+  notificationsController.makeNotification
 );
 
 module.exports = router;
