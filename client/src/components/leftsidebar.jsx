@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import feedIcon from "../assets/home.svg";
 import profileIcon from "../assets/shrek.jpg";
 import notificationIcon from "../assets/notification.svg";
-import useUserStore from "../stores/UserStore";
+import useUserStore from "../stores/userStore";
 import numeral from "numeral";
 import { useLocation, useParams, Link } from "react-router-dom";
 import useChatStore from "../stores/chatStore";
@@ -12,6 +12,7 @@ const Leftsidebar = ({ isOpen }) => {
   const { username: activeProfileUsername } = useParams();
 
   // States
+  const profile = useUserStore((state) => state.profile);
   const loggedInUser = useUserStore((state) => state.loggedInUser);
   const loggedInUserName = useUserStore((state) => state.loggedInUserName);
   const postsCount = useUserStore((state) => state.postsCount);
@@ -53,7 +54,11 @@ const Leftsidebar = ({ isOpen }) => {
           <>
             <div className="flex items-center gap-4 mb-4 mr-auto">
               <img
-                src={loggedInUser.profile_picture || profileIcon}
+                src={
+                  profile.profile_picture
+                    ? `http://localhost:3000/${profile.profile_picture}`
+                    : null // add default image here
+                }
                 alt="User"
                 className="w-24 h-24 rounded-full"
               />

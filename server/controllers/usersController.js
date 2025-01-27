@@ -1,4 +1,6 @@
 const User = require("../models/user.js");
+const fs = require("fs");
+const path = require("path");
 
 const fetchLoggedInUser = async (req, res) => {
   const userId = req.user._id;
@@ -103,6 +105,29 @@ const editProfile = async (req, res) => {
   const { profileImage, coverImage } = req.files;
   console.log(profileImage);
   console.log(coverImage);
+  console.log(req.body.removedImages);
+  // Delete the removed images
+  if (req.body.removedImages) {
+    const removedImages = Array.isArray(req.body.removedImages)
+      ? req.body.removedImages
+      : [req.body.removedImages];
+    console.log(removedImages);
+    removedImages.forEach((imagePath) => {
+      const fullPath = path.resolve(imagePath);
+
+      try {
+        if (fs.existsSync(fullPath)) {
+          fs.unlinkSync(fullPath);
+          console.log(`Deleted: ${fullPath}`);
+        } else {
+          console.log(`File not found: ${fullPath}`);
+        }
+      } catch (error) {
+        console.error(`Error deleting ${fullPath}:`, error);
+      }
+    });
+  }
+
   try {
     const user = await User.findById({ _id: userId });
 

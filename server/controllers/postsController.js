@@ -8,7 +8,10 @@ const createPost = async (req, res) => {
   // Post details
   const { content } = req.body;
   // console.log(req.files);
-  const images = req.files.images.map((file) => file.path);
+  let images;
+  if (req.files.images) {
+    const images = req.files.images.map((file) => file.path);
+  }
   console.log(req.files);
   // Get the creator of the post
   const creator = req.user._id;
@@ -37,8 +40,13 @@ const createPost = async (req, res) => {
 const editPost = async (req, res) => {
   const postId = req.params.id;
   const { content } = req.body;
-  const newImages = req.files.newImages.map((file) => file.path);
+  console.log(req.files.newImages);
+  let newImages;
+  if (req.files.newImages) {
+    newImages = req.files.newImages.map((file) => file.path);
+  }
 
+  console.log(req.body.removedImages);
   // Delete the removed images
   if (req.body.removedImages) {
     const removedImages = Array.isArray(req.body.removedImages)
@@ -68,16 +76,13 @@ const editPost = async (req, res) => {
     ).populate("creator");
 
     // Update the post
-    newPost.content = content;
-
     if (req.body.removedImages) {
-      newPost.images = [
-        ...newPost.images.filter(
-          (image) => !req.body.removedImages.includes(image)
-        ),
-        ...newImages,
-      ];
-    } else if (newImages) {
+      newPost.images = newPost.images.filter(
+        (image) => !req.body.removedImages.includes(image)
+      );
+    }
+
+    if (newImages) {
       newPost.images = [...newPost.images, ...newImages];
     }
 

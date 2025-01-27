@@ -18,7 +18,6 @@ const Profile = () => {
   const userProfileData = useProfileStore((state) => state.userProfileData);
 
   const profile = useUserStore((state) => state.profile);
-  const background = useUserStore((state) => state.background);
 
   // Format the number
   const formatNumber = (count) => {
@@ -35,7 +34,11 @@ const Profile = () => {
       <div className="flex flex-col items-center px-6 py-0 bg-loomin-white pb-6">
         <div className="relative w-full">
           <img
-            src={background ? `http://localhost:3000/${background}` : banner}
+            src={
+              profile.background_picture
+                ? `http://localhost:3000/${profile.background_picture}`
+                : banner
+            }
             alt="banner"
             className="rounded-b-xl h-64 w-full object-cover"
           />
@@ -53,9 +56,13 @@ const Profile = () => {
           <div className="flex flex-col-3 ml-16 items-left gap-4 -mt-10">
             <div className="col-span-2">
               <img
-                src={profile ? `http://localhost:3000/${profile}` : banner}
+                src={
+                  profile.profile_picture
+                    ? `http://localhost:3000/${profile.profile_picture}`
+                    : banner
+                }
                 alt="User"
-                className="w-24 h-24 rounded-full shadow-lg"
+                className="w-24 h-24 rounded-full shadow-lg object-cover"
               />
             </div>
             <div className="flex flex-col gap-2">

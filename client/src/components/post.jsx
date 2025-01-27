@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Dropdown from "./PostDropdown";
 import useCommentStore from "../stores/CommentStore";
-import useUserStore from "../stores/UserStore";
+import useUserStore from "../stores/userStore";
 import usePostStore from "../stores/PostStore";
 import numeral from "numeral";
 import testImage from "../assets/placeholder.png";
@@ -24,6 +24,7 @@ const Post = ({ post }) => {
   const setFollowingToDisplay = useUserStore(
     (state) => state.setFollowingToDisplay
   );
+  const profile = useUserStore((state) => state.profile);
 
   // Comment state functions
   const fetchComments = useCommentStore((state) => state.fetchComments);
@@ -152,7 +153,11 @@ const Post = ({ post }) => {
     return comments.map((comment) => (
       <div key={comment._id} className="flex items-start space-x-3 mb-2">
         <img
-          src={comment.user_id.profile_picture}
+          src={
+            comment.user_id.profile_picture
+              ? `http://localhost:3000/${comment.user_id.profile_picture}`
+              : null // Add default image here
+          }
           alt={`${comment.user_id.first_name} ${comment.user_id.last_name}`}
           className="w-10 h-10 rounded-full flex-shrink-0"
         />
@@ -225,7 +230,11 @@ const Post = ({ post }) => {
       <div className="bg-white shadow-md rounded-2xl  w-full">
         <div className="flex items-center p-4">
           <img
-            src={post.creator.profile_picture}
+            src={
+              post.creator.profile_picture
+                ? `http://localhost:3000/${post.creator.profile_picture}`
+                : null // Add default image here
+            }
             alt={`${post.creator.first_name} ${post.creator.last_name}`}
             className="w-10 h-10 rounded-full cursor-pointer"
           />
