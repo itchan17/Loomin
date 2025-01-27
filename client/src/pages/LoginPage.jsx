@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import useAuthStore from "../stores/AuthStore";
+import useAuthStore from "../stores/authStore";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = ({ onSwitch }) => {
@@ -95,11 +95,7 @@ const LoginPage = ({ onSwitch }) => {
                 />
                 <label
                   htmlFor="password"
-                  className={`absolute text-sm text-gray-500 dark:text-gray-600 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] start-2.5 peer-focus:text-gray-600 peer-focus:dark:text-gray-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto ${
-                    loginForm.password
-                      ? "translate-y-[-0.2rem] scale-90 text-gray-500"
-                      : "translate-y-2 scale-100"
-                  }`}
+                  className={`absolute text-sm text-gray-500 dark:text-gray-600 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] start-2.5 peer-focus:text-gray-600 peer-focus:dark:text-gray-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto`}
                 >
                   Password
                 </label>

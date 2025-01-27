@@ -2,15 +2,22 @@ import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Dropdown from "./PostDropdown";
 import useCommentStore from "../stores/CommentStore";
-import useUserStore from "../stores/UserStore";
+import useUserStore from "../stores/userStore";
 import usePostStore from "../stores/PostStore";
+import useNotificationStore from "../stores/notificationStore";
 import numeral from "numeral";
 import testImage from "../assets/placeholder.png";
 import CreateCommentForm from "./CreateCommentForm";
 import EditCommentForm from "./EditCommentForm";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const Post = ({ post }) => {
+  //Notification state
+  const makeNotifcation = useUserStore((state) => state.makeNotifcation);
+
   //User state
   const loggedInUser = useUserStore((state) => state.loggedInUser);
   const following = useUserStore((state) => state.following);
@@ -21,6 +28,7 @@ const Post = ({ post }) => {
   const setFollowingToDisplay = useUserStore(
     (state) => state.setFollowingToDisplay
   );
+  const profile = useUserStore((state) => state.profile);
 
   // Comment state functions
   const fetchComments = useCommentStore((state) => state.fetchComments);
@@ -41,6 +49,12 @@ const Post = ({ post }) => {
   const [comments, setComments] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [notif, setNotif] = useState({
+    senderId: null,
+    recipientId: null,
+    type: null,
+    content: null,
+  });
 
   useEffect(() => {
     setLikesCount(post.likes.length);
@@ -68,6 +82,7 @@ const Post = ({ post }) => {
   // Handle the like button
   const handleLike = () => {
     if (!isLiked) {
+      //Like post
       setIsLiked(!isLiked);
       setShowHeart(true);
       setTimeout(() => {
@@ -147,7 +162,11 @@ const Post = ({ post }) => {
     return comments.map((comment) => (
       <div key={comment._id} className="flex items-start space-x-3 mb-2">
         <img
-          src={comment.user_id.profile_picture}
+          src={
+            comment.user_id.profile_picture
+              ? `http://localhost:3000/${comment.user_id.profile_picture}`
+              : null // Add default image here
+          }
           alt={`${comment.user_id.first_name} ${comment.user_id.last_name}`}
           className="w-10 h-10 rounded-full flex-shrink-0"
         />
@@ -193,14 +212,43 @@ const Post = ({ post }) => {
     setCommentToEdit(comment.comment);
     setCommentId(comment._id);
   };
-  return (
-    <div className="border rounded-2xl max-w-2xl mb-6" key={post._id}>
-      <div className="bg-white shadow-md rounded-2xl  w-full">
-        <div className="flex items-center p-4">
+
+  const SimpleSlider = () => {
+    const settings = {
+      arrows: post.images.length > 1,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      fade: true,
+    };
+    return (
+      <Slider {...settings}>
+        {post.images.map((image) => (
           <img
-            src={post.creator.profile_picture}
+            src={`http://localhost:3000/${image}`}
+            alt="image"
+            className="w-full h-96 object-contain"
+          />
+        ))}
+      </Slider>
+    );
+  };
+  return (
+    <div
+      className="border-b md:border md:rounded-2xl max-w-full md:max-w-2xl mb-0 md:mb-4"
+      key={post._id}
+    >
+      <div className="bg-white md:shadow-md md:rounded-2xl w-full">
+        <div className="flex items-center p-3 md:p-4">
+          <img
+            src={
+              post.creator.profile_picture
+                ? `http://localhost:3000/${post.creator.profile_picture}`
+                : null // Add default image here
+            }
             alt={`${post.creator.first_name} ${post.creator.last_name}`}
-            className="w-10 h-10 rounded-full cursor-pointer"
+            className="w-10 h-10 rounded-full cursor-pointer object-cover"
           />
           <div className="ml-2 flex flex-col">
             <div className="flex gap-1 items-center">
@@ -227,19 +275,15 @@ const Post = ({ post }) => {
             ""
           )}
         </div>
-        <p className="mt-2 pl-8 mb-2 text-semibold antialiased">
+        <p className="mt-1 px-4 md:px-6 mb-2 text-semibold antialiased">
           {post.content}
         </p>
-
-        <div className="relative " onDoubleClick={handleDoubleTap}>
-          {testImage ? (
-            <img
-              src={testImage}
-              alt="Post content"
-              className="w-11/12 mx-7 rounded-2xl justify-center"
-            />
+        <div className="relative" onDoubleClick={handleDoubleTap}>
+          {post.images.length > 0 ? (
+            <div className="bg-black py-2 px-10">
+              <SimpleSlider />
+            </div>
           ) : null}
-
           <AnimatePresence>
             {showHeart && (
               <motion.div
@@ -260,7 +304,7 @@ const Post = ({ post }) => {
           </AnimatePresence>
         </div>
 
-        <div className="p-4 pl-8">
+        <div className="px-4 md:px-6 py-3">
           <div className="flex gap-4">
             <div className="flex items-center gap-1">
               <button onClick={handleLike}>
@@ -284,9 +328,9 @@ const Post = ({ post }) => {
             </div>
           </div>
         </div>
-        {/* Check if showComments is true, then display the comments the comment text field */}
+        {/* Comments section */}
         {showComments && (
-          <div className="px-4 pb-4">
+          <div className="px-4 md:px-6 pb-4">
             <div
               id="comments-container"
               className="max-h-40 overflow-y-auto mb-4"

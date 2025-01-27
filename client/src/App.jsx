@@ -12,8 +12,13 @@ import MessagePage from "./pages/MessagePage.jsx";
 import CheckAuth from "./components/checkAuth.jsx";
 import ComingSoon from "./pages/comingsoon.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import NotificationPage from "./pages/NotificationPage.jsx";
+import CreateNewPasswordPage from "./pages/CreateNewPasswordPage.jsx";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage.jsx";
 import useSocketStore from "./stores/socketStore";
 import useUserStore from "./stores/UserStore";
+import VerifyEmail from "./components/VerifyEmail.jsx";
+import FollowingPage from './pages/FollowingPage.jsx';
 
 const App = () => {
   const initializeSocket = useSocketStore((state) => state.initializeSocket);
@@ -41,6 +46,14 @@ const App = () => {
           }
         />
         <Route
+          path="/notifications"
+          element={
+            <CheckAuth>
+              <NotificationPage />
+            </CheckAuth>
+          }
+        />
+        <Route
           path="/comingsoon"
           element={
             <CheckAuth>
@@ -63,6 +76,20 @@ const App = () => {
           element={
             <CheckAuth>
               <ProfilePage></ProfilePage>
+            </CheckAuth>
+          }
+        />
+        <Route path="/users/:id/verify/:token" element={<VerifyEmail />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route
+          path="/reset-password/:token"
+          element={<CreateNewPasswordPage />}
+        />
+        <Route
+          path="/following"
+          element={
+            <CheckAuth>
+              <FollowingPage />
             </CheckAuth>
           }
         />

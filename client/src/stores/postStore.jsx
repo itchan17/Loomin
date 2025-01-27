@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
-import useUserStore from "./UserStore";
+import useUserStore from "./userStore";
 
 const usePostStore = create((set) => ({
   posts: [],
@@ -9,6 +9,7 @@ const usePostStore = create((set) => ({
 
   createForm: {
     content: "",
+    images: [],
   },
 
   editForm: {
@@ -39,11 +40,22 @@ const usePostStore = create((set) => ({
   },
 
   // Update the post
-  updatePost: async (postId) => {
-    const { editForm, posts } = usePostStore.getState();
+  updatePost: async (postId, editPostForm) => {
+    const { posts } = usePostStore.getState();
 
+    const formData = new FormData();
+
+    formData.append("content", editPostForm.content);
+    editPostForm.newImages.forEach((image) => {
+      formData.append("newImages", image);
+    });
+    editPostForm.removedImages.forEach((image) => {
+      formData.append("removedImages", image);
+    });
     try {
-      const res = await axios.put(`/posts/${postId}`, editForm);
+      const res = await axios.put(`/posts/${postId}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       // Update posts state
       const newPosts = [...posts];
@@ -116,15 +128,22 @@ const usePostStore = create((set) => ({
     }
   },
 
-  createPost: async () => {
-    const { createForm, posts } = usePostStore.getState();
+  createPost: async (postForm) => {
+    const { posts } = usePostStore.getState();
+    const formData = new FormData();
+    formData.append("content", postForm.content);
+    postForm.images.forEach((image) => {
+      formData.append("images", image);
+    });
+    console.log(formData);
     try {
-      const res = await axios.post("/create-post", createForm);
+      const res = await axios.post("/create-post", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log(res);
+
       set({
         posts: [res.data.post, ...posts],
-        createForm: {
-          content: "",
-        },
       });
 
       // Update the postsCount state

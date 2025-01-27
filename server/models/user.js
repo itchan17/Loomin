@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const crypto = require("crypto");
 
 const userSchema = new mongoose.Schema(
   {
@@ -33,48 +34,56 @@ const userSchema = new mongoose.Schema(
     },
     date_of_birth: {
       type: Date,
-      default: null,
     },
     bio: {
       type: String,
-      default: null,
     },
     profile_picture: {
       type: String,
-      default: null,
     },
     background_picture: {
       type: String,
-      default: null,
     },
     posts: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Post",
-        default: [],
       },
     ],
     followers: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        default: [],
       },
     ],
     following: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        default: [],
       },
     ],
-    verified: {
+    isVerified: {
       type: Boolean,
-      default: false,
     },
+    verificationToken: String,
+    verificationTokenExpire: Date,
   },
   { timestamps: true }
 );
+
+// Create a token
+userSchema.methods.getVerificationToken = function () {
+  const token = crypto.randomBytes(20).toString("hex");
+
+  this.verificationToken = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
+
+  this.verificationTokenExpire = Date.now() + 30 * 60 * 1000; // 30 minutes
+
+  return token;
+};
 
 const User = mongoose.model("User", userSchema);
 
