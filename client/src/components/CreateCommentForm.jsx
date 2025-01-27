@@ -1,16 +1,39 @@
 import useCommentStore from "../stores/CommentStore";
 import React, { useState } from "react";
+import useNotificationStore from "../stores/notificationStore";
+import useUserStore from "../stores/userStore";
 
-const CreateCommentForm = ({ postId, setCommentsCount, setComments }) => {
+const CreateCommentForm = ({ post, setCommentsCount, setComments }) => {
+  //Notification state
+  const makeNotification = useNotificationStore(
+    (state) => state.makeNotification
+  );
+
+  //User state
+  const loggedInUser = useUserStore((state) => state.loggedInUser);
+
   const [comment, setComment] = useState("");
   const createComment = useCommentStore((state) => state.createComment);
 
   const handleCreateComment = async (e) => {
     e.preventDefault();
 
-    await createComment(postId, comment, setComments);
+    await createComment(post._id, comment, setComments);
     setCommentsCount((prevCount) => prevCount + 1);
     setComment("");
+
+    // Make notification
+    if (loggedInUser._id !== post.creator._id) {
+      const notif = {
+        senderId: loggedInUser._id,
+        recipientId: post.creator._id,
+        postId: post._id,
+        type: "comment",
+        content: `commented on your post.`,
+      };
+
+      await makeNotification(notif);
+    }
   };
 
   const updateCommentField = (e) => {

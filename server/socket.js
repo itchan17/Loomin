@@ -31,6 +31,17 @@ const handleMessageSending = (socket, io) => {
   });
 };
 
+const handleNotificationSending = (socket, io) => {
+  // Handle sending notif to a user
+  socket.on("sendNotif", (notif) => {
+    const user = onlineUsers.find((user) => user.userId === notif.recipientId);
+
+    if (user) {
+      io.to(user.socketId).emit("getNotif", notif);
+    }
+  });
+};
+
 // Main connection handler
 const handleSocketConnection = (io) => {
   io.on("connection", (socket) => {
@@ -39,6 +50,7 @@ const handleSocketConnection = (io) => {
     // Call the modularized functions
     handleUserConnections(socket, io);
     handleMessageSending(socket, io);
+    handleNotificationSending(socket, io);
   });
 };
 

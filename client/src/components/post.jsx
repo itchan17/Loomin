@@ -16,7 +16,9 @@ import "slick-carousel/slick/slick-theme.css";
 
 const Post = ({ post }) => {
   //Notification state
-  const makeNotifcation = useUserStore((state) => state.makeNotifcation);
+  const makeNotification = useNotificationStore(
+    (state) => state.makeNotification
+  );
 
   //User state
   const loggedInUser = useUserStore((state) => state.loggedInUser);
@@ -49,12 +51,6 @@ const Post = ({ post }) => {
   const [comments, setComments] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [notif, setNotif] = useState({
-    senderId: null,
-    recipientId: null,
-    type: null,
-    content: null,
-  });
 
   useEffect(() => {
     setLikesCount(post.likes.length);
@@ -80,8 +76,10 @@ const Post = ({ post }) => {
   };
 
   // Handle the like button
-  const handleLike = () => {
+  const handleLike = async () => {
     if (!isLiked) {
+      console.log("Like");
+
       //Like post
       setIsLiked(!isLiked);
       setShowHeart(true);
@@ -94,6 +92,19 @@ const Post = ({ post }) => {
 
       // Add 1 to the likesCount state
       setLikesCount(likesCount + 1);
+
+      // Make notification
+      if (loggedInUser._id !== post.creator._id) {
+        const notif = {
+          senderId: loggedInUser._id,
+          recipientId: post.creator._id,
+          postId: post._id,
+          type: "like",
+          content: `liked your post.`,
+        };
+
+        await makeNotification(notif);
+      }
     } else {
       setIsLiked(!isLiked);
 
@@ -105,8 +116,9 @@ const Post = ({ post }) => {
     }
   };
 
-  const handleDoubleTap = () => {
+  const handleDoubleTap = async () => {
     if (!isLiked) {
+      // Like post
       setIsLiked(!isLiked);
       setShowHeart(true);
       setTimeout(() => {
@@ -118,6 +130,18 @@ const Post = ({ post }) => {
 
       // Add 1 to the likesCount state
       setLikesCount(likesCount + 1);
+
+      if (loggedInUser._id !== post.creator._id) {
+        const notif = {
+          senderId: loggedInUser._id,
+          recipientId: post.creator._id,
+          postId: post._id,
+          type: "like",
+          content: `liked your post.`,
+        };
+
+        await makeNotification(notif);
+      }
     } else {
       setIsLiked(!isLiked);
 
@@ -157,7 +181,7 @@ const Post = ({ post }) => {
     if (comments.length === 0) {
       return <div>No comments.</div>;
     }
-    console.log(comments);
+
     // If we have comments, map and display them
     return comments.map((comment) => (
       <div key={comment._id} className="flex items-start space-x-3 mb-2">
@@ -352,7 +376,7 @@ const Post = ({ post }) => {
 
             {!editComment ? (
               <CreateCommentForm
-                postId={post._id}
+                post={post}
                 setCommentsCount={setCommentsCount}
                 setComments={setComments}
               ></CreateCommentForm>

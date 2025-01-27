@@ -43,14 +43,16 @@ const ChatBox = ({ onBack }) => {
   // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 100) + 'px';
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height =
+        Math.min(textareaRef.current.scrollHeight, 100) + "px";
     }
   }, [message]);
 
   // Receive message real time through socket
   useEffect(() => {
     if (!socket || !loggedInUser?._id) return;
+    console.log(socket);
     socket.on("getMessage", (message) => {
       if (activeChat === message.chatId) {
         getAndUpdateMessageStatus(
@@ -82,7 +84,7 @@ const ChatBox = ({ onBack }) => {
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       if (message.trim()) {
         handleSubmit(e);
@@ -137,12 +139,22 @@ const ChatBox = ({ onBack }) => {
       {/* Header */}
       <div className="border-b border-[#A4A4A4] bg-[#D9D9D9] bg-opacity-40 py-3 flex flex-col items-center justify-center relative">
         {onBack && (
-          <button 
+          <button
             onClick={onBack}
             className="absolute left-4 2xl:hidden z-10 text-gray-600 hover:text-gray-900"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
         )}
@@ -183,15 +195,26 @@ const ChatBox = ({ onBack }) => {
                 }}
                 className="text-gray-500 hover:text-gray-700"
               >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-3.646 5.854a.5.5 0 00.708 0l2-2a.5.5 0 00-.708-.708L11 13.793l-1.646-1.647a.5.5 0 00-.708.708l2 2z" clipRule="evenodd" />
+                <svg
+                  className="w-6 h-6"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-3.646 5.854a.5.5 0 00.708 0l2-2a.5.5 0 00-.708-.708L11 13.793l-1.646-1.647a.5.5 0 00-.708.708l2 2z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </button>
               {showEmojiPicker && (
-                <div className="fixed inset-0 z-50" onClick={() => setShowEmojiPicker(false)}>
-                  <div 
+                <div
+                  className="fixed inset-0 z-50"
+                  onClick={() => setShowEmojiPicker(false)}
+                >
+                  <div
                     className="absolute bottom-16 right-4"
-                    onClick={e => e.stopPropagation()}
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <EmojiPicker onEmojiClick={handleEmojiClick} />
                   </div>
@@ -202,11 +225,23 @@ const ChatBox = ({ onBack }) => {
               type="submit"
               disabled={!message.trim()}
               className={`${
-                message.trim() ? 'text-blue-500 hover:text-blue-700' : 'text-gray-400'
+                message.trim()
+                  ? "text-blue-500 hover:text-blue-700"
+                  : "text-gray-400"
               }`}
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                />
               </svg>
             </button>
           </div>

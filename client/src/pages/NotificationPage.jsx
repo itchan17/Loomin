@@ -1,132 +1,96 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import LeftSidebar from "../components/leftsidebar";
 import RightSidebar from "../components/rightsidebar";
 import Header from "../components/header";
 import moment from "moment";
 import { Link } from "react-router-dom";
-import kachow from "../assets/kachow.png";
-import shrek from "../assets/shrek.jpg";
 import useUserStore from "../stores/userStore";
+import useNotificationStore from "../stores/notificationStore";
+import Notification from "../components/Notification";
+import useSocketStore from "../stores/socketStore";
+import useChatStore from "../stores/chatStore";
 
 const NotificationPage = () => {
   const loggedInUser = useUserStore((state) => state.loggedInUser);
+  const fetchLoggedInUser = useUserStore((state) => state.fetchLoggedInUser);
+  const setOnlineUsers = useUserStore((state) => state.setOnlineUsers);
 
-  const notifications = [
-    {
-      _id: "1",
-      type: "follow",
-      sender: {
-        first_name: "Mama",
-        last_name: "Mo",
-        profile_picture: kachow,
-      },
-      read: false,
-      createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-    },
-    {
-      _id: "2",
-      type: "follow",
-      sender: {
-        first_name: "Ha",
-        last_name: "Hatdog",
-        profile_picture: shrek,
-      },
-      read: false,
-      createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
-    },
-    {
-      _id: "3",
-      type: "post",
-      sender: {
-        first_name: "Keng",
-        last_name: "Koy",
-        profile_picture: kachow,
-      },
-      postId: "",
-      read: false,
-      createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000), // 8 hours ago
-    },
-  ];
+  // Notification store
+  const fetchNotifications = useNotificationStore(
+    (state) => state.fetchNotifications
+  );
+  const notifications = useNotificationStore((state) => state.notifications);
+  const clearAllNotifications = useNotificationStore(
+    (state) => state.clearAllNotifications
+  );
+  const setNotifications = useNotificationStore(
+    (state) => state.setNotifications
+  );
 
-  const renderNotificationContent = (notification) => {
-    switch (notification.type) {
-      case "follow":
-        return (
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <img
-                  src={notification.sender?.profile_picture}
-                  alt=""
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] rounded-full flex items-center justify-center">
-                  <i className="bx bx-user-plus text-white text-sm"></i>
-                </div>
-              </div>
-              <div>
-                <p className="font-medium">
-                  <span className="font-semibold text-gray-900">
-                    {notification.sender?.first_name}{" "}
-                    {notification.sender?.last_name}
-                  </span>{" "}
-                  wants to follow you
-                </p>
-                <p className="text-sm text-gray-500">
-                  {moment(notification.createdAt).fromNow()}
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <button className="px-4 py-1.5 bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] text-white rounded-full hover:opacity-90 transition md:w-auto">
-                <span className="hidden md:inline">Accept</span>
-                <i className="bx bx-check text-xl md:hidden"></i>
-              </button>
-              <button className="px-4 py-1.5 bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 transition md:w-auto">
-                <span className="hidden md:inline">Decline</span>
-                <i className="bx bx-x text-xl md:hidden"></i>
-              </button>
-            </div>
-          </div>
-        );
-      case "post":
-        return (
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <img
-                  src={notification.sender?.profile_picture}
-                  alt=""
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] rounded-full flex items-center justify-center">
-                  <i className="bx bx-image text-white text-sm"></i>
-                </div>
-              </div>
-              <div>
-                <p className="font-medium">
-                  <span className="font-semibold text-gray-900">
-                    {notification.sender?.first_name}{" "}
-                    {notification.sender?.last_name}
-                  </span>{" "}
-                  posted new pictures
-                </p>
-                <p className="text-sm text-gray-500">
-                  {moment(notification.createdAt).fromNow()}
-                </p>
-              </div>
-            </div>
-            <Link
-              to={`/post/${notification.postId}`}
-              className="px-4 py-1.5 bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] text-white rounded-full hover:opacity-90 transition"
-            >
-              View
-            </Link>
-          </div>
-        );
-      default:
-        return null;
-    }
+  // Chat store
+  const setNewMessageNotif = useChatStore((state) => state.setNewMessageNotif);
+  const activeChat = useChatStore((state) => state.activeChat);
+
+  // Socket store
+  const socket = useSocketStore((state) => state.socket);
+
+  useEffect(() => {
+    fetchNotifications();
+    fetchLoggedInUser();
+  }, []);
+
+  useEffect(() => {
+    if (!socket || !loggedInUser?._id) return;
+    socket.emit("addUser", loggedInUser._id);
+
+    const handleGetOnlineUsers = (res) => {
+      console.log(res);
+      setOnlineUsers(res);
+    };
+
+    socket.on("getOnlineUsers", handleGetOnlineUsers);
+
+    return () => {
+      socket.off("getOnlineUsers", handleGetOnlineUsers);
+    };
+  }, [socket, loggedInUser?._id]);
+
+  // Realtime message
+  useEffect(() => {
+    if (!socket || !loggedInUser?._id) return;
+    socket.on("getMessage", (message) => {
+      if (activeChat === null) {
+        setNewMessageNotif(message);
+      }
+    });
+    return () => {
+      socket.off("getMessage");
+    };
+  }, [socket, activeChat]);
+
+  // Realtime notif
+  useEffect(() => {
+    if (!socket || !loggedInUser?._id) return;
+    socket.on("getNotif", (notif) => {
+      console.log(notif);
+      setNotifications(notif);
+    });
+
+    return () => {
+      socket.off("getNotif");
+    };
+  }, [socket]);
+
+  const displayNotifications = () => {
+    return notifications.map(
+      (
+        notification // Added return and changed {} to ()
+      ) => <Notification notification={notification}></Notification>
+    ); // Removed extra semicolon
+  };
+
+  const handleClearAllNotifications = () => {
+    clearAllNotifications();
   };
 
   return (
@@ -140,33 +104,32 @@ const NotificationPage = () => {
 
         <div className="flex-1 min-w-0 border-x border-gray-200 2xl:border-x pb-16 2xl:pb-0">
           {/* Notification Count */}
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h1 className="text-3xl font-bold">Notifications</h1>
-            <div className="flex items-center gap-2 text-gray-600">
-              <span className="text-base">You have</span>
-              <span className="text-[#FF6F61] font-medium">
-                {notifications.length} Notifications
-              </span>
-              <span className="text-base">today.</span>
+          <div className="px-2 sm:px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold">Notifications</h1>
+              <div className="flex items-center gap-2 text-gray-600 text-sm sm:text-base">
+                <span className="text-base">You have</span>
+                <span className="text-[#FF6F61] font-medium">
+                  {notifications ? notifications.length : "0"} Notifications
+                </span>
+              </div>
             </div>
+
+            <button
+              onClick={handleClearAllNotifications}
+              className="px-3 py-1 sm:px-4 sm:py-1.5 bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] text-white rounded-full hover:opacity-90 transition md:w-auto"
+            >
+              <span className="text-sm sm:text-base font-bold">Clear all</span>
+            </button>
           </div>
 
           {/* Main Content */}
           <main className="flex-1">
             <div className="bg-white">
               <div className="divide-y divide-gray-200">
-                {notifications.map((notification) => (
-                  <div
-                    key={notification._id}
-                    className={`px-6 py-4 hover:bg-gray-50 transition ${
-                      !notification.read ? "bg-white bg-opacity-5" : ""
-                    }`}
-                  >
-                    {renderNotificationContent(notification)}
-                  </div>
-                ))}
+                {notifications && displayNotifications()}
 
-                {notifications.length === 0 && (
+                {notifications?.length === 0 && (
                   <div className="px-6 py-12 text-center">
                     <div className="w-16 h-16 bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] bg-opacity-10 rounded-full mx-auto flex items-center justify-center mb-4">
                       <i className="bx bx-bell text-3xl bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] bg-clip-text text-transparent"></i>

@@ -108,5 +108,27 @@ router.post(
   authMiddleware,
   notificationsController.makeNotification
 );
+router.get(
+  "/notifications",
+  authMiddleware,
+  notificationsController.fetchNotifications
+);
+router.post(
+  "/notifications/:notifId/read",
+  authMiddleware,
+  notificationsController.markAsRead
+);
+
+router.delete(
+  "/notifications/:id",
+  authMiddleware,
+  notificationsController.clearNotification
+);
+
+router.delete(
+  "/notifications",
+  authMiddleware,
+  notificationsController.clearAllNotifications
+);
 
 module.exports = router;

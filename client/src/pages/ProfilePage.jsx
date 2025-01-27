@@ -8,6 +8,7 @@ import useSocketStore from "../stores/socketStore";
 import useChatStore from "../stores/chatStore";
 import useProfileStore from "../stores/profileStore";
 import { useParams, Link, useLocation } from "react-router-dom";
+import useNotificationStore from "../stores/notificationStore";
 
 const ProfilePage = () => {
   const { username } = useParams();
@@ -16,6 +17,7 @@ const ProfilePage = () => {
   // User store
   const loggedInUser = useUserStore((state) => state.loggedInUser);
   const fetchLoggedInUser = useUserStore((state) => state.fetchLoggedInUser);
+  const setOnlineUsers = useUserStore((state) => state.setOnlineUsers);
 
   // Chat store
   const activeChat = useChatStore((state) => state.activeChat);
@@ -27,6 +29,11 @@ const ProfilePage = () => {
   // Profile store
   const fetchUserProfileData = useProfileStore(
     (state) => state.fetchUserProfileData
+  );
+
+  //Notif store
+  const setNotifications = useNotificationStore(
+    (state) => state.setNotifications
   );
 
   // Socket store
@@ -41,6 +48,18 @@ const ProfilePage = () => {
   useEffect(() => {
     fetchUserProfileData(username);
   }, [username]);
+
+  useEffect(() => {
+    if (!socket || !loggedInUser?._id) return;
+    socket.emit("addUser", loggedInUser._id);
+    const handleGetOnlineUsers = (res) => {
+      setOnlineUsers(res);
+    };
+    socket.on("getOnlineUsers", handleGetOnlineUsers);
+    return () => {
+      socket.off("getOnlineUsers", handleGetOnlineUsers);
+    };
+  }, [socket, loggedInUser?._id]);
 
   // Add new message notif if the user has no active chat
   useEffect(() => {
@@ -58,6 +77,19 @@ const ProfilePage = () => {
       socket.off("getMessage");
     };
   }, [socket, activeChat]);
+
+  // Realtime notif
+  useEffect(() => {
+    if (!socket || !loggedInUser?._id) return;
+    socket.on("getNotif", (notif) => {
+      console.log(notif);
+      setNotifications(notif);
+    });
+
+    return () => {
+      socket.off("getNotif");
+    };
+  }, [socket]);
 
   // Fetch the count of unread messages if the component is rendered
   useEffect(() => {
@@ -84,25 +116,80 @@ const ProfilePage = () => {
       {/* Mobile and Tablet Bottom Navigation */}
       <div className="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 xl:hidden">
         <div className="grid h-full max-w-lg grid-cols-5 mx-auto">
-          <Link to="/" className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group">
-            <i className={`bx bxs-home-heart text-2xl ${location.pathname === '/' ? 'text-loomin-orange' : 'text-gray-500'}`}></i>
-            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">Home</span>
+          <Link
+            to="/"
+            className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group"
+          >
+            <i
+              className={`bx bxs-home-heart text-2xl ${
+                location.pathname === "/"
+                  ? "text-loomin-orange"
+                  : "text-gray-500"
+              }`}
+            ></i>
+            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
+              Home
+            </span>
           </Link>
-          <Link to={`/profile/${loggedInUser?.username}`} className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group">
-            <i className={`bx bx-user text-2xl ${location.pathname.includes('/profile') ? 'text-loomin-orange' : 'text-gray-500'}`}></i>
-            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">Profile</span>
+          <Link
+            to={`/profile/${loggedInUser?.username}`}
+            className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group"
+          >
+            <i
+              className={`bx bx-user text-2xl ${
+                location.pathname.includes("/profile")
+                  ? "text-loomin-orange"
+                  : "text-gray-500"
+              }`}
+            ></i>
+            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
+              Profile
+            </span>
           </Link>
-          <Link to="/following" className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group">
-            <i className={`bx bx-group text-2xl ${location.pathname === '/following' ? 'text-loomin-orange' : 'text-gray-500'}`}></i>
-            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">Following</span>
+          <Link
+            to="/following"
+            className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group"
+          >
+            <i
+              className={`bx bx-group text-2xl ${
+                location.pathname === "/following"
+                  ? "text-loomin-orange"
+                  : "text-gray-500"
+              }`}
+            ></i>
+            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
+              Following
+            </span>
           </Link>
-          <Link to="/inbox" className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group">
-            <i className={`bx bx-message-dots text-2xl ${location.pathname === '/inbox' ? 'text-loomin-orange' : 'text-gray-500'}`}></i>
-            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">Messages</span>
+          <Link
+            to="/inbox"
+            className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group"
+          >
+            <i
+              className={`bx bx-message-dots text-2xl ${
+                location.pathname === "/inbox"
+                  ? "text-loomin-orange"
+                  : "text-gray-500"
+              }`}
+            ></i>
+            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
+              Messages
+            </span>
           </Link>
-          <Link to="/notifications" className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group">
-            <i className={`bx bx-notification text-2xl ${location.pathname === '/notifications' ? 'text-loomin-orange' : 'text-gray-500'}`}></i>
-            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">Alerts</span>
+          <Link
+            to="/notifications"
+            className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group"
+          >
+            <i
+              className={`bx bx-notification text-2xl ${
+                location.pathname === "/notifications"
+                  ? "text-loomin-orange"
+                  : "text-gray-500"
+              }`}
+            ></i>
+            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
+              Alerts
+            </span>
           </Link>
         </div>
       </div>
