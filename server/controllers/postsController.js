@@ -1,19 +1,22 @@
 const Post = require("../models/post.js");
 const User = require("../models/user.js");
 const Comment = require("../models/comment.js");
+const fs = require("fs");
+const path = require("path");
 
 const createPost = async (req, res) => {
   // Post details
   const { content } = req.body;
   // console.log(req.files);
-  let images = [];
-  if (req.files && req.files.images) {
+  let images;
+  console.log(req.files);
+  if (req.files.images) {
     images = req.files.images.map((file) => file.path);
   }
   console.log(req.files);
   // Get the creator of the post
   const creator = req.user._id;
-  console.log(req.body);
+
   try {
     // Create post
     const newPost = await Post.create({ creator, content, images });
@@ -69,10 +72,8 @@ const editPost = async (req, res) => {
 
   try {
     // Update post
-    const newPost = await Post.findOneAndUpdate(
-      { _id: postId, creator: req.user._id }, // Get post where id == selected id && creator == authorized user
-      { content, images },
-      { new: true }
+    const newPost = await Post.findOne(
+      { _id: postId, creator: req.user._id } // Get post where id == selected id && creator == authorized user
     ).populate("creator");
 
     // Update the post
@@ -102,6 +103,24 @@ const deletePost = async (req, res) => {
       _id: postId,
       creator: req.user._id,
     });
+
+    // Delete images of the post
+    if (deletedPost && deletedPost.images.length > 0) {
+      deletedPost.images.forEach((imagePath) => {
+        const fullPath = path.resolve(imagePath);
+
+        try {
+          if (fs.existsSync(fullPath)) {
+            fs.unlinkSync(fullPath);
+            console.log(`Deleted: ${fullPath}`);
+          } else {
+            console.log(`File not found: ${fullPath}`);
+          }
+        } catch (error) {
+          console.error(`Error deleting ${fullPath}:`, error);
+        }
+      });
+    }
 
     // Delete comments associated with the post
     await Comment.deleteMany({ post_id: postId });

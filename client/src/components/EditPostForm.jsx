@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import usePostStore from "../stores/PostStore";
 import useUserStore from "../stores/userStore";
+import Swal from "sweetalert2";
 
 const EditPostForm = ({ onClose, post }) => {
   // Post states
@@ -15,93 +16,112 @@ const EditPostForm = ({ onClose, post }) => {
   );
   const updatePost = usePostStore((state) => state.updatePost);
 
-  const { openFilePicker, filesContent, loading, errors } = useFilePicker({
-    readAs: "DataURL",
-    accept: "image/*",
-    multiple: true,
-    validators: [
-      new FileAmountLimitValidator({ max: 1 }),
-      new FileTypeValidator(["jpg", "png"]),
-      new FileSizeValidator({ maxFileSize: 50 * 1024 * 1024 /* 50 MB */ }),
-      new ImageDimensionsValidator({
-        maxHeight: 900,
-        maxWidth: 1600,
-        minHeight: 600,
-        minWidth: 768,
-      }),
-    ],
+  const [editPostForm, setEditPostForm] = useState({
+    content: post.content,
+    newImages: [],
+    removedImages: [],
   });
-
-  if (loading) return <div>Loading...</div>;
-  if (errors.length) return <div>Error...</div>;
+  const [existingImagePreview, setExistingImagePreview] = useState([
+    ...post.images,
+  ]);
+  const [newImagePreview, setNewImagePreview] = useState([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // First show confirmation alert
     const result = await Swal.fire({
-      title: 'Save Changes?',
+      title: "Save Changes?",
       text: "Are you sure you want to edit this post?",
-      icon: 'question',
+      icon: "question",
       showCancelButton: true,
-      confirmButtonColor: '#FF6F61',
-      cancelButtonColor: '#d1d5db',
-      confirmButtonText: 'Yes, save it!',
-      background: '#fff',
+      confirmButtonColor: "#FF6F61",
+      cancelButtonColor: "#d1d5db",
+      confirmButtonText: "Yes, save it!",
+      background: "#fff",
       customClass: {
-        popup: 'rounded-2xl',
-        title: 'font-bold text-gray-900',
-        htmlContainer: 'text-gray-600',
-        confirmButton: 'rounded-full',
-        cancelButton: 'rounded-full'
-      }
+        popup: "rounded-2xl",
+        title: "font-bold text-gray-900",
+        htmlContainer: "text-gray-600",
+        confirmButton: "rounded-full",
+        cancelButton: "rounded-full",
+      },
     });
 
     if (result.isConfirmed) {
       try {
-        await updatePost(post._id);
+        console.log(editPostForm);
+        await updatePost(post._id, editPostForm);
+
         Swal.fire({
-          title: 'Post Updated!',
-          text: 'Your changes have been saved successfully.',
-          icon: 'success',
-          confirmButtonColor: '#FF6F61',
-          background: '#fff',
+          title: "Post Updated!",
+          text: "Your changes have been saved successfully.",
+          icon: "success",
+          confirmButtonColor: "#FF6F61",
+          background: "#fff",
           timer: 2000,
           timerProgressBar: true,
           showConfirmButton: false,
           customClass: {
-            popup: 'rounded-2xl',
-            title: 'font-bold text-gray-900',
-            htmlContainer: 'text-gray-600'
-          }
+            popup: "rounded-2xl",
+            title: "font-bold text-gray-900",
+            htmlContainer: "text-gray-600",
+          },
         });
         onClose();
       } catch (error) {
         console.error("Error editing post:", error);
         Swal.fire({
-          title: 'Error!',
-          text: 'Failed to update the post. Please try again.',
-          icon: 'error',
-          confirmButtonColor: '#FF6F61',
-          background: '#fff',
+          title: "Error!",
+          text: "Failed to update the post. Please try again.",
+          icon: "error",
+          confirmButtonColor: "#FF6F61",
+          background: "#fff",
           customClass: {
-            popup: 'rounded-2xl',
-            title: 'font-bold text-gray-900',
-            htmlContainer: 'text-gray-600',
-            confirmButton: 'rounded-full'
-          }
+            popup: "rounded-2xl",
+            title: "font-bold text-gray-900",
+            htmlContainer: "text-gray-600",
+            confirmButton: "rounded-full",
+          },
         });
       }
     }
   };
 
+  const removeExistingImage = (imageIndex) => {
+    const filteredImages = existingImagePreview.filter(
+      (item, index) => index !== imageIndex
+    );
+
+    const removedImage = existingImagePreview[imageIndex];
+
+    setExistingImagePreview(filteredImages);
+
+    setEditPostForm((prev) => ({
+      ...prev,
+      removedImages: [...prev.removedImages, removedImage],
+    }));
+  };
+
+  const removeNewImage = (imageIndex) => {
+    setNewImagePreview(
+      newImagePreview.filter((item, index) => index !== imageIndex)
+    );
+
+    setEditPostForm((prev) => ({
+      ...prev,
+      newImages: prev.newImages.filter((item, index) => index !== imageIndex),
+    }));
+  };
+
   return (
     <form onSubmit={handleSubmit}>
-      <div className=" rounded-xl mx-auto bg-white md:w-3/4 lg:w-2/3">
+      <div className=" rounded-lg mx-auto bg-white md:w-3/4">
         <div className="flex justify-between px-2 py-2 ml-auto">
           <button
+            type="button"
             onClick={onClose}
-            className="bx bx-x text-loomin-orange text-2xl ml-auto px-2 hover:bg-orange-100 rounded-full cursor-pointer"
+            className="bx bx-x text-loomin-orange text-2xl ml-auto px-1 hover:bg-orange-100 rounded-full cursor-pointer"
           ></button>
         </div>
         <div className="flex p-4">
@@ -115,31 +135,111 @@ const EditPostForm = ({ onClose, post }) => {
 
           <div className="ml-3 pt-2 flex flex-col w-full">
             <textarea
-              value={editForm.content}
+              value={editPostForm.content}
               name="content"
-              onChange={updateEditFormField}
+              onChange={(e) => {
+                setEditPostForm((prev) => ({
+                  ...prev,
+                  content: e.target.value,
+                }));
+              }}
               placeholder="It's Shrekin time"
-              className="w-full text-xl resize-none outline-none h-32"
+              className="w-full text-md resize-none outline-none h-32"
             ></textarea>
+          </div>
+        </div>
+
+        <div className="p-4">
+          <div className="flex overflow-x-auto space-x-2 w-full">
+            {existingImagePreview.length > 0 &&
+              existingImagePreview.map((image, index) => (
+                <div key={index} className="relative flex-shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => removeExistingImage(index)}
+                    className="absolute right-0 rounded-full top-0 bx bx-x px-1 text-black text-2xl ml-auto hover:bg-gray-100 hover:bg-opacity-50 cursor-pointer"
+                  ></button>
+                  {console.log(image)}
+                  <img
+                    className="rounded object-fill object-cover w-44 h-32 border-black border"
+                    src={`http://localhost:3000/${image}`}
+                    alt={`Preview ${index + 1}`}
+                  />
+                </div>
+              ))}
+            {newImagePreview.length > 0 &&
+              newImagePreview.map((image, index) => (
+                <div key={index} className="relative flex-shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => removeNewImage(index)}
+                    className="absolute right-0 rounded-full top-0 bx bx-x px-1 text-black text-2xl ml-auto hover:bg-gray-100 hover:bg-opacity-50 cursor-pointer"
+                  ></button>
+                  {console.log(image)}
+                  <img
+                    className="rounded object-fill object-cover w-44 h-32 border-black border"
+                    src={image}
+                    alt={`Preview ${existingImagePreview.length + 1}`}
+                  />
+                </div>
+              ))}
           </div>
         </div>
 
         <div class="flex items-center text-loomin-orange justify-between py-2 px-4 mr-auto border-t">
           <div class="flex text-2xl pl-0.5">
+            {/* File input here */}
             <div class="flex items-center justify-center p-3 hover:bg-orange-100 rounded-full cursor-pointer">
               <button
-                onClick={() => openFilePicker()}
+                type="button"
+                onClick={() => document.getElementById("postImage").click()}
                 className="bx bxs-image"
               ></button>
-            </div>
-            <div class="flex items-center justify-center p-3 hover:bg-orange-100 rounded-full cursor-pointer">
-              <button className="bx bxs-happy"></button>
+              <input
+                name="newImages"
+                type="file"
+                id="postImage"
+                className="hidden"
+                accept="image/*"
+                multiple
+                onChange={(e) => {
+                  const files = e.target.files;
+                  console.log(files);
+                  if (files.length > 0) {
+                    const imageArray = [];
+
+                    setEditPostForm((prev) => ({
+                      ...prev,
+                      newImages: [...prev.newImages, ...files],
+                    }));
+
+                    for (let i = 0; i < files.length; i++) {
+                      const reader = new FileReader();
+
+                      reader.onloadend = () => {
+                        imageArray.push(reader.result);
+                        if (imageArray.length === files.length) {
+                          setNewImagePreview((prev) => [
+                            ...prev,
+                            ...imageArray,
+                          ]);
+                        }
+                      };
+
+                      reader.readAsDataURL(files[i]); // Read each file as Data URL
+                    }
+                  }
+                }}
+              />
             </div>
           </div>
           <div>
             <button
+              disabled={!editPostForm.content.trim() ? true : false}
               type="submit"
-              className="inline px-4 py-2 rounded-full font-bold text-white bg-loomin-orange cursor-pointer hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange"
+              className={`inline px-4 py-2 rounded-full font-bold text-white bg-loomin-orange cursor-pointer hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange ${
+                editPostForm.content.trim() ? "" : "cursor-not-allowed"
+              }`}
             >
               Loom!
             </button>

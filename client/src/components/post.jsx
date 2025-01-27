@@ -9,6 +9,9 @@ import testImage from "../assets/placeholder.png";
 import CreateCommentForm from "./CreateCommentForm";
 import EditCommentForm from "./EditCommentForm";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const Post = ({ post }) => {
   //User state
@@ -65,8 +68,6 @@ const Post = ({ post }) => {
       setIsLiked(true);
     }
   };
-
-  
 
   // Handle the like button
   const handleLike = () => {
@@ -200,8 +201,33 @@ const Post = ({ post }) => {
     setCommentToEdit(comment.comment);
     setCommentId(comment._id);
   };
+
+  const SimpleSlider = () => {
+    const settings = {
+      arrows: post.images.length > 1,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      fade: true,
+    };
+    return (
+      <Slider {...settings}>
+        {post.images.map((image) => (
+          <img
+            src={`http://localhost:3000/${image}`}
+            alt="image"
+            className="w-full h-96 object-contain"
+          />
+        ))}
+      </Slider>
+    );
+  };
   return (
-    <div className="border-b md:border md:rounded-2xl max-w-full md:max-w-2xl mb-0 md:mb-4" key={post._id}>
+    <div
+      className="border-b md:border md:rounded-2xl max-w-full md:max-w-2xl mb-0 md:mb-4"
+      key={post._id}
+    >
       <div className="bg-white md:shadow-md md:rounded-2xl w-full">
         <div className="flex items-center p-3 md:p-4">
           <img
@@ -246,7 +272,6 @@ const Post = ({ post }) => {
             <div className="bg-black py-2 px-10">
               <SimpleSlider />
             </div>
-
           ) : null}
           <AnimatePresence>
             {showHeart && (

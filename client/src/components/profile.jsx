@@ -29,14 +29,14 @@ const Profile = () => {
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (!event.target.closest('.menu-container')) {
+      if (!event.target.closest(".menu-container")) {
         setShowArchiveMenu(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -57,14 +57,18 @@ const Profile = () => {
             alt="banner"
             className="h-48 2xl:h-64 w-full object-cover 2xl:rounded-b-lg"
           />
-          
+
           {/* Profile Info Section */}
           <div className="px-4 2xl:px-6">
             {/* Profile Picture and Info */}
             <div className="flex flex-col 2xl:flex-row 2xl:items-start 2xl:ml-16 gap-4 -mt-10">
               <div className="flex flex-col items-center w-full 2xl:w-auto">
                 <img
-                  src={userProfileData ? userProfileData.profile_picture : userIcon}
+                  src={
+                    profile.profile_picture
+                      ? `http://localhost:3000/${profile.profile_picture}`
+                      : banner
+                  }
                   alt="User"
                   className="w-24 h-24 rounded-full shadow-lg mb-2 2xl:mb-0"
                 />
@@ -81,14 +85,14 @@ const Profile = () => {
                 <div className="flex flex-col 2xl:flex-row items-center gap-4 justify-center 2xl:justify-between">
                   <div className="text-center 2xl:text-left">
                     <h1 className="text-2xl font-bold text-black">
-                      {userProfileData ? 
-                        `${userProfileData.first_name} ${userProfileData.last_name}` :
-                        "Lucas Blair"}
+                      {userProfileData
+                        ? `${userProfileData.first_name} ${userProfileData.last_name}`
+                        : "Lucas Blair"}
                     </h1>
                     <p className="text-gray-500 font-semibold text-base">
-                      {userProfileData ? 
-                        `@${userProfileData.username}` :
-                        "@BlairBound"}
+                      {userProfileData
+                        ? `@${userProfileData.username}`
+                        : "@BlairBound"}
                     </p>
                   </div>
                   <button
@@ -106,14 +110,18 @@ const Profile = () => {
                       {userProfileData &&
                         formatNumber(userProfileData.followers.length)}
                     </span>
-                    <span className="text-gray-500 text-sm md:text-base">Followers</span>
+                    <span className="text-gray-500 text-sm md:text-base">
+                      Followers
+                    </span>
                   </div>
                   <div className="flex flex-col items-center gap-0.5">
                     <span className="font-bold text-lg md:text-xl">
                       {userProfileData &&
                         formatNumber(userProfileData.following.length)}
                     </span>
-                    <span className="text-gray-500 text-sm md:text-base">Following</span>
+                    <span className="text-gray-500 text-sm md:text-base">
+                      Following
+                    </span>
                   </div>
                 </div>
               </div>
@@ -172,26 +180,28 @@ const Profile = () => {
             <div className="bg-white 2xl:shadow-md 2xl:rounded-2xl w-full">
               <div className="flex items-center p-3 2xl:p-4">
                 <img
-                  src={userProfileData ? userProfileData.profile_picture : userIcon}
+                  src={
+                    userProfileData ? userProfileData.profile_picture : userIcon
+                  }
                   alt="User"
                   className="w-10 h-10 rounded-full cursor-pointer object-cover"
                 />
                 <div className="ml-2 flex flex-col">
                   <div className="flex gap-1 items-center">
                     <span className="font-semibold cursor-pointer text-base md:text-lg">
-                      {userProfileData ? 
-                        `${userProfileData.first_name} ${userProfileData.last_name}` :
-                        "Lucas Blair"}
+                      {userProfileData
+                        ? `${userProfileData.first_name} ${userProfileData.last_name}`
+                        : "Lucas Blair"}
                     </span>
                   </div>
                   <span className="-mt-1 text-sm md:text-base cursor-pointer">
-                    {userProfileData ? 
-                      `@${userProfileData.username}` :
-                      "@BlairBound"}
+                    {userProfileData
+                      ? `@${userProfileData.username}`
+                      : "@BlairBound"}
                   </span>
                 </div>
                 <div className="ml-auto relative menu-container">
-                  <button 
+                  <button
                     className="p-1 hover:bg-gray-100 rounded-full"
                     onClick={() => setShowArchiveMenu(!showArchiveMenu)}
                   >
@@ -199,7 +209,7 @@ const Profile = () => {
                   </button>
                   {showArchiveMenu && (
                     <div className="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
-                      <button 
+                      <button
                         className="w-full px-4 py-2 text-left hover:bg-gray-100 text-gray-700 text-base md:text-lg"
                         onClick={() => {
                           setShowArchiveMenu(false);
@@ -212,7 +222,8 @@ const Profile = () => {
                 </div>
               </div>
               <p className="mt-1 px-4 2xl:px-6 mb-2 text-semibold antialiased text-base md:text-lg">
-                This is an archived post. You can unarchive it to make it visible again.
+                This is an archived post. You can unarchive it to make it
+                visible again.
               </p>
               <div className="px-4 2xl:px-6 py-3">
                 <div className="flex gap-4">
