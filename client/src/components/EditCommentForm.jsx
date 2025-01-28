@@ -33,30 +33,32 @@ const EditCommentForm = ({
     setEditComment((prevState) => false);
   };
   return (
-    <form onSubmit={handleEditComment} className="flex gap-2">
+    <form onSubmit={handleEditComment} className="flex flex-col sm:flex-row gap-2">
       <input
         type="text"
-        value={comment} // Check if the input field is the target if not leave it empty
+        value={comment}
         onChange={updateCommentField}
         placeholder="Add comment"
         className="flex-1 px-3 py-2 border rounded-xl focus:outline-none focus:border-loomin-yellow"
       />
-      <button
-        onClick={handleCancel}
-        type="button"
-        className="px-4 py-1 bg-loomin-yellow text-white rounded-3xl hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange"
-      >
-        {"Cancel"}
-      </button>
-      <button
-        disabled={comment ? false : true}
-        type="submit"
-        className={`px-4 py-1 bg-loomin-yellow text-white rounded-3xl hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange ${
-          comment ? "" : "cursor-not-allowed"
-        }`}
-      >
-        {"Save"}
-      </button>
+      <div className="flex gap-2 justify-end">
+        <button
+          onClick={handleCancel}
+          type="button"
+          className="px-3 sm:px-4 py-1 bg-loomin-yellow text-white rounded-3xl hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange text-sm sm:text-base"
+        >
+          Cancel
+        </button>
+        <button
+          disabled={comment ? false : true}
+          type="submit"
+          className={`px-3 sm:px-4 py-1 bg-loomin-yellow text-white rounded-3xl hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange text-sm sm:text-base ${
+            comment ? "" : "cursor-not-allowed"
+          }`}
+        >
+          Save
+        </button>
+      </div>
     </form>
   );
 };

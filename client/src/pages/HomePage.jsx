@@ -117,9 +117,6 @@ const HomePage = () => {
                   : "text-gray-500"
               }`}
             ></i>
-            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
-              Home
-            </span>
           </Link>
           <Link
             to={`/profile/${loggedInUser?.username}`}
@@ -132,9 +129,6 @@ const HomePage = () => {
                   : "text-gray-500"
               }`}
             ></i>
-            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
-              Profile
-            </span>
           </Link>
           <Link
             to="/following"
@@ -147,9 +141,6 @@ const HomePage = () => {
                   : "text-gray-500"
               }`}
             ></i>
-            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
-              Following
-            </span>
           </Link>
           <Link
             to="/inbox"
@@ -162,9 +153,6 @@ const HomePage = () => {
                   : "text-gray-500"
               }`}
             ></i>
-            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
-              Messages
-            </span>
           </Link>
           <Link
             to="/notifications"
@@ -177,9 +165,6 @@ const HomePage = () => {
                   : "text-gray-500"
               }`}
             ></i>
-            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
-              Alerts
-            </span>
           </Link>
         </div>
       </div>

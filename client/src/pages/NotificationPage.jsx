@@ -94,11 +94,11 @@ const NotificationPage = () => {
   };
 
   return (
-    <>
+    <div className="flex flex-col h-screen w-full overflow-hidden">
       <Header />
       <div className="flex min-h-screen bg-white">
         {/* Left Sidebar - Hidden on mobile/tablet */}
-        <div className="hidden 2xl:block w-[320px] sticky top-0 h-screen overflow-y-auto">
+        <div className="hidden xl:block w-[320px] sticky top-0 h-screen">
           <LeftSidebar />
         </div>
 
@@ -124,7 +124,7 @@ const NotificationPage = () => {
           </div>
 
           {/* Main Content */}
-          <main className="flex-1">
+          <main className="flex-1 h-full overflow-y-auto">
             <div className="bg-white">
               <div className="divide-y divide-gray-200">
                 {notifications && displayNotifications()}
@@ -166,9 +166,6 @@ const NotificationPage = () => {
                     : "text-gray-500"
                 }`}
               ></i>
-              <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
-                Home
-              </span>
             </Link>
             <Link
               to={`/profile/${loggedInUser?.username}`}
@@ -181,9 +178,6 @@ const NotificationPage = () => {
                     : "text-gray-500"
                 }`}
               ></i>
-              <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
-                Profile
-              </span>
             </Link>
             <Link
               to="/following"
@@ -196,9 +190,6 @@ const NotificationPage = () => {
                     : "text-gray-500"
                 }`}
               ></i>
-              <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
-                Following
-              </span>
             </Link>
             <Link
               to="/inbox"
@@ -211,9 +202,6 @@ const NotificationPage = () => {
                     : "text-gray-500"
                 }`}
               ></i>
-              <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
-                Messages
-              </span>
             </Link>
             <Link
               to="/notifications"
@@ -226,14 +214,11 @@ const NotificationPage = () => {
                     : "text-gray-500"
                 }`}
               ></i>
-              <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
-                Alerts
-              </span>
             </Link>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

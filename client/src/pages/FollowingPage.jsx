@@ -97,6 +97,87 @@ const FollowingPage = () => {
         "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
       isFollowing: false,
     },
+    {
+      _id: "3",
+      username: "mama",
+      first_name: "mo",
+      last_name: "hatdog",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
+    },
+    {
+      _id: "4",
+      username: "mama",
+      first_name: "mo",
+      last_name: "hatdog",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
+    },
+    {
+      _id: "5",
+      username: "mama",
+      first_name: "mo",
+      last_name: "hatdog",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
+    },
+    {
+      _id: "6",
+      username: "mama",
+      first_name: "mo",
+      last_name: "hatdog",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
+    },
+    {
+      _id: "7",
+      username: "mama",
+      first_name: "mo",
+      last_name: "hatdog",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
+    },
+    {
+      _id: "8",
+      username: "mama",
+      first_name: "mo",
+      last_name: "hatdog",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
+    },
+    {
+      _id: "9",
+      username: "mama",
+      first_name: "mo",
+      last_name: "hatdog",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
+    },
+    {
+      _id: "10",
+      username: "mama",
+      first_name: "mo",
+      last_name: "hatdog",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
+    },
+    {
+      _id: "11",
+      username: "mama",
+      first_name: "mo",
+      last_name: "hatdog",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
+    },
     // Add more dummy users as needed
   ];
 
@@ -108,9 +189,9 @@ const FollowingPage = () => {
   );
 
   return (
-    <>
+    <div className="flex flex-col h-screen w-full overflow-hidden">
       <Header />
-      <div className="flex min-h-screen bg-white">
+      <div className="flex min-h-screen bg-white ">
         {/* Left Sidebar */}
         <div className="hidden md:block w-[320px]">
           <LeftSidebar />
@@ -163,53 +244,65 @@ const FollowingPage = () => {
             </div>
           </div>
 
-          {/* Users List */}
-          <div className="divide-y divide-gray-200">
+          {/* Users Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 p-4 h-full overflow-y-auto">
             {filteredUsers.map((user) => (
               <div
                 key={user._id}
-                className="flex items-center justify-between p-4 hover:bg-gray-50"
+                className="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-lg transition-shadow w-full sm:max-w-[240px] mx-auto"
               >
-                <div className="flex items-center gap-3">
+                {/* User Card Header */}
+                <div className="flex flex-col items-center text-center">
                   <img
                     src={user.profile_picture}
                     alt=""
-                    className="w-12 h-12 rounded-full object-cover"
+                    className="w-20 h-20 rounded-full object-cover mb-3"
                   />
-                  <div>
-                    <Link
-                      to={`/profile/${user.username}`}
-                      className="font-medium text-gray-900 hover:underline"
-                    >
-                      {user.first_name} {user.last_name}
-                    </Link>
-                    <p className="text-sm text-gray-500">@{user.username}</p>
-                  </div>
+                  <Link
+                    to={`/profile/${user.username}`}
+                    className="font-medium text-gray-900 hover:underline"
+                  >
+                    {user.first_name} {user.last_name}
+                  </Link>
+                  <p className="text-sm text-gray-500 mb-4">@{user.username}</p>
                 </div>
-                <button
-                  className={`px-6 py-2 rounded-full border font-medium transition-colors
-                    ${
-                      user.isFollowing
-                        ? "border-gray-300 text-gray-700 hover:bg-gray-100"
-                        : "border-[#FF6F61] text-[#FF6F61] hover:bg-[#FF6F61] hover:text-white"
-                    }`}
-                >
-                  {user.isFollowing ? "Following" : "Follow"}
-                </button>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col gap-2">
+                  {activeTab === "following" ? (
+                    <>
+                      <Link
+                        to={`/profile/${user.username}`}
+                        className="w-full px-4 py-2 rounded-full bg-[#FF6F61] text-white font-medium text-center hover:bg-[#ff5c4d] transition-colors"
+                      >
+                        View Profile
+                      </Link>
+                      <button className="w-full px-4 py-2 rounded-full border border-gray-300 text-gray-700 font-medium hover:bg-gray-100 transition-colors">
+                        Unfollow
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      className={`w-full px-4 py-2 rounded-full font-medium transition-colors
+                        ${
+                          user.isFollowing
+                            ? "border border-gray-300 text-gray-700 hover:bg-gray-100"
+                            : "bg-[#FF6F61] text-white hover:bg-[#ff5c4d]"
+                        }`}
+                    >
+                      {user.isFollowing ? "Following" : "Follow"}
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Right Sidebar */}
-        <div className="hidden lg:block w-[320px]">
-          <RightSidebar />
-        </div>
-
         {/* Bottom Navigation */}
         <BottomNav />
       </div>
-    </>
+    </div>
   );
 };
 

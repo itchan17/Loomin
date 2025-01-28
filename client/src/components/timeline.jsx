@@ -67,7 +67,7 @@ const Timeline = () => {
         </div>
       )}
 
-      <div className="px-0">
+      <div className="px-1 md:px-4 w-full">
         <InfiniteScroll
           dataLength={posts.length}
           next={loadMorePosts}

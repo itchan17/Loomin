@@ -13,6 +13,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import "../styles/slick-custom.css";
 
 const Post = ({ post }) => {
   //Notification state
@@ -247,23 +248,27 @@ const Post = ({ post }) => {
       fade: true,
     };
     return (
-      <Slider {...settings}>
-        {post.images.map((image) => (
-          <img
-            src={`http://localhost:3000/${image}`}
-            alt="image"
-            className="w-full h-96 object-contain"
-          />
-        ))}
-      </Slider>
+      <div className="group">
+        <Slider {...settings}>
+          {post.images.map((image) => (
+            <div className="aspect-video w-full">
+              <img
+                src={`http://localhost:3000/${image}`}
+                alt="image"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))}
+        </Slider>
+      </div>
     );
   };
   return (
     <div
-      className="border-b md:border md:rounded-2xl max-w-full md:max-w-2xl mb-0 md:mb-4"
+      className="border-b md:border rounded-xl md:rounded-2xl w-[98%] mx-auto md:max-w-2xl mb-4 md:mb-6 bg-white shadow-md md:shadow-sm"
       key={post._id}
     >
-      <div className="bg-white md:shadow-md md:rounded-2xl w-full">
+      <div className="bg-white md:shadow-lg rounded-xl md:rounded-2xl w-full">
         <div className="flex items-center p-3 md:p-4">
           <img
             src={
@@ -299,12 +304,12 @@ const Post = ({ post }) => {
             ""
           )}
         </div>
-        <p className="mt-1 px-4 md:px-6 mb-2 text-semibold antialiased">
+        <p className="mt-1 px-4 md:px-6 mb-2 text-semibold antialiased break-words whitespace-pre-wrap">
           {post.content}
         </p>
         <div className="relative" onDoubleClick={handleDoubleTap}>
           {post.images.length > 0 ? (
-            <div className="bg-black py-2 px-10">
+            <div className="w-full">
               <SimpleSlider />
             </div>
           ) : null}

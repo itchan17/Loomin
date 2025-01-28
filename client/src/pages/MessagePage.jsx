@@ -93,7 +93,7 @@ const MessagePage = () => {
 
       <div className="flex flex-1 h-[calc(100vh-4rem)]">
         {/* Left Sidebar - Hidden on mobile and tablet */}
-        <aside className="hidden 2xl:block w-[320px] min-w-[320px] bg-loomin-white shadow-inner h-full transition-transform border-r border-gray-200">
+        <aside className="hidden xl:block w-[320px] min-w-[320px] bg-loomin-white shadow-inner h-full transition-transform border-r border-gray-200">
           <LeftSidebar />
         </aside>
 
@@ -117,9 +117,6 @@ const MessagePage = () => {
                   : "text-gray-500"
               }`}
             ></i>
-            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
-              Home
-            </span>
           </Link>
           <Link
             to={`/profile/${loggedInUser?.username}`}
@@ -132,9 +129,6 @@ const MessagePage = () => {
                   : "text-gray-500"
               }`}
             ></i>
-            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
-              Profile
-            </span>
           </Link>
           <Link
             to="/following"
@@ -147,9 +141,6 @@ const MessagePage = () => {
                   : "text-gray-500"
               }`}
             ></i>
-            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
-              Following
-            </span>
           </Link>
           <Link
             to="/inbox"
@@ -162,9 +153,6 @@ const MessagePage = () => {
                   : "text-gray-500"
               }`}
             ></i>
-            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
-              Messages
-            </span>
           </Link>
           <Link
             to="/notifications"
@@ -177,9 +165,6 @@ const MessagePage = () => {
                   : "text-gray-500"
               }`}
             ></i>
-            <span className="text-xs md:text-sm text-gray-500 group-hover:text-loomin-orange">
-              Alerts
-            </span>
           </Link>
         </div>
       </div>
