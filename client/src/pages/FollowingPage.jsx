@@ -1,48 +1,197 @@
-import React, { useState } from 'react';
-import LeftSidebar from '../components/leftsidebar';
-import RightSidebar from '../components/rightsidebar';
-import Header from '../components/header';
-import BottomNav from '../components/BottomNav';
-import { Link, useLocation } from 'react-router-dom';
-import useUserStore from '../stores/UserStore';
+import React, { useState, useEffect } from "react";
+import LeftSidebar from "../components/leftsidebar";
+import RightSidebar from "../components/rightsidebar";
+import Header from "../components/header";
+import BottomNav from "../components/BottomNav";
+import { Link, useLocation } from "react-router-dom";
+import useUserStore from "../stores/UserStore";
+import useNotificationStore from "../stores/notificationStore";
+import useSocketStore from "../stores/socketStore";
+import useChatStore from "../stores/chatStore";
 
 const FollowingPage = () => {
-  const [activeTab, setActiveTab] = useState('following');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState("following");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // User store
+  const setOnlineUsers = useUserStore((state) => state.setOnlineUsers);
   const loggedInUser = useUserStore((state) => state.loggedInUser);
-  const location = useLocation();
+  const fetchLoggedInUser = useUserStore((state) => state.fetchLoggedInUser);
+
+  // Socket store
+  const socket = useSocketStore((state) => state.socket);
+
+  // Notif store
+  const setNotifications = useNotificationStore(
+    (state) => state.setNotifications
+  );
+
+  // Chat store
+  const setNewMessageNotif = useChatStore((state) => state.setNewMessageNotif);
+  const activeChat = useChatStore((state) => state.activeChat);
+
+  // Fetch the data of logged in user
+  useEffect(() => {
+    fetchLoggedInUser();
+  }, []);
+
+  useEffect(() => {
+    if (!socket || !loggedInUser?._id) return;
+    socket.emit("addUser", loggedInUser._id);
+    const handleGetOnlineUsers = (res) => {
+      setOnlineUsers(res);
+    };
+    socket.on("getOnlineUsers", handleGetOnlineUsers);
+    return () => {
+      socket.off("getOnlineUsers", handleGetOnlineUsers);
+    };
+  }, [socket, loggedInUser?._id]);
+
+  // Add new message notif if the user has no active chat
+  useEffect(() => {
+    if (!socket || !loggedInUser?._id) return;
+
+    socket.on("getMessage", (message) => {
+      console.log("Getting New Message Notif");
+      if (activeChat === null) {
+        console.log(message);
+        setNewMessageNotif(message);
+      }
+    });
+
+    return () => {
+      socket.off("getMessage");
+    };
+  }, [socket, activeChat]);
+
+  // Realtime notif
+  useEffect(() => {
+    if (!socket || !loggedInUser?._id) return;
+    socket.on("getNotif", (notif) => {
+      console.log(notif);
+      setNotifications(notif);
+    });
+
+    return () => {
+      socket.off("getNotif");
+    };
+  }, [socket]);
 
   // Dummy data for following/followers
   const dummyUsers = [
     {
-      _id: '1',
-      username: 'johndoe',
-      first_name: 'John',
-      last_name: 'Doe',
-      profile_picture: 'https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg',
-      isFollowing: true
+      _id: "1",
+      username: "johndoe",
+      first_name: "John",
+      last_name: "Doe",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: true,
     },
     {
-      _id: '2',
-      username: 'janedoe',
-      first_name: 'Jane',
-      last_name: 'Doe',
-      profile_picture: 'https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg',
-      isFollowing: false
+      _id: "2",
+      username: "janedoe",
+      first_name: "Jane",
+      last_name: "Doe",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
+    },
+    {
+      _id: "3",
+      username: "mama",
+      first_name: "mo",
+      last_name: "hatdog",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
+    },
+    {
+      _id: "4",
+      username: "mama",
+      first_name: "mo",
+      last_name: "hatdog",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
+    },
+    {
+      _id: "5",
+      username: "mama",
+      first_name: "mo",
+      last_name: "hatdog",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
+    },
+    {
+      _id: "6",
+      username: "mama",
+      first_name: "mo",
+      last_name: "hatdog",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
+    },
+    {
+      _id: "7",
+      username: "mama",
+      first_name: "mo",
+      last_name: "hatdog",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
+    },
+    {
+      _id: "8",
+      username: "mama",
+      first_name: "mo",
+      last_name: "hatdog",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
+    },
+    {
+      _id: "9",
+      username: "mama",
+      first_name: "mo",
+      last_name: "hatdog",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
+    },
+    {
+      _id: "10",
+      username: "mama",
+      first_name: "mo",
+      last_name: "hatdog",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
+    },
+    {
+      _id: "11",
+      username: "mama",
+      first_name: "mo",
+      last_name: "hatdog",
+      profile_picture:
+        "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg",
+      isFollowing: false,
     },
     // Add more dummy users as needed
   ];
 
-  const filteredUsers = dummyUsers.filter(user => 
-    user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.username.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredUsers = dummyUsers.filter(
+    (user) =>
+      user.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
-    <>
+    <div className="flex flex-col h-screen w-full overflow-hidden">
       <Header />
-      <div className="flex min-h-screen bg-white">
+      <div className="flex min-h-screen bg-white ">
         {/* Left Sidebar */}
         <div className="hidden md:block w-[320px]">
           <LeftSidebar />
@@ -53,28 +202,28 @@ const FollowingPage = () => {
           {/* Page Header */}
           <div className="px-6 py-4 border-b border-gray-200">
             <h1 className="text-3xl font-bold text-gray-900">
-              {activeTab === 'following' ? 'Following' : 'Followers'}
+              {activeTab === "following" ? "Following" : "Followers"}
             </h1>
           </div>
 
           {/* Tabs */}
           <div className="flex border-b border-gray-200">
             <button
-              onClick={() => setActiveTab('following')}
+              onClick={() => setActiveTab("following")}
               className={`flex-1 py-4 text-center font-medium ${
-                activeTab === 'following'
-                  ? 'text-[#FF6F61] border-b-2 border-[#FF6F61]'
-                  : 'text-gray-500 hover:text-gray-700'
+                activeTab === "following"
+                  ? "text-[#FF6F61] border-b-2 border-[#FF6F61]"
+                  : "text-gray-500 hover:text-gray-700"
               }`}
             >
               Following
             </button>
             <button
-              onClick={() => setActiveTab('followers')}
+              onClick={() => setActiveTab("followers")}
               className={`flex-1 py-4 text-center font-medium ${
-                activeTab === 'followers'
-                  ? 'text-[#FF6F61] border-b-2 border-[#FF6F61]'
-                  : 'text-gray-500 hover:text-gray-700'
+                activeTab === "followers"
+                  ? "text-[#FF6F61] border-b-2 border-[#FF6F61]"
+                  : "text-gray-500 hover:text-gray-700"
               }`}
             >
               Followers
@@ -95,47 +244,66 @@ const FollowingPage = () => {
             </div>
           </div>
 
-          {/* Users List */}
-          <div className="divide-y divide-gray-200">
+          {/* Users Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 p-4 h-full overflow-y-auto">
             {filteredUsers.map((user) => (
-              <div key={user._id} className="flex items-center justify-between p-4 hover:bg-gray-50">
-                <div className="flex items-center gap-3">
+              <div
+                key={user._id}
+                className="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-lg transition-shadow w-full sm:max-w-[240px] mx-auto"
+              >
+                {/* User Card Header */}
+                <div className="flex flex-col items-center text-center">
                   <img
                     src={user.profile_picture}
                     alt=""
-                    className="w-12 h-12 rounded-full object-cover"
+                    className="w-20 h-20 rounded-full object-cover mb-3"
                   />
-                  <div>
-                    <Link to={`/profile/${user.username}`} className="font-medium text-gray-900 hover:underline">
-                      {user.first_name} {user.last_name}
-                    </Link>
-                    <p className="text-sm text-gray-500">@{user.username}</p>
-                  </div>
+                  <Link
+                    to={`/profile/${user.username}`}
+                    className="font-medium text-gray-900 hover:underline"
+                  >
+                    {user.first_name} {user.last_name}
+                  </Link>
+                  <p className="text-sm text-gray-500 mb-4">@{user.username}</p>
                 </div>
-                <button
-                  className={`px-6 py-2 rounded-full border font-medium transition-colors
-                    ${user.isFollowing
-                      ? 'border-gray-300 text-gray-700 hover:bg-gray-100'
-                      : 'border-[#FF6F61] text-[#FF6F61] hover:bg-[#FF6F61] hover:text-white'
-                    }`}
-                >
-                  {user.isFollowing ? 'Following' : 'Follow'}
-                </button>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col gap-2">
+                  {activeTab === "following" ? (
+                    <>
+                      <Link
+                        to={`/profile/${user.username}`}
+                        className="w-full px-4 py-2 rounded-full bg-[#FF6F61] text-white font-medium text-center hover:bg-[#ff5c4d] transition-colors"
+                      >
+                        View Profile
+                      </Link>
+                      <button className="w-full px-4 py-2 rounded-full border border-gray-300 text-gray-700 font-medium hover:bg-gray-100 transition-colors">
+                        Unfollow
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      className={`w-full px-4 py-2 rounded-full font-medium transition-colors
+                        ${
+                          user.isFollowing
+                            ? "border border-gray-300 text-gray-700 hover:bg-gray-100"
+                            : "bg-[#FF6F61] text-white hover:bg-[#ff5c4d]"
+                        }`}
+                    >
+                      {user.isFollowing ? "Following" : "Follow"}
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Right Sidebar */}
-        <div className="hidden lg:block w-[320px]">
-          <RightSidebar />
-        </div>
-
         {/* Bottom Navigation */}
         <BottomNav />
       </div>
-    </>
+    </div>
   );
 };
 
-export default FollowingPage; 
+export default FollowingPage;

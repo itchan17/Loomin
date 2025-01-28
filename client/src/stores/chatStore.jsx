@@ -125,6 +125,7 @@ const useChatStore = create((set) => ({
           ...response.data,
           recipientId: currentRecipient._id,
         });
+
         if (senderId === currentRecipient._id) {
           set({
             message: "",
