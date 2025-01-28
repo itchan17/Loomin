@@ -1,6 +1,7 @@
 import React from "react";
 import useUserStore from "../stores/UserStore";
 import useNotificationStore from "../stores/notificationStore";
+import useProfileStore from "../stores/profileStore";
 
 const RightSideBar = () => {
   // Notif store
@@ -13,6 +14,11 @@ const RightSideBar = () => {
   const followingToDisplay = useUserStore((state) => state.followingToDisplay);
   const followUser = useUserStore((state) => state.followUser);
   const loggedInUser = useUserStore((state) => state.loggedInUser);
+
+  // Profile store
+  const defaultProfileImages = useProfileStore(
+    (state) => state.defaultProfileImages
+  );
 
   const displaySuggestedUser = () => {
     if (!suggestedUser.length) {
@@ -36,7 +42,11 @@ const RightSideBar = () => {
       >
         <div className="flex items-center gap-x-3">
           <img
-            src={user.profile_picture}
+            src={
+              user?.profile_picture
+                ? `http://localhost:3000/${user.profile_picture}`
+                : defaultProfileImages.profile
+            }
             className="relative inline-block h-8 w-8 rounded-full object-cover object-center"
             alt={`${user.first_name} ${user.last_name}`}
           />
@@ -65,7 +75,11 @@ const RightSideBar = () => {
       >
         <div className="flex items-center gap-x-3">
           <img
-            src={following.profile_picture}
+            src={
+              following?.profile_picture
+                ? `http://localhost:3000/${following.profile_picture}`
+                : defaultProfileImages.profile
+            }
             className="relative inline-block h-8 w-8 rounded-full object-cover object-center"
             alt={`${following.first_name} ${following.last_name}`}
           />
@@ -88,28 +102,32 @@ const RightSideBar = () => {
   };
 
   return (
-    <div className="flex flex-col h-full p-6">
-      {/* Recommended Users Section */}
-      <div className="relative flex flex-col mb-4 bg-white shadow-sm border border-slate-200 rounded-lg">
-        <div className="p-4">
-          <div className="mb-2 flex items-center justify-between">
-            <h5 className="text-slate-800 text-xl font-bold">
-              Recommended for you
-            </h5>
-          </div>
-          <div className="divide-y divide-slate-200">
-            {displaySuggestedUser()}
+    <div className="flex flex-col h-full">
+      <div className="h-full p-6 overflow-y-auto">
+        {/* Recommended Users Section */}
+        <div className="relative flex flex-col mb-4 bg-white shadow-sm border border-slate-200 rounded-lg">
+          <div className="p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <h5 className="text-slate-800 text-xl font-bold">
+                Recommended for you
+              </h5>
+            </div>
+            <div className="divide-y divide-slate-200">
+              {displaySuggestedUser()}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Following Section */}
-      <div className="relative flex flex-col bg-white shadow-sm border border-slate-200 rounded-lg">
-        <div className="p-4">
-          <div className="mb-2 flex items-center justify-between">
-            <h5 className="text-slate-800 text-xl font-bold">Following</h5>
+        {/* Following Section */}
+        <div className="relative flex flex-col bg-white shadow-sm border border-slate-200 rounded-lg">
+          <div className="p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <h5 className="text-slate-800 text-xl font-bold">Following</h5>
+            </div>
+            <div className="divide-y divide-slate-200">
+              {displayFollowing()}
+            </div>
           </div>
-          <div className="divide-y divide-slate-200">{displayFollowing()}</div>
         </div>
       </div>
     </div>

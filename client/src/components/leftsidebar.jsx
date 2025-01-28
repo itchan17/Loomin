@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from "react";
-import feedIcon from "../assets/home.svg";
-import profileIcon from "../assets/shrek.jpg";
-import notificationIcon from "../assets/notification.svg";
 import useUserStore from "../stores/userStore";
 import numeral from "numeral";
-import { useLocation, useParams, Link } from "react-router-dom";
+import { useLocation, useParams, Link, useNavigate } from "react-router-dom";
 import useChatStore from "../stores/chatStore";
 import useProfileStore from "../stores/profileStore";
 import useNotificationStore from "../stores/notificationStore";
 
 const Leftsidebar = ({ isOpen }) => {
   const { username: activeProfileUsername } = useParams();
-
+  const navigate = useNavigate();
   // States
   const profile = useUserStore((state) => state.profile);
   const loggedInUser = useUserStore((state) => state.loggedInUser);
@@ -22,10 +19,8 @@ const Leftsidebar = ({ isOpen }) => {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
   const isMessagePage = location.pathname === "/inbox";
-  const isComingSoon = location.pathname === "./comingsoon";
   const isProfilePage = location.pathname.includes("/profile");
 
-  const notifications = useNotificationStore((state) => state.notifications);
   const notificationsCount = useNotificationStore(
     (state) => state.notificationsCount
   );
@@ -34,8 +29,12 @@ const Leftsidebar = ({ isOpen }) => {
     (state) => state.unreadMessagesCount
   );
 
+  // Profile store
   const setProfileInitialLoad = useProfileStore(
     (state) => state.setProfileInitialLoad
+  );
+  const defaultProfileImages = useProfileStore(
+    (state) => state.defaultProfileImages
   );
 
   useEffect(() => {
@@ -54,21 +53,37 @@ const Leftsidebar = ({ isOpen }) => {
       {isProfilePage &&
       activeProfileUsername === loggedInUser.username ? null : (
         <>
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center h-28 gap-4 mb-4">
             <img
+              onClick={() => {
+                navigate(`/profile/${loggedInUser.username}`);
+              }}
               src={
                 profile.profile_picture
                   ? `http://localhost:3000/${profile.profile_picture}`
-                  : null // add default image here
+                  : defaultProfileImages.profile
               }
               alt="User"
-              className="w-24 h-24 rounded-full object-cover flex-shrink-0"
+              className="w-16 h-16 rounded-full object-cover flex-shrink-0 cursor-pointer"
             />
-            <Link to="/profile">
-              <span className="username text-xl font-semibold">
-                {loggedInUserName}
+            <div className="flex flex-col">
+              <span
+                onClick={() => {
+                  navigate(`/profile/${loggedInUser.username}`);
+                }}
+                className="username text-xl font-semibold cursor-pointer"
+              >
+                {`${loggedInUser.first_name} ${loggedInUser.last_name}`}
               </span>
-            </Link>
+              <span
+                onClick={() => {
+                  navigate(`/profile/${loggedInUser.username}`);
+                }}
+                className="username text-sm cursor-pointer"
+              >
+                {`@${loggedInUser.first_name} ${loggedInUser.last_name}`}
+              </span>
+            </div>
           </div>
           <div className="flex justify-between gap-4 w-full">
             <div className="flex flex-col items-center">

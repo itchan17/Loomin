@@ -5,6 +5,7 @@ import useUserStore from "../stores/UserStore";
 import useSocketStore from "../stores/socketStore";
 import moment from "moment";
 import EmojiPicker from "emoji-picker-react";
+import useProfileStore from "../stores/profileStore";
 
 const ChatBox = ({ onBack }) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -20,6 +21,11 @@ const ChatBox = ({ onBack }) => {
     (state) => state.getAndUpdateMessageStatus
   );
   const setNewMessageNotif = useChatStore((state) => state.setNewMessageNotif);
+
+  // Profile store
+  const defaultProfileImages = useProfileStore(
+    (state) => state.defaultProfileImages
+  );
 
   // User states
   const loggedInUser = useUserStore((state) => state.loggedInUser);
@@ -114,8 +120,9 @@ const ChatBox = ({ onBack }) => {
           <div key={message._id} className="flex justify-start mb-4">
             <img
               src={
-                currentRecipient.profile_picture ||
-                "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg"
+                currentRecipient?.profile_picture
+                  ? `http://localhost:3000/${currentRecipient.profile_picture}`
+                  : defaultProfileImages.profile
               }
               className="object-cover h-8 w-8 rounded-full"
               alt=""
@@ -173,8 +180,8 @@ const ChatBox = ({ onBack }) => {
       </div>
 
       {/* Input Form - Fixed at bottom */}
-      <div className="sticky bottom-0 bg-white border-t py-3 px-5">
-        <form onSubmit={handleSubmit} className="relative">
+      <div className="sticky bottom-0 bg-white border-t py-3 px-4">
+        <form onSubmit={handleSubmit} className="">
           <textarea
             ref={textareaRef}
             rows="1"
@@ -183,10 +190,10 @@ const ChatBox = ({ onBack }) => {
             value={message}
             onChange={(e) => updateMessageField(e)}
             onKeyPress={handleKeyPress}
-            className="w-full min-h-[44px] bg-[#D9D9D9] bg-opacity-40 px-4 py-2 pr-24 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-400 resize-none overflow-hidden"
+            className="relative w-full min-h-[44px] bg-[#D9D9D9] bg-opacity-40 px-4 py-2 pr-24 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-400 resize-none overflow-hidden"
           />
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-            <div className="relative">
+          <div className="absolute r-4 right-6 top-1/2 pb-1 -translate-y-1/2 flex items-center gap-2">
+            <div className="flex gap-2">
               <button
                 type="button"
                 onClick={(e) => {
@@ -220,30 +227,30 @@ const ChatBox = ({ onBack }) => {
                   </div>
                 </div>
               )}
-            </div>
-            <button
-              type="submit"
-              disabled={!message.trim()}
-              className={`${
-                message.trim()
-                  ? "text-blue-500 hover:text-blue-700"
-                  : "text-gray-400"
-              }`}
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+              <button
+                type="submit"
+                disabled={!message.trim()}
+                className={`${
+                  message.trim()
+                    ? "text-blue-500 hover:text-blue-700"
+                    : "text-gray-400"
+                }`}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                />
-              </svg>
-            </button>
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
         </form>
       </div>

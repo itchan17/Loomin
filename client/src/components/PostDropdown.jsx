@@ -21,74 +21,80 @@ export default function Dropdown({ post }) {
 
   const handleArchivePost = async () => {
     const result = await Swal.fire({
-      title: 'Archive Post?',
-      text: "You can find this post in your archive later",
-      icon: 'warning',
+      title: post.isArchived ? "Unarchived" : "Archived",
+      text: post.isArchived
+        ? "This post will be visible in your feed."
+        : "You can find this post in your archive later",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#FF6F61',
-      cancelButtonColor: '#d1d5db',
-      confirmButtonText: 'Yes, archive it!',
-      background: '#fff',
+      confirmButtonColor: "#FF6F61",
+      cancelButtonColor: "#d1d5db",
+      confirmButtonText: post.isArchived
+        ? "Yes, unarchive it!"
+        : "Yes, archive it!",
+      background: "#fff",
       customClass: {
-        popup: 'rounded-2xl',
-        title: 'font-bold text-gray-900',
-        htmlContainer: 'text-gray-600',
-        confirmButton: 'rounded-full',
-        cancelButton: 'rounded-full'
-      }
+        popup: "rounded-2xl",
+        title: "font-bold text-gray-900",
+        htmlContainer: "text-gray-600",
+        confirmButton: "rounded-full",
+        cancelButton: "rounded-full",
+      },
     });
 
     if (result.isConfirmed) {
       await archivePost(post._id);
       Swal.fire({
-        title: 'Archived!',
-        text: 'Your post has been archived.',
-        icon: 'success',
-        confirmButtonColor: '#FF6F61',
-        background: '#fff',
+        title: post.isArchived ? "Unarchived" : "Archived",
+        text: post.isArchived
+          ? "Your post has been unarchived."
+          : "Your post has been archived.",
+        icon: "success",
+        confirmButtonColor: "#FF6F61",
+        background: "#fff",
         customClass: {
-          popup: 'rounded-2xl',
-          title: 'font-bold text-gray-900',
-          htmlContainer: 'text-gray-600',
-          confirmButton: 'rounded-full'
-        }
+          popup: "rounded-2xl",
+          title: "font-bold text-gray-900",
+          htmlContainer: "text-gray-600",
+          confirmButton: "rounded-full",
+        },
       });
     }
   };
 
   const handleDeletePost = async () => {
     const result = await Swal.fire({
-      title: 'Delete Post?',
+      title: "Delete Post?",
       text: "You won't be able to revert this!",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#FF6F61',
-      cancelButtonColor: '#d1d5db',
-      confirmButtonText: 'Yes, delete it!',
-      background: '#fff',
+      confirmButtonColor: "#FF6F61",
+      cancelButtonColor: "#d1d5db",
+      confirmButtonText: "Yes, delete it!",
+      background: "#fff",
       customClass: {
-        popup: 'rounded-2xl',
-        title: 'font-bold text-gray-900',
-        htmlContainer: 'text-gray-600',
-        confirmButton: 'rounded-full',
-        cancelButton: 'rounded-full'
-      }
+        popup: "rounded-2xl",
+        title: "font-bold text-gray-900",
+        htmlContainer: "text-gray-600",
+        confirmButton: "rounded-full",
+        cancelButton: "rounded-full",
+      },
     });
 
     if (result.isConfirmed) {
       await deletePost(post._id);
       Swal.fire({
-        title: 'Deleted!',
-        text: 'Your post has been deleted.',
-        icon: 'success',
-        confirmButtonColor: '#FF6F61',
-        background: '#fff',
+        title: "Deleted!",
+        text: "Your post has been deleted.",
+        icon: "success",
+        confirmButtonColor: "#FF6F61",
+        background: "#fff",
         customClass: {
-          popup: 'rounded-2xl',
-          title: 'font-bold text-gray-900',
-          htmlContainer: 'text-gray-600',
-          confirmButton: 'rounded-full'
-        }
+          popup: "rounded-2xl",
+          title: "font-bold text-gray-900",
+          htmlContainer: "text-gray-600",
+          confirmButton: "rounded-full",
+        },
       });
     }
   };
@@ -119,24 +125,27 @@ export default function Dropdown({ post }) {
         <MenuItems
           transition
           anchor="bottom end"
-          className="w-28 origin-top-right rounded-xl border border-black/5 bg-white p-1 text-sm/6 text-black transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+          className="w-32 origin-top-right rounded-xl border border-black/5 bg-white p-1 text-sm/6 text-black transition duration-100 ease-out [--anchor-gap:var(--spacing-1)] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
         >
-          <MenuItem>
-            <button
-              onClick={handleEditPost}
-              className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-black/10"
-            >
-              <PencilIcon className="size-4 fill-black/30" />
-              Edit
-            </button>
-          </MenuItem>
+          {!post.isArchived && (
+            <MenuItem>
+              <button
+                onClick={handleEditPost}
+                className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-black/10"
+              >
+                <PencilIcon className="size-4 fill-black/30" />
+                Edit
+              </button>
+            </MenuItem>
+          )}
+
           <MenuItem>
             <button
               onClick={handleArchivePost}
               className="group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-black/10"
             >
               <ArchiveBoxXMarkIcon className="size-4 fill-black/30" />
-              Archive
+              {post.isArchived ? "Unarchived" : "Archived"}
             </button>
           </MenuItem>
           <MenuItem>

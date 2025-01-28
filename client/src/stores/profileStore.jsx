@@ -6,6 +6,12 @@ const useProfileStore = create((set) => ({
   userProfileData: null,
   profileInitialLoad: true,
 
+  // Store default images for profile picture and background
+  defaultProfileImages: {
+    background: "/default-background.jpg",
+    profile: "/default-avatar-icon.jpg",
+  },
+
   // Add clear posts function
   clearProfilePosts: () => set({ profilePosts: [], hasMore: true }),
 
@@ -28,6 +34,10 @@ const useProfileStore = create((set) => ({
 
   setProfileInitialLoad: (value) => {
     set({ profileInitialLoad: value });
+  },
+
+  clearUserProfileData: () => {
+    set({ userProfileData: null });
   },
 }));
 

@@ -21,7 +21,7 @@ const useNotificationStore = create((set) => ({
     const { notificationsCount } = useNotificationStore.getState();
 
     set({
-      notificationsCount: notificationsCount - 1,
+      notificationsCount: notificationsCount > 0 && notificationsCount - 1,
     });
   },
 
@@ -92,6 +92,7 @@ const useNotificationStore = create((set) => ({
 
       set({
         notifications: [],
+        notificationsCount: 0,
       });
     } catch (error) {
       console.log(error);

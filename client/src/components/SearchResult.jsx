@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useChatStore from "../stores/chatStore";
 import useUserStore from "../stores/UserStore";
+import useProfileStore from "../stores/profileStore";
 
 const SearchResult = ({ user }) => {
   const createChat = useChatStore((state) => state.createChat);
@@ -10,6 +11,11 @@ const SearchResult = ({ user }) => {
 
   // User states
   const loggedInUser = useUserStore((state) => state.loggedInUser);
+
+  // Profile store
+  const defaultProfileImages = useProfileStore(
+    (state) => state.defaultProfileImages
+  );
 
   const handleClickChat = (firstId, secondId) => {
     createChat(firstId, secondId);
@@ -23,8 +29,9 @@ const SearchResult = ({ user }) => {
     >
       <img
         src={
-          user.profile_picture ||
-          "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg"
+          user?.profile_picture
+            ? `http://localhost:3000/${user.profile_picture}`
+            : defaultProfileImages.profile
         }
         alt={"Profile"}
         className="w-16 rounded-full flex-shrink-0"

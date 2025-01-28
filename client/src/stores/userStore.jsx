@@ -14,6 +14,7 @@ const useUserStore = create((set) => ({
   error: null, // Add error state
   onlineUsers: [],
   profile: {
+    // For storing profile files
     profile_picture: null,
     background_picture: null,
   },
