@@ -26,6 +26,9 @@ const Leftsidebar = ({ isOpen }) => {
   const isProfilePage = location.pathname.includes("/profile");
 
   const notifications = useNotificationStore((state) => state.notifications);
+  const notificationsCount = useNotificationStore(
+    (state) => state.notificationsCount
+  );
 
   const unreadMessagesCount = useChatStore(
     (state) => state.unreadMessagesCount
@@ -146,7 +149,7 @@ const Leftsidebar = ({ isOpen }) => {
               <span className="text-xl">Notifications</span>
             </div>
             <span className="text-xl font-semibold">
-              {notifications ? notifications?.length : ""}
+              {notificationsCount ? notificationsCount : ""}
             </span>
           </div>
         </Link>

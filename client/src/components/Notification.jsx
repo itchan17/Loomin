@@ -9,10 +9,14 @@ const Notification = ({ notification, readNotif, isRead }) => {
   const clearNotification = useNotificationStore(
     (state) => state.clearNotification
   );
+  const setNotificationsCount = useNotificationStore(
+    (state) => state.setNotificationsCount
+  );
 
   const handleNotificationClick = () => {
     markAsRead(notification._id);
     setIsNotificationRead(true);
+    setNotificationsCount();
   };
 
   const handleClearNotifcation = (e) => {

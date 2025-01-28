@@ -1,17 +1,39 @@
 import React from "react";
 import useUserStore from "../stores/UserStore";
+import useNotificationStore from "../stores/notificationStore";
 
 const RightSideBar = () => {
+  // Notif store
+  const makeNotification = useNotificationStore(
+    (state) => state.makeNotification
+  );
+
+  // User store
   const suggestedUser = useUserStore((state) => state.suggestedUser);
   const followingToDisplay = useUserStore((state) => state.followingToDisplay);
   const followUser = useUserStore((state) => state.followUser);
+  const loggedInUser = useUserStore((state) => state.loggedInUser);
 
   const displaySuggestedUser = () => {
     if (!suggestedUser.length) {
       return <div>No users</div>;
     }
+
+    const handleFollow = (user) => {
+      followUser(user);
+      makeNotification(
+        loggedInUser._id,
+        user._id,
+        null,
+        "follow",
+        `just followed you!`
+      );
+    };
     return suggestedUser.map((user) => (
-      <div key={user._id} className="flex items-center justify-between pb-3 pt-3 last:pb-0">
+      <div
+        key={user._id}
+        className="flex items-center justify-between pb-3 pt-3 last:pb-0"
+      >
         <div className="flex items-center gap-x-3">
           <img
             src={user.profile_picture}
@@ -25,7 +47,7 @@ const RightSideBar = () => {
           </div>
         </div>
         <button
-          onClick={() => followUser(user)}
+          onClick={() => handleFollow(user)}
           className="bx bxs-user-plus text-loomin-orange text-3xl px-2 hover:bg-orange-100 rounded-full cursor-pointer"
         ></button>
       </div>
@@ -87,9 +109,7 @@ const RightSideBar = () => {
           <div className="mb-2 flex items-center justify-between">
             <h5 className="text-slate-800 text-xl font-bold">Following</h5>
           </div>
-          <div className="divide-y divide-slate-200">
-            {displayFollowing()}
-          </div>
+          <div className="divide-y divide-slate-200">{displayFollowing()}</div>
         </div>
       </div>
     </div>

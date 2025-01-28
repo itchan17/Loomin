@@ -67,7 +67,18 @@ const Post = ({ post }) => {
   };
   const toggleFollow = () => {
     followUser(post.creator);
+
+    if (!following.includes(post.creator._id)) {
+      makeNotification(
+        loggedInUser._id,
+        post.creator._id,
+        null,
+        "follow",
+        `just followed you!`
+      );
+    }
   };
+
   // Liking post functions
   // Check if the user liked the post then set isLiked to true the component renders
   const checkIfLiked = () => {
@@ -77,7 +88,7 @@ const Post = ({ post }) => {
   };
 
   // Handle the like button
-  const handleLike = async () => {
+  const handleLike = () => {
     if (!isLiked) {
       console.log("Like");
 
@@ -96,15 +107,13 @@ const Post = ({ post }) => {
 
       // Make notification
       if (loggedInUser._id !== post.creator._id) {
-        const notif = {
-          senderId: loggedInUser._id,
-          recipientId: post.creator._id,
-          postId: post._id,
-          type: "like",
-          content: `liked your post.`,
-        };
-
-        await makeNotification(notif);
+        makeNotification(
+          loggedInUser._id,
+          post.creator._id,
+          post._id,
+          "like",
+          `liked your post.`
+        );
       }
     } else {
       setIsLiked(!isLiked);
@@ -117,7 +126,7 @@ const Post = ({ post }) => {
     }
   };
 
-  const handleDoubleTap = async () => {
+  const handleDoubleTap = () => {
     if (!isLiked) {
       // Like post
       setIsLiked(!isLiked);
@@ -133,15 +142,13 @@ const Post = ({ post }) => {
       setLikesCount(likesCount + 1);
 
       if (loggedInUser._id !== post.creator._id) {
-        const notif = {
-          senderId: loggedInUser._id,
-          recipientId: post.creator._id,
-          postId: post._id,
-          type: "like",
-          content: `liked your post.`,
-        };
-
-        await makeNotification(notif);
+        makeNotification(
+          loggedInUser._id,
+          post.creator._id,
+          post._id,
+          "like",
+          `liked your post.`
+        );
       }
     } else {
       setIsLiked(!isLiked);

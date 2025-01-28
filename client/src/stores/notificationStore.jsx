@@ -4,17 +4,36 @@ import useSocketStore from "./socketStore";
 
 const useNotificationStore = create((set) => ({
   notifications: null,
+  notificationsCount: 0,
 
-  setNotifications: async (notification) => {
-    const { notifications } = useNotificationStore.getState();
+  setNotifications: (notification) => {
+    const { notifications, notificationsCount } =
+      useNotificationStore.getState();
 
     set({
       notifications: [notification, ...(notifications || [])],
+      notificationsCount: notificationsCount + 1,
     });
   },
 
-  makeNotification: async (notifDetails) => {
-    console.log(notifDetails);
+  // Will reduce the notifications counts if the user read the notif
+  setNotificationsCount: () => {
+    const { notificationsCount } = useNotificationStore.getState();
+
+    set({
+      notificationsCount: notificationsCount - 1,
+    });
+  },
+
+  makeNotification: async (senderId, recipientId, postId, type, content) => {
+    const notifDetails = {
+      senderId,
+      recipientId,
+      postId,
+      type,
+      content,
+    };
+
     const socket = useSocketStore.getState().socket;
     try {
       const res = await axios.post("/notifications", notifDetails);
@@ -34,7 +53,7 @@ const useNotificationStore = create((set) => ({
   fetchNotifications: async () => {
     try {
       const res = await axios.get("/notifications");
-      set({ notifications: res.data });
+      set({ notifications: res.data, notificationsCount: res.data.length });
       console.log(res);
     } catch (error) {
       console.log(error);
