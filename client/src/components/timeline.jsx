@@ -52,7 +52,7 @@ const Timeline = () => {
         <button
           onClick={toggleModal}
           className="bg-gradient-to-r from-loomin-yellow to-loomin-orange
-          text-white font-bold py-1 px-4 rounded-2xl hover:scale-105 transform transition-transform"
+          text-white font-bold py-1 px-4 rounded-2xl hover:scale-105"
         >
           <i className="bx bx-plus font-sans"></i>
           Post

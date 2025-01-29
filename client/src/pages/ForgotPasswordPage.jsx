@@ -41,28 +41,26 @@ const ForgotPasswordPage = () => {
   return (
     <div className="flex items-center justify-center h-screen w-screen bg-gray-100 font-poppins">
       <div className="bg-white shadow-lg text-center overflow-hidden w-full h-full sm:rounded-lg sm:max-w-md sm:h-auto sm:w-full relative">
-        <button
-          onClick={() => navigate("/login")}
-          className="absolute top-2 left-2"
-        >
-          <img src="/back-button.svg" alt="Back" className="w-6 h-6" />
-        </button>
-
         <div className="relative bg-gradient-to-t from-[#FF6F61] to-[#FFD23F] h-28 rounded-b-[50%] text-[#1A1A1A] flex flex-col justify-end pb-4">
           <button
             onClick={() => navigate("/login")}
             className="absolute top-4 left-4"
           >
-            <img
-              onClick={() => {
-                navigate("/login");
-              }}
-              src="/back-button.svg"
-              alt="Back"
+            <svg
               className="w-6 h-6"
-            />
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
           </button>
-          <h1 className="text-2xl font-bold mb-0">FORGET YOUR PASSWORD?</h1>
+          <h1 className="text-2xl font-bold mb-0">FORGOT YOUR PASSWORD?</h1>
           <p className="text-sm tracking-widest uppercase text-white">
             RECOVER ACCOUNT
           </p>

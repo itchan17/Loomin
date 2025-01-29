@@ -198,6 +198,70 @@ const fetchFollowers = async (req, res) => {
   }
 };
 
+const updateUserInfo = async (req, res) => {
+  const userId = req.user._id;
+  console.log(req.body);
+  const { hometown, school, work, birthday } = req.body;
+  console.log(hometown);
+  try {
+    // Find the user by ID and update the fields
+    const updatedUser = await User.findById(userId);
+
+    // Check if the user was found
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (hometown) {
+      updatedUser.hometown = hometown;
+    }
+    if (school) {
+      updatedUser.school = school;
+    }
+    if (work.company && work.position) {
+      updatedUser.work = work;
+    }
+    if (birthday) {
+      updatedUser.date_of_birth = birthday;
+    }
+
+    updatedUser.save();
+    // Respond with the updated user object
+    res.status(200).json({ updatedUser });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+const deleteUserInfo = async (req, res) => {
+  const userId = req.user._id; // Assuming the user ID is stored in req.user._id (from authentication)
+  const { field } = req.body; // The field to delete (e.g., "hometown", "school", or "work")
+
+  try {
+    // Find the user by ID
+    const updatedUser = await User.findById(userId);
+
+    // Check if the user exists
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Delete the specified field (e.g., "hometown", "school", "work")
+    if (updatedUser[field] !== undefined) {
+      updatedUser[field] = null; // Set the field to null
+      await updatedUser.save();
+      res.status(200).json({ updatedUser });
+    } else {
+      res
+        .status(400)
+        .json({ message: `Field ${field} not found on user profile` });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
 module.exports = {
   fetchLoggedInUser,
   followUser,
@@ -206,4 +270,6 @@ module.exports = {
   editProfile,
   fetchFollowing,
   fetchFollowers,
+  updateUserInfo,
+  deleteUserInfo,
 };

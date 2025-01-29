@@ -9,6 +9,7 @@ import useNotificationStore from "../stores/notificationStore";
 const Leftsidebar = ({ isOpen }) => {
   const { username: activeProfileUsername } = useParams();
   const navigate = useNavigate();
+
   // States
   const profile = useUserStore((state) => state.profile);
   const loggedInUser = useUserStore((state) => state.loggedInUser);
@@ -81,7 +82,7 @@ const Leftsidebar = ({ isOpen }) => {
                 }}
                 className="username text-sm cursor-pointer"
               >
-                {`@${loggedInUser.first_name} ${loggedInUser.last_name}`}
+                {`@${loggedInUser.username}`}
               </span>
             </div>
           </div>

@@ -29,9 +29,9 @@
 }
 
 /* Mobile Styles */
-@media (max-width: 768px) {
+@media (max-width: 1279px) {
     .main-content {
-        @apply pb-20;
+        @apply pb-0;
     }
     
     /* Hide scrollbar on mobile */
@@ -45,10 +45,34 @@
     }
 }
 
-/* Desktop Styles */
-@media (min-width: 769px) {
+/* Portrait Mode Styles */
+@media (max-width: 1279px) and (orientation: portrait) {
     .main-content {
-        @apply pb-4;
+        @apply pb-16;
+    }
+    
+    .sidebar {
+        @apply hidden;
+    }
+
+    /* Add padding to scrollable content areas */
+    .overflow-y-auto {
+        @apply pb-16;
+    }
+}
+
+/* Landscape Mode Styles */
+@media (min-width: 768px) and (orientation: landscape) {
+    .sidebar {
+        width: 350px;
+        @apply bg-white shadow-sm;
+    }
+}
+
+/* Desktop Styles */
+@media (min-width: 1280px) {
+    .main-content {
+        @apply pb-0;
     }
     
     .sidebar {

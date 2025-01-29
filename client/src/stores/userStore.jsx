@@ -19,12 +19,35 @@ const useUserStore = create((set) => ({
     background_picture: null,
   },
 
+  profileInfo: {
+    hometown: null,
+    school: null,
+    work: {
+      company: null,
+      position: null,
+    },
+    birthday: null,
+  },
+
+  // Function to update profileInfo dynamically
+  setProfileInfo: (field, value) =>
+    set((state) => ({
+      profileInfo: {
+        ...state.profileInfo, // Preserve existing data
+        [field]:
+          field === "work"
+            ? { ...state.profileInfo.work, ...value } // Merge work object
+            : value,
+      },
+    })),
+
   fetchLoggedInUser: async () => {
     try {
       const { loggedInUser } = useUserStore.getState();
 
       set({ isLoading: true, error: null });
       const res = await axios.get("/users");
+
       if (loggedInUser._id !== res.data.user._id) {
         console.log("RUNNING");
         set({
@@ -40,6 +63,15 @@ const useUserStore = create((set) => ({
           profile: {
             profile_picture: res.data.user.profile_picture,
             background_picture: res.data.user.background_picture,
+          },
+          profileInfo: {
+            hometown: res.data?.user?.hometown ?? null,
+            school: res.data?.user?.school ?? null,
+            work: {
+              company: res.data?.user?.work?.company ?? null,
+              position: res.data?.user?.work?.position ?? null,
+            },
+            birthday: res.data?.user?.date_of_birth ?? null,
           },
         });
       }
@@ -123,6 +155,26 @@ const useUserStore = create((set) => ({
           profile_picture: res.data.profile_picture,
           background_picture: res.data.background_picture,
         },
+      });
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  updateProfileInfo: async (profileInfo) => {
+    try {
+      const res = await axios.put("/users/update-info", profileInfo);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  deleteProfileInfo: async (field) => {
+    try {
+      const res = await axios.delete("/users/delete-info", {
+        data: { field },
       });
       console.log(res);
     } catch (error) {

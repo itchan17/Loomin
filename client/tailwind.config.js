@@ -12,6 +12,9 @@ export default {
   },
   variants: {
     fill: ["hover", "focus"],
+    scrollbar: ['rounded']
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar-hide')
+  ],
 };

@@ -193,7 +193,7 @@ const FollowingPage = () => {
   return (
     <div className="flex flex-col h-screen w-full overflow-hidden">
       <Header />
-      <div className="flex min-h-screen bg-white ">
+      <div className="flex flex-1 bg-white overflow-hidden">
         {/* Left Sidebar */}
         <div className="hidden md:block w-[320px]">
           <LeftSidebar />
@@ -201,47 +201,50 @@ const FollowingPage = () => {
 
         {/* Main Content */}
         <div className="flex-1 min-w-0 border-x border-gray-200 flex flex-col">
-          {/* Page Header */}
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h1 className="text-3xl font-bold text-gray-900">
-              {activeTab === "following" ? "Following" : "Followers"}
-            </h1>
+          {/* Fixed Header Section */}
+          <div className="flex-none">
+            {/* Page Header */}
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h1 className="text-3xl font-bold text-gray-900">
+                {activeTab === "following" ? "Following" : "Followers"}
+              </h1>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex border-b border-gray-200">
+              <button
+                onClick={() => setActiveTab("following")}
+                className={`flex-1 py-4 text-center font-medium ${
+                  activeTab === "following"
+                    ? "text-[#FF6F61] border-b-2 border-[#FF6F61]"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                Following
+              </button>
+              <button
+                onClick={() => setActiveTab("followers")}
+                className={`flex-1 py-4 text-center font-medium ${
+                  activeTab === "followers"
+                    ? "text-[#FF6F61] border-b-2 border-[#FF6F61]"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                Followers
+              </button>
+            </div>
+
+            {/* Following / Followers Component */}
+            {activeTab === "following" ? (
+              <Following></Following>
+            ) : (
+              <Followers></Followers>
+            )}
           </div>
 
-          {/* Tabs */}
-          <div className="flex border-b border-gray-200">
-            <button
-              onClick={() => setActiveTab("following")}
-              className={`flex-1 py-4 text-center font-medium ${
-                activeTab === "following"
-                  ? "text-[#FF6F61] border-b-2 border-[#FF6F61]"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              Following
-            </button>
-            <button
-              onClick={() => setActiveTab("followers")}
-              className={`flex-1 py-4 text-center font-medium ${
-                activeTab === "followers"
-                  ? "text-[#FF6F61] border-b-2 border-[#FF6F61]"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              Followers
-            </button>
-          </div>
-
-          {/* Following / Followers Component */}
-          {activeTab === "following" ? (
-            <Following></Following>
-          ) : (
-            <Followers></Followers>
-          )}
+          {/* Bottom Navigation */}
+          <BottomNav />
         </div>
-
-        {/* Bottom Navigation */}
-        <BottomNav />
       </div>
     </div>
   );

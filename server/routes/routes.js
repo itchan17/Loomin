@@ -89,6 +89,16 @@ router.post(
   multiUpload,
   usersController.editProfile
 );
+router.put(
+  "/users/update-info",
+  authMiddleware,
+  usersController.updateUserInfo
+);
+router.delete(
+  "/users/delete-info",
+  authMiddleware,
+  usersController.deleteUserInfo
+);
 
 // Chat routes
 router.post("/chats/create", authMiddleware, chatsController.createChat);

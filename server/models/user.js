@@ -69,6 +69,20 @@ const userSchema = new mongoose.Schema(
     },
     verificationToken: String,
     verificationTokenExpire: Date,
+    work: {
+      company: {
+        type: String,
+      },
+      position: {
+        type: String,
+      },
+    },
+    hometown: {
+      type: String,
+    },
+    school: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
