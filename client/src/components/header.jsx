@@ -109,7 +109,7 @@ const Header = ({ toggleSidebar }) => {
   const rederResults = () => {
     // This will return the results
     return (
-      <div className="absolute rounded-lg bg-white top-full max-h-72 left-0 w-full overflow-y-auto z-[1000]">
+      <div className="absolute rounded-lg bg-white top-full max-h-72 left-0 w-full overflow-y-auto">
         {isSearchLoading ? (
           <div className="py-2 w-full text-center">
             <div
@@ -170,97 +170,95 @@ const Header = ({ toggleSidebar }) => {
   };
 
   return (
-    <div>
-      <header className="relative z-50 flex justify-between items-center h-16 text-black py-4 pl-2 pr-2 md:pl-6 md:pr-8 bg-gradient-to-r from-loomin-yellow to-loomin-orange drop-shadow-md sticky top-0">
-        {/* Logo */}
-        <div className="flex items-center gap-8">
-          <div className="flex items-center  gap-2">
-            <Link to="/" className="flex items-center w-24">
-              <img
-                src={logo}
-                alt="Loomin Logo"
-                className="w-full h-full object-contain"
-              />
-            </Link>
-            <svg
-              onClick={() => setOpenSearchBar(true)}
-              className={`${
-                openSearchBar ? "hidden" : ""
-              } w-6 h-6 font-bold text-white sm:hidden`}
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="3"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-
-          {/* Search Bar */}
-          <div className="relative hidden sm:flex items-center border-black sm:w-auto">
-            <input
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              type="text"
-              placeholder="Search user..."
-              className="pl-10 pr-4 py-2 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-orange-500 w-full sm:w-96"
+    <header className="fixed z-50 flex justify-between items-center h-16 text-black py-4 pl-2 pr-2 md:pl-6 md:pr-8 bg-gradient-to-r from-loomin-yellow to-loomin-orange drop-shadow-md sticky top-0">
+      {/* Logo */}
+      <div className="flex items-center gap-8">
+        <div className="flex items-center  gap-2">
+          <Link to="/" className="flex items-center w-24">
+            <img
+              src={logo}
+              alt="Loomin Logo"
+              className="w-full h-full object-contain"
             />
-            <svg
-              className="absolute left-3 w-5 h-5 text-gray-500"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            {/* Search results */}
-            {searchTerm.trim() && rederResults()}
-          </div>
-        </div>
-        <div
-          ref={searchBarRef}
-          className={`${
-            openSearchBar ? "" : "hidden"
-          } absolute left-0 top-full w-full z-50 sm:hidden`}
-        >
-          <div className="relative">
-            <input
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              type="text"
-              placeholder="Search user..."
-              className="pl-10 pr-4 py-2 bg-white w-full sm:w-96 "
-            />
-            <svg
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            {/* Render the results */}
-            {searchTerm.trim() && rederResults()}
-          </div>
+          </Link>
+          <svg
+            onClick={() => setOpenSearchBar(true)}
+            className={`${
+              openSearchBar ? "hidden" : ""
+            } w-6 h-6 font-bold text-white sm:hidden`}
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="3"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
         </div>
 
-        {/* Logout Button */}
-        <div className="flex items-center ml-auto">
-          <button
-            onClick={handleLogout}
-            className="bx bx-log-out text-2xl text-white rotate-180 hover:bg-orange-700 px-5 py-2 rounded-full cursor-pointer"
-          ></button>
+        {/* Search Bar */}
+        <div className="relative hidden sm:flex items-center border-black sm:w-auto">
+          <input
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            type="text"
+            placeholder="Search user..."
+            className="pl-10 pr-4 py-2 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-orange-500 w-full sm:w-96"
+          />
+          <svg
+            className="absolute left-3 w-5 h-5 text-gray-500"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          {/* Search results */}
+          {searchTerm.trim() && rederResults()}
         </div>
-      </header>
-    </div>
+      </div>
+      <div
+        ref={searchBarRef}
+        className={`${
+          openSearchBar ? "" : "hidden"
+        } absolute left-0 top-full w-full z-50 sm:hidden`}
+      >
+        <div className="relative">
+          <input
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            type="text"
+            placeholder="Search user..."
+            className="pl-10 pr-4 py-2 bg-white w-full sm:w-96 "
+          />
+          <svg
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          {/* Render the results */}
+          {searchTerm.trim() && rederResults()}
+        </div>
+      </div>
+
+      {/* Logout Button */}
+      <div className="flex items-center ml-auto">
+        <button
+          onClick={handleLogout}
+          className="bx bx-log-out text-2xl text-white rotate-180 hover:bg-orange-700 px-5 py-2 rounded-full cursor-pointer"
+        ></button>
+      </div>
+    </header>
   );
 };
 

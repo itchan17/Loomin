@@ -45,9 +45,9 @@ const Timeline = () => {
   };
 
   return (
-    <div className="flex-auto bg-loomin-white flex-auto items-center px-auto px-6 pl-11">
+    <div className="bg-loomin-white flex-auto items-center justify-centerpx-6">
       {/* Header of the timeline*/}
-      <div className="w-full py-4 mb-2 flex items-center justify-between px-3 md:px-6">
+      <div className="w-full md:max-w-2xl py-4 mb-2 flex items-center justify-between mx-auto ">
         <h5 className="text-slate-800 text-4xl font-bold antialiased">Home</h5>
         <button
           onClick={toggleModal}
@@ -67,7 +67,7 @@ const Timeline = () => {
         </div>
       )}
 
-      <div className="px-1 md:px-4 w-full">
+      <div className="">
         <InfiniteScroll
           dataLength={posts.length}
           next={loadMorePosts}

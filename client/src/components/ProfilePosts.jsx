@@ -136,16 +136,16 @@ const ProfilePosts = () => {
   );
 
   return (
-    <div className="flex flex-col md:flex-row gap-8 bg-[#D9D9D9] px-4 md:px-8 max-w-7xl mx-auto">
+    <div className="flex flex-col lg:flex-row bg-[#D9D9D9] px-4 md:px-8 max-w-7xl mx-auto">
       {/* Left side - Details - Hidden on desktop */}
-      <div className="hidden md:block md:w-1/3 lg:w-1/4">
+      <div className="hidden lg:block md:w-1/3 lg:w-1/4">
         <DetailsCard />
       </div>
 
       {/* Right side - Posts */}
       <div className="flex-1 w-full max-w-3xl mx-auto">
         {/* Mobile Details Card */}
-        <div className="block md:hidden mb-4">
+        <div className="block lg:hidden max-w-2xl mb-4 mx-auto">
           <DetailsCard />
         </div>
 
@@ -178,7 +178,7 @@ const ProfilePosts = () => {
                 </div>
               </div>
             ) : (
-              <p className="text-center font-bold text-gray-500 border-black mb-4 p-4">
+              <p className="text-center font-bold text-gray-500 mb-4 p-4">
                 You've seen all posts!
               </p>
             )

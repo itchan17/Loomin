@@ -113,10 +113,8 @@ const ProfilePage = () => {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto bg-gray-50">
-          <div className="w-full mx-auto">
-            <Profile />
-          </div>
+        <main className="flex-1 h-screen overflow-y-auto bg-gray-50">
+          <Profile />
         </main>
       </div>
 

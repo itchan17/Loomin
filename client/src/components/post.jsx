@@ -297,7 +297,7 @@ const Post = ({ post }) => {
 
   return (
     <div
-      className="border-b md:border rounded-xl md:rounded-2xl w-[98%] mx-auto md:max-w-2xl mb-4 md:mb-6 bg-white shadow-md md:shadow-sm"
+      className="border-b md:border rounded-xl md:rounded-2xl mx-auto md:max-w-2xl mb-4 md:mb-6 bg-white shadow-md md:shadow-sm"
       key={post._id}
     >
       <div className="bg-white md:shadow-lg rounded-xl md:rounded-2xl w-full">

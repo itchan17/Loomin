@@ -4,6 +4,7 @@ import useUserStore from "../stores/userStore";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useProfileStore from "../stores/profileStore";
+import useNotificationStore from "../stores/notificationStore";
 
 const Followers = () => {
   const [users, setUsers] = useState(null);
@@ -17,6 +18,11 @@ const Followers = () => {
   // Profile store
   const defaultProfileImages = useProfileStore(
     (state) => state.defaultProfileImages
+  );
+
+  // Notif store
+  const makeNotification = useNotificationStore(
+    (state) => state.makeNotification
   );
 
   useEffect(() => {
@@ -62,6 +68,13 @@ const Followers = () => {
         );
       }
     } else {
+      makeNotification(
+        loggedInUser._id,
+        follower._id,
+        null,
+        "follow",
+        `just followed you!`
+      );
       followUser(follower);
       setFollowingList((prev) => [...prev, follower._id]);
     }

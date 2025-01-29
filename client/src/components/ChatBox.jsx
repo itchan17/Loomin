@@ -192,7 +192,7 @@ const ChatBox = ({ onBack }) => {
             onKeyPress={handleKeyPress}
             className="w-full min-h-[44px] bg-[#D9D9D9] bg-opacity-40 px-4 py-2 pr-20 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-400 resize-none overflow-hidden"
           />
-          <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center space-x-2">
+          <div className="absolute right-6 top-1/2 pb-1 -translate-y-1/2 flex items-center">
             <div className="relative">
               <button
                 type="button"
