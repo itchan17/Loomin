@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+import useUserStore from "./userStore";
 
 const useProfileStore = create((set) => ({
   profilePosts: [],
