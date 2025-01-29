@@ -102,7 +102,6 @@ const RightSideBar = () => {
   };
 
   return (
-
     <div className="flex flex-col h-full p-6 overflow-y-auto">
       {/* Recommended Users Section */}
       <div className="relative flex flex-col mb-4 bg-white shadow-sm border border-slate-200 rounded-lg">
@@ -114,10 +113,9 @@ const RightSideBar = () => {
           </div>
           <div className="divide-y divide-slate-200 max-h-[600px] overflow-y-auto scrollbar-hide">
             {displaySuggestedUser()}
-
           </div>
         </div>
-
+      </div>
 
       {/* Following Section */}
       <div className="relative flex flex-col bg-white shadow-sm border border-slate-200 rounded-lg">
@@ -127,7 +125,6 @@ const RightSideBar = () => {
           </div>
           <div className="divide-y divide-slate-200 max-h-[600px] overflow-y-auto scrollbar-hide">
             {displayFollowing()}
-
           </div>
         </div>
       </div>

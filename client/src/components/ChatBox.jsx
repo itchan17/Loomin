@@ -182,7 +182,6 @@ const ChatBox = ({ onBack }) => {
       {/* Input Form */}
       <div className="flex-none bg-white border-t">
         <form onSubmit={handleSubmit} className="relative px-4 py-2">
-
           <textarea
             ref={textareaRef}
             rows="1"
@@ -191,12 +190,10 @@ const ChatBox = ({ onBack }) => {
             value={message}
             onChange={(e) => updateMessageField(e)}
             onKeyPress={handleKeyPress}
-
             className="w-full min-h-[44px] bg-[#D9D9D9] bg-opacity-40 px-4 py-2 pr-20 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-400 resize-none overflow-hidden"
           />
           <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center space-x-2">
             <div className="relative">
-
               <button
                 type="button"
                 onClick={(e) => {
@@ -205,7 +202,11 @@ const ChatBox = ({ onBack }) => {
                 }}
                 className="text-gray-500 hover:text-gray-700 p-1"
               >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <svg
+                  className="w-6 h-6"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
                   <path
                     fillRule="evenodd"
                     d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-3.646 5.854a.5.5 0 00.708 0l2-2a.5.5 0 00-.708-.708L11 13.793l-1.646-1.647a.5.5 0 00-.708.708l2 2z"
@@ -226,7 +227,6 @@ const ChatBox = ({ onBack }) => {
                   </div>
                 </div>
               )}
-
             </div>
             <button
               type="submit"
@@ -242,23 +242,15 @@ const ChatBox = ({ onBack }) => {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
-
               >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                  />
-                </svg>
-              </button>
-            </div>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                />
+              </svg>
+            </button>
           </div>
         </form>
       </div>

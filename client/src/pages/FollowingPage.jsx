@@ -201,7 +201,6 @@ const FollowingPage = () => {
 
         {/* Main Content */}
         <div className="flex-1 min-w-0 border-x border-gray-200 flex flex-col">
-
           {/* Fixed Header Section */}
           <div className="flex-none">
             {/* Page Header */}
@@ -210,7 +209,6 @@ const FollowingPage = () => {
                 {activeTab === "following" ? "Following" : "Followers"}
               </h1>
             </div>
-
 
             {/* Tabs */}
             <div className="flex border-b border-gray-200">
@@ -236,18 +234,17 @@ const FollowingPage = () => {
               </button>
             </div>
 
+            {/* Following / Followers Component */}
+            {activeTab === "following" ? (
+              <Following></Following>
+            ) : (
+              <Followers></Followers>
+            )}
+          </div>
 
-          {/* Following / Followers Component */}
-          {activeTab === "following" ? (
-            <Following></Following>
-          ) : (
-            <Followers></Followers>
-          )}
-
+          {/* Bottom Navigation */}
+          <BottomNav />
         </div>
-
-        {/* Bottom Navigation */}
-        <BottomNav />
       </div>
     </div>
   );
