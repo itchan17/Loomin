@@ -49,10 +49,10 @@ const Profile = () => {
   return (
     <div
       id="posts-container"
-      className="flex flex-col w-full h-[calc(100vh-4rem)] bg-loomin-white overflow-y-auto"
+      className="flex flex-col w-full h-[calc(100vh-4rem)] bg-loomin-white overflow-y-auto "
     >
       <div className="flex flex-col items-center bg-loomin-white">
-        <div className="relative w-full px-0 2xl:px-6">
+        <div className="w-full px-0 2xl:px-6 ">
           {/* Banner Image - Full width on mobile and tablet */}
           <img
             src={
@@ -65,7 +65,7 @@ const Profile = () => {
                 : defaultProfileImages.background
             }
             alt="banner"
-            className="h-48 2xl:h-64 w-full object-cover 2xl:rounded-b-lg"
+            className="h-64 w-full object-cover 2xl:rounded-b-lg "
           />
 
           {/* Profile Info Section */}

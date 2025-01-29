@@ -261,7 +261,7 @@ const Post = ({ post }) => {
       fade: true,
     };
     return (
-      <div className="group">
+      <div className="slider-container group">
         <Slider {...settings}>
           {post.images.map((image) => (
             <div className="aspect-video w-full">
@@ -326,7 +326,7 @@ const Post = ({ post }) => {
         <p className="mt-1 px-4 md:px-6 mb-2 text-semibold antialiased break-words whitespace-pre-wrap">
           {post.content}
         </p>
-        <div className="relative" onDoubleClick={handleDoubleTap}>
+        <div onDoubleClick={handleDoubleTap}>
           {post.images.length > 0 ? (
             <div className="w-full">
               <SimpleSlider />
@@ -339,7 +339,7 @@ const Post = ({ post }) => {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0, opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="absolute inset-0 flex items-center justify-center"
+                className="absolute  inset-0 flex items-center justify-center"
               >
                 <motion.div
                   animate={{ scale: [1, 1.2, 1] }}
