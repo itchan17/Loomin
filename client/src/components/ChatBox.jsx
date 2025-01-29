@@ -142,9 +142,9 @@ const ChatBox = ({ onBack }) => {
   };
 
   return (
-    <div className="w-full flex flex-col h-[calc(100vh-8rem)] md:h-[calc(100vh-4rem)] relative">
+    <div className="w-full flex flex-col h-full">
       {/* Header */}
-      <div className="border-b border-[#A4A4A4] bg-[#D9D9D9] bg-opacity-40 py-3 flex flex-col items-center justify-center relative">
+      <div className="flex-none border-b border-[#A4A4A4] bg-[#D9D9D9] bg-opacity-40 py-3 flex flex-col items-center justify-center relative">
         {onBack && (
           <button
             onClick={onBack}
@@ -174,14 +174,15 @@ const ChatBox = ({ onBack }) => {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-5 py-4">
+      <div className="flex-1 overflow-y-auto px-5 py-4 scrollbar-hide">
         {messages && dsiplayMessages()}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Form - Fixed at bottom */}
-      <div className="sticky bottom-0 bg-white border-t py-3 px-4">
-        <form onSubmit={handleSubmit} className="">
+      {/* Input Form */}
+      <div className="flex-none bg-white border-t">
+        <form onSubmit={handleSubmit} className="relative px-4 py-2">
+
           <textarea
             ref={textareaRef}
             rows="1"
@@ -190,23 +191,21 @@ const ChatBox = ({ onBack }) => {
             value={message}
             onChange={(e) => updateMessageField(e)}
             onKeyPress={handleKeyPress}
-            className="relative w-full min-h-[44px] bg-[#D9D9D9] bg-opacity-40 px-4 py-2 pr-24 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-400 resize-none overflow-hidden"
+
+            className="w-full min-h-[44px] bg-[#D9D9D9] bg-opacity-40 px-4 py-2 pr-20 border border-gray-300 rounded-xl focus:outline-none focus:border-blue-400 resize-none overflow-hidden"
           />
-          <div className="absolute r-4 right-6 top-1/2 pb-1 -translate-y-1/2 flex items-center gap-2">
-            <div className="flex gap-2">
+          <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center space-x-2">
+            <div className="relative">
+
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowEmojiPicker(!showEmojiPicker);
                 }}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-500 hover:text-gray-700 p-1"
               >
-                <svg
-                  className="w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
+                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fillRule="evenodd"
                     d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-3.646 5.854a.5.5 0 00.708 0l2-2a.5.5 0 00-.708-.708L11 13.793l-1.646-1.647a.5.5 0 00-.708.708l2 2z"
@@ -227,14 +226,23 @@ const ChatBox = ({ onBack }) => {
                   </div>
                 </div>
               )}
-              <button
-                type="submit"
-                disabled={!message.trim()}
-                className={`${
-                  message.trim()
-                    ? "text-blue-500 hover:text-blue-700"
-                    : "text-gray-400"
-                }`}
+
+            </div>
+            <button
+              type="submit"
+              disabled={!message.trim()}
+              className={`p-1 ${
+                message.trim()
+                  ? "text-blue-500 hover:text-blue-700"
+                  : "text-gray-400"
+              }`}
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+
               >
                 <svg
                   className="w-6 h-6"
