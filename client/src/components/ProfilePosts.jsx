@@ -70,7 +70,7 @@ const ProfilePosts = () => {
   };
 
   const DetailsCard = () => (
-    <div className="bg-white rounded-lg shadow p-4">
+    <div className="bg-white rounded-lg shadow p-4 sticky top-4">
       <h2 className="text-xl font-semibold mb-4">Details</h2>
       <div className="space-y-4">
         <div className="flex items-center gap-2">

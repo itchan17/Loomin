@@ -176,41 +176,42 @@ const Profile = () => {
         {activeTab === "posts" && <ProfilePosts />}
         {activeTab === "about" && <ProfileAbout />}
         {activeTab === "archive" && (
-          <div className="border-b 2xl:border 2xl:rounded-2xl max-w-full 2xl:max-w-2xl mb-0 2xl:mb-4">
-            <div className="bg-white 2xl:shadow-md 2xl:rounded-2xl w-full">
-              <div className="flex items-center p-3 2xl:p-4">
-                <img
-                  src={
-                    userProfileData ? userProfileData.profile_picture : userIcon
-                  }
-                  alt="User"
-                  className="w-10 h-10 rounded-full cursor-pointer object-cover"
-                />
-                <div className="ml-2 flex flex-col">
-                  <div className="flex gap-1 items-center">
-                    <span className="font-semibold cursor-pointer text-base md:text-lg">
-                      {userProfileData
-                        ? `${userProfileData.first_name} ${userProfileData.last_name}`
-                        : "Lucas Blair"}
+          <div className="flex flex-col gap-4 max-w-[680px] mx-auto w-full">
+            <div className="bg-white shadow-sm rounded-none 2xl:rounded-2xl p-0">
+              {/* Post Header */}
+              <div className="flex items-center justify-between p-4">
+                <div className="flex items-center gap-3">
+                  <img
+                    src={userProfileData ? userProfileData.profile_picture : userIcon}
+                    alt="User"
+                    className="w-10 h-10 rounded-full cursor-pointer object-cover"
+                  />
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold cursor-pointer">
+                        {userProfileData
+                          ? `${userProfileData.first_name} ${userProfileData.last_name}`
+                          : "Lucas Blair"}
+                      </span>
+                      <span className="text-gray-500">·</span>
+                      <span className="text-gray-500 text-sm">29 minutes ago</span>
+                    </div>
+                    <span className="text-gray-500 text-sm">
+                      {userProfileData ? `@${userProfileData.username}` : "@BlairBound"}
                     </span>
                   </div>
-                  <span className="-mt-1 text-sm md:text-base cursor-pointer">
-                    {userProfileData
-                      ? `@${userProfileData.username}`
-                      : "@BlairBound"}
-                  </span>
                 </div>
-                <div className="ml-auto relative menu-container">
+                <div className="relative menu-container">
                   <button
-                    className="p-1 hover:bg-gray-100 rounded-full"
+                    className="p-2 hover:bg-gray-100 rounded-full"
                     onClick={() => setShowArchiveMenu(!showArchiveMenu)}
                   >
-                    <i className="bx bx-dots-horizontal-rounded text-xl md:text-2xl"></i>
+                    <i className="bx bx-dots-horizontal-rounded text-xl"></i>
                   </button>
                   {showArchiveMenu && (
                     <div className="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
                       <button
-                        className="w-full px-4 py-2 text-left hover:bg-gray-100 text-gray-700 text-base md:text-lg"
+                        className="w-full px-4 py-2 text-left hover:bg-gray-100 text-gray-700"
                         onClick={() => {
                           setShowArchiveMenu(false);
                         }}
@@ -221,23 +222,28 @@ const Profile = () => {
                   )}
                 </div>
               </div>
-              <p className="mt-1 px-4 2xl:px-6 mb-2 text-semibold antialiased text-base md:text-lg">
-                This is an archived post. You can unarchive it to make it
-                visible again.
-              </p>
-              <div className="px-4 2xl:px-6 py-3">
-                <div className="flex gap-4">
-                  <div className="flex items-center gap-1">
-                    <button>
-                      <i className="bx bx-heart text-2xl md:text-3xl"></i>
+
+              {/* Post Content */}
+              <div className="px-4 pb-3">
+                <p className="text-[15px] leading-normal text-gray-900">
+                  This is an archived post. You can unarchive it to make it visible again.
+                </p>
+              </div>
+
+              {/* Post Actions */}
+              <div className="px-4 py-3 ">
+                <div className="flex gap-6">
+                  <div className="flex items-center gap-2">
+                    <button className="hover:bg-gray-100 p-1.5 rounded-full">
+                      <i className="bx bx-heart text-xl text-gray-500"></i>
                     </button>
-                    <span className="text-base md:text-lg">24</span>
+                    <span className="text-sm text-gray-500">24</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <button>
-                      <i className="bx bx-comment text-2xl md:text-3xl"></i>
+                  <div className="flex items-center gap-2">
+                    <button className="hover:bg-gray-100 p-1.5 rounded-full">
+                      <i className="bx bx-comment text-xl text-gray-500"></i>
                     </button>
-                    <span className="text-base md:text-lg">12</span>
+                    <span className="text-sm text-gray-500">12</span>
                   </div>
                 </div>
               </div>
