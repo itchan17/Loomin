@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import usePostStore from "../stores/PostStore";
 import useUserStore from "../stores/userStore";
 import Swal from "sweetalert2";
+import useProfileStore from "../stores/profileStore";
 
 const EditPostForm = ({ onClose, post }) => {
   // Post states
@@ -15,6 +16,11 @@ const EditPostForm = ({ onClose, post }) => {
     (state) => state.updateEditFormField
   );
   const updatePost = usePostStore((state) => state.updatePost);
+
+  // Profile store
+  const defaultProfileImages = useProfileStore(
+    (state) => state.defaultProfileImages
+  );
 
   const [editPostForm, setEditPostForm] = useState({
     content: post.content,
@@ -128,7 +134,11 @@ const EditPostForm = ({ onClose, post }) => {
           <div className="w-16 h-14">
             <img
               className="rounded-full w-14 h-14 object-cover"
-              src={loggedInUser.profile_picture}
+              src={
+                loggedInUser.profile_picture
+                  ? `http://localhost:3000/${loggedInUser.profile_picture}`
+                  : defaultProfileImages.profile
+              }
               alt="Profile"
             />
           </div>

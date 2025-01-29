@@ -4,10 +4,12 @@ import RightSidebar from "../components/rightsidebar";
 import Header from "../components/header";
 import BottomNav from "../components/BottomNav";
 import { Link, useLocation } from "react-router-dom";
-import useUserStore from "../stores/UserStore";
+import useUserStore from "../stores/userStore";
 import useNotificationStore from "../stores/notificationStore";
 import useSocketStore from "../stores/socketStore";
 import useChatStore from "../stores/chatStore";
+import Following from "../components/Following";
+import Followers from "../components/Followers";
 
 const FollowingPage = () => {
   const [activeTab, setActiveTab] = useState("following");
@@ -198,7 +200,7 @@ const FollowingPage = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 min-w-0 border-x border-gray-200">
+        <div className="flex-1 min-w-0 border-x border-gray-200 flex flex-col">
           {/* Page Header */}
           <div className="px-6 py-4 border-b border-gray-200">
             <h1 className="text-3xl font-bold text-gray-900">
@@ -230,73 +232,12 @@ const FollowingPage = () => {
             </button>
           </div>
 
-          {/* Search Bar */}
-          <div className="p-4">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search users..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-full focus:outline-none focus:border-[#FF6F61] pl-10"
-              />
-              <i className="bx bx-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-            </div>
-          </div>
-
-          {/* Users Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 p-4 h-full overflow-y-auto">
-            {filteredUsers.map((user) => (
-              <div
-                key={user._id}
-                className="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-lg transition-shadow w-full sm:max-w-[240px] mx-auto"
-              >
-                {/* User Card Header */}
-                <div className="flex flex-col items-center text-center">
-                  <img
-                    src={user.profile_picture}
-                    alt=""
-                    className="w-20 h-20 rounded-full object-cover mb-3"
-                  />
-                  <Link
-                    to={`/profile/${user.username}`}
-                    className="font-medium text-gray-900 hover:underline"
-                  >
-                    {user.first_name} {user.last_name}
-                  </Link>
-                  <p className="text-sm text-gray-500 mb-4">@{user.username}</p>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex flex-col gap-2">
-                  {activeTab === "following" ? (
-                    <>
-                      <Link
-                        to={`/profile/${user.username}`}
-                        className="w-full px-4 py-2 rounded-full bg-[#FF6F61] text-white font-medium text-center hover:bg-[#ff5c4d] transition-colors"
-                      >
-                        View Profile
-                      </Link>
-                      <button className="w-full px-4 py-2 rounded-full border border-gray-300 text-gray-700 font-medium hover:bg-gray-100 transition-colors">
-                        Unfollow
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      className={`w-full px-4 py-2 rounded-full font-medium transition-colors
-                        ${
-                          user.isFollowing
-                            ? "border border-gray-300 text-gray-700 hover:bg-gray-100"
-                            : "bg-[#FF6F61] text-white hover:bg-[#ff5c4d]"
-                        }`}
-                    >
-                      {user.isFollowing ? "Following" : "Follow"}
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* Following / Followers Component */}
+          {activeTab === "following" ? (
+            <Following></Following>
+          ) : (
+            <Followers></Followers>
+          )}
         </div>
 
         {/* Bottom Navigation */}

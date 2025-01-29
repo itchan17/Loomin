@@ -45,6 +45,11 @@ router.get(
   authMiddleware,
   postsController.fetchProfilePosts
 );
+router.get(
+  "/posts/archived/profile/:id",
+  authMiddleware,
+  postsController.fetchArchivedPosts
+);
 
 // Like / Unlike post route
 router.post("/posts/:id/like", authMiddleware, postsController.likeUnlikePost);
@@ -74,6 +79,8 @@ router.delete(
 // User routes
 router.get("/users", authMiddleware, usersController.fetchLoggedInUser);
 router.get("/users/search", authMiddleware, usersController.searchUser);
+router.get("/users/following", authMiddleware, usersController.fetchFollowing);
+router.get("/users/followers", authMiddleware, usersController.fetchFollowers);
 router.get("/users/:username", authMiddleware, usersController.fetchUser);
 router.post("/users/:id/following", authMiddleware, usersController.followUser);
 router.post(

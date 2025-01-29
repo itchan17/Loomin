@@ -4,7 +4,7 @@ import useUserStore from "./userStore";
 
 const usePostStore = create((set) => ({
   posts: [],
-
+  archivedPosts: [],
   loading: false,
 
   createForm: {
@@ -112,7 +112,7 @@ const usePostStore = create((set) => ({
     }));
   },
   // Add clear posts function
-  clearPosts: () => set({ posts: [], hasMore: true }),
+  clearPosts: () => set({ posts: [], archivedPosts: [], hasMore: true }),
 
   fetchPosts: async (page, setHasMore) => {
     try {
@@ -160,12 +160,19 @@ const usePostStore = create((set) => ({
   },
 
   archivePost: async (postId) => {
-    const { posts } = usePostStore.getState();
+    const { posts, archivedPosts } = usePostStore.getState();
     try {
       const res = await axios.put(`posts/${postId}/archive`);
       console.log(res);
-      const newPosts = posts.filter((post) => post._id !== res.data.post._id);
-      set({ posts: newPosts });
+      if (res.data.post.isArchived) {
+        const newPosts = posts.filter((post) => post._id !== res.data.post._id);
+        set({ posts: newPosts });
+      } else if (!res.data.post.isArchived) {
+        const newArchivedPosts = archivedPosts.filter(
+          (post) => post._id !== res.data.post._id
+        );
+        set({ archivedPosts: newArchivedPosts });
+      }
     } catch (error) {
       console.log(error);
       throw error;
@@ -192,6 +199,25 @@ const usePostStore = create((set) => ({
       console.log(fetchedPosts);
       set({
         posts: [...posts, ...fetchedPosts.data.posts],
+      });
+      setHasMore(fetchedPosts.data.hasMore);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  },
+
+  // Fetch all posts of the user
+  fetchArchivedPosts: async (page, setHasMore, userId) => {
+    console.log(userId);
+    try {
+      const { archivedPosts } = usePostStore.getState();
+      const fetchedPosts = await axios.get(
+        `/posts/archived/profile/${userId}?page=${page}&limit=10`
+      );
+      console.log(fetchedPosts);
+      set({
+        archivedPosts: [...archivedPosts, ...fetchedPosts.data.posts],
       });
       setHasMore(fetchedPosts.data.hasMore);
     } catch (error) {

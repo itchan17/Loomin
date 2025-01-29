@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import usePostStore from "../stores/PostStore";
 import useUserStore from "../stores/UserStore";
+import useProfileStore from "../stores/profileStore";
 
 const Createpost = ({ onClose }) => {
   // Post states
   const createForm = usePostStore((state) => state.createForm);
+  const clearForm = usePostStore((state) => state.clearForm);
   // User states
   const loggedInUser = useUserStore((state) => state.loggedInUser);
 
@@ -13,7 +15,11 @@ const Createpost = ({ onClose }) => {
   const updateCreateFormField = usePostStore(
     (state) => state.updateCreateFormField
   );
-  const clearForm = usePostStore((state) => state.clearForm);
+
+  // Profile store
+  const defaultProfileImages = useProfileStore(
+    (state) => state.defaultProfileImages
+  );
 
   // Local state
   const [previewImage, setPreviewImage] = useState([]);
@@ -58,7 +64,11 @@ const Createpost = ({ onClose }) => {
           <div className="w-16 h-14">
             <img
               className="rounded-full w-14 h-14 object-cover"
-              src={loggedInUser.profile_picture}
+              src={
+                loggedInUser.profile_picture
+                  ? `http://localhost:3000/${loggedInUser.profile_picture}`
+                  : defaultProfileImages.profile
+              }
               alt="Profile"
             />
           </div>
@@ -73,7 +83,7 @@ const Createpost = ({ onClose }) => {
                   content: e.target.value,
                 }));
               }}
-              placeholder="It's Shrekin time"
+              placeholder="What's on your mind? Share your thoughts, moments, or creativity with the world!"
               className="w-full text-md resize-none outline-none h-32"
             ></textarea>
           </div>

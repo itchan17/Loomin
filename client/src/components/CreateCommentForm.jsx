@@ -23,16 +23,15 @@ const CreateCommentForm = ({ post, setCommentsCount, setComments }) => {
     setComment("");
 
     // Make notification
-    if (loggedInUser._id !== post.creator._id) {
-      const notif = {
-        senderId: loggedInUser._id,
-        recipientId: post.creator._id,
-        postId: post._id,
-        type: "comment",
-        content: `commented on your post.`,
-      };
 
-      await makeNotification(notif);
+    if (loggedInUser._id !== post.creator._id) {
+      makeNotification(
+        loggedInUser._id,
+        post.creator._id,
+        post._id,
+        "comment",
+        `commented on your post.`
+      );
     }
   };
 

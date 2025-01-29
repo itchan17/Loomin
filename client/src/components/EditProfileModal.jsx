@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import userIcon from "../assets/user.png";
 import banner from "../assets/banner.png";
 import useUserStore from "../stores/userStore";
+import useProfileStore from "../stores/profileStore";
 
 const EditProfileModal = ({ isOpen, onClose }) => {
+  const defaultProfileImages = useProfileStore(
+    (state) => state.defaultProfileImages
+  );
   const existingProfile = useUserStore((state) => state.profile);
 
   const [profileImage, setProfileImage] = useState(
-    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+    defaultProfileImages.profile
   );
-  const [coverImage, setCoverImage] = useState(
-    "https://img.freepik.com/free-photo/gray-wall-textures-background_74190-4389.jpg"
-  );
+  const [coverImage, setCoverImage] = useState(defaultProfileImages.background);
 
   const editProfile = useUserStore((state) => state.editProfile);
 
@@ -35,25 +37,24 @@ const EditProfileModal = ({ isOpen, onClose }) => {
       coverImage: null,
       removedImages: [],
     });
-    setProfileImage(
-      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-    );
-    setCoverImage(
-      "https://img.freepik.com/free-photo/gray-wall-textures-background_74190-4389.jpg"
-    );
+    setProfileImage(defaultProfileImages.profile);
+    setCoverImage(defaultProfileImages.background);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <form
+      onSubmit={handleSubmit}
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
       <div className="bg-white rounded-lg w-[500px] relative">
         <div className="flex justify-between items-center p-4 border-b">
           <div className="flex items-center gap-4">
             <h2 className="text-xl font-semibold">Edit Profile</h2>
-            <button 
+            <button
               onClick={onClose}
               className="absolute right-4 top-4 text-2xl text-gray-500 hover:text-gray-700"
             >
-              <i class='bx bx-x'></i>
+              <i class="bx bx-x"></i>
             </button>
           </div>
         </div>
@@ -178,4 +179,4 @@ const EditProfileModal = ({ isOpen, onClose }) => {
   );
 };
 
-export default EditProfileModal; 
+export default EditProfileModal;

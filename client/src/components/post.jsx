@@ -14,11 +14,17 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../styles/slick-custom.css";
+import useProfileStore from "../stores/profileStore";
 
 const Post = ({ post }) => {
   //Notification state
   const makeNotification = useNotificationStore(
     (state) => state.makeNotification
+  );
+
+  // Profile store
+  const defaultProfileImages = useProfileStore(
+    (state) => state.defaultProfileImages
   );
 
   //User state
@@ -67,7 +73,18 @@ const Post = ({ post }) => {
   };
   const toggleFollow = () => {
     followUser(post.creator);
+
+    if (!following.includes(post.creator._id)) {
+      makeNotification(
+        loggedInUser._id,
+        post.creator._id,
+        null,
+        "follow",
+        `just followed you!`
+      );
+    }
   };
+
   // Liking post functions
   // Check if the user liked the post then set isLiked to true the component renders
   const checkIfLiked = () => {
@@ -77,7 +94,7 @@ const Post = ({ post }) => {
   };
 
   // Handle the like button
-  const handleLike = async () => {
+  const handleLike = () => {
     if (!isLiked) {
       console.log("Like");
 
@@ -96,15 +113,13 @@ const Post = ({ post }) => {
 
       // Make notification
       if (loggedInUser._id !== post.creator._id) {
-        const notif = {
-          senderId: loggedInUser._id,
-          recipientId: post.creator._id,
-          postId: post._id,
-          type: "like",
-          content: `liked your post.`,
-        };
-
-        await makeNotification(notif);
+        makeNotification(
+          loggedInUser._id,
+          post.creator._id,
+          post._id,
+          "like",
+          `liked your post.`
+        );
       }
     } else {
       setIsLiked(!isLiked);
@@ -117,7 +132,7 @@ const Post = ({ post }) => {
     }
   };
 
-  const handleDoubleTap = async () => {
+  const handleDoubleTap = () => {
     if (!isLiked) {
       // Like post
       setIsLiked(!isLiked);
@@ -133,15 +148,13 @@ const Post = ({ post }) => {
       setLikesCount(likesCount + 1);
 
       if (loggedInUser._id !== post.creator._id) {
-        const notif = {
-          senderId: loggedInUser._id,
-          recipientId: post.creator._id,
-          postId: post._id,
-          type: "like",
-          content: `liked your post.`,
-        };
-
-        await makeNotification(notif);
+        makeNotification(
+          loggedInUser._id,
+          post.creator._id,
+          post._id,
+          "like",
+          `liked your post.`
+        );
       }
     } else {
       setIsLiked(!isLiked);
@@ -272,9 +285,15 @@ const Post = ({ post }) => {
         <div className="flex items-center p-3 md:p-4">
           <img
             src={
-              post.creator.profile_picture
+              loggedInUser._id === post.creator._id
+                ? profile?.profile_picture
+                  ? `http://localhost:3000/${profile.profile_picture}`
+                  : post.creator.profile_picture
+                  ? `http://localhost:3000/${post.creator.profile_picture}`
+                  : defaultProfileImages.profile
+                : post.creator.profile_picture
                 ? `http://localhost:3000/${post.creator.profile_picture}`
-                : null // Add default image here
+                : defaultProfileImages.profile
             }
             alt={`${post.creator.first_name} ${post.creator.last_name}`}
             className="w-10 h-10 rounded-full cursor-pointer object-cover"
