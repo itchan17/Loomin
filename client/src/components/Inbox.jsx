@@ -73,6 +73,7 @@ const Inbox = () => {
   }, 300);
 
   useEffect(() => {
+    setSearchResults(null);
     debouncedSearch(inboxSearchTerm);
     return () => {
       debouncedSearch.cancel();
@@ -86,12 +87,41 @@ const Inbox = () => {
   };
 
   const displaySearchResults = () => {
-    if (isSearchLoading) return <div>Loading...</div>;
-    if (!isSearchLoading && searchResults?.length === 0)
-      return <div>No results found.</div>;
-    return searchResults?.map((user) => {
-      return <SearchResult key={user._id} user={user} />;
-    });
+    return isSearchLoading ? (
+      <div className="w-full text-center">
+        <div
+          className="inline-block h-4 w-4 animate-spin rounded-full border-[3px] border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] text-loomin-orange"
+          role="status"
+        >
+          <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+            Loading...
+          </span>
+        </div>
+      </div>
+    ) : (
+      (() => {
+        if (!isSearchLoading && searchResults && searchResults.length > 0) {
+          return (
+            <div>
+              <h1 className="font-bold mb-2">Search Results:</h1>
+              {searchResults.map((result) => (
+                <SearchResult key={result._id} user={result} />
+              ))}
+            </div>
+          );
+        } else if (
+          !isSearchLoading &&
+          searchResults &&
+          searchResults.length == 0
+        ) {
+          return (
+            <div className="text-sm w-full font-medium text-gray-400">
+              No matching users found.
+            </div>
+          );
+        }
+      })()
+    );
   };
 
   return (
@@ -100,8 +130,11 @@ const Inbox = () => {
       <main className="flex-1 overflow-y-auto bg-white">
         {/* Mobile and Tablet Inbox View */}
 
-        <div className={`xl:hidden flex flex-col w-full h-full ${showMobileChat ? 'hidden' : 'flex'}`}>
-
+        <div
+          className={`xl:hidden flex flex-col w-full h-full ${
+            showMobileChat ? "hidden" : "flex"
+          }`}
+        >
           <div className="flex flex-col p-4">
             <h1 className="font-bold text-3xl mb-4">Messages</h1>
             <div className="relative flex items-center mb-6">
@@ -125,19 +158,15 @@ const Inbox = () => {
               </svg>
             </div>
             {chats && !inboxSearchTerm && displayChats()}
-            {inboxSearchTerm && (
-              <div>
-                <h1 className="font-bold mb-2">Search Results:</h1>
-                {displaySearchResults()}
-              </div>
-            )}
+            {inboxSearchTerm.trim() && <div>{displaySearchResults()}</div>}
           </div>
         </div>
 
         {/* Mobile and Tablet Chat View */}
 
-        <div className={`xl:hidden ${showMobileChat ? 'block' : 'hidden'} h-full`}>
-
+        <div
+          className={`xl:hidden ${showMobileChat ? "block" : "hidden"} h-full`}
+        >
           {activeChat ? (
             <ChatBox onBack={handleBackToInbox} />
           ) : (
@@ -178,13 +207,8 @@ const Inbox = () => {
                   <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              {chats && !inboxSearchTerm && displayChats()}
-              {inboxSearchTerm && (
-                <div>
-                  <h1 className="font-bold mb-2">Search Results:</h1>
-                  {displaySearchResults()}
-                </div>
-              )}
+              {chats && !inboxSearchTerm.trim() && displayChats()}
+              {inboxSearchTerm.trim() && <div>{displaySearchResults()}</div>}
             </div>
           </div>
 

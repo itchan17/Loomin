@@ -65,7 +65,7 @@ const ArchivedPost = ({ post }) => {
   };
   return (
     <div
-      className="border-b md:border py-4 rounded-sm md:rounded-2xl w-[98%] mx-auto md:max-w-2xl mb-4 md:mb-6 bg-white shadow-md md:shadow-sm"
+      className="border-b md:border py-4 rounded-lg w-[98%] mx-auto md:max-w-2xl mb-4 md:mb-6 bg-white shadow-md md:shadow-sm"
       key={post._id}
     >
       <div className="bg-white rounded-xl md:rounded-2xl w-full">

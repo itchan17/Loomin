@@ -4,6 +4,7 @@ import useUserStore from "../stores/userStore";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import useProfileStore from "../stores/profileStore";
+import useNotificationStore from "../stores/notificationStore";
 
 const Followers = () => {
   const [users, setUsers] = useState(null);
@@ -19,19 +20,24 @@ const Followers = () => {
     (state) => state.defaultProfileImages
   );
 
+  // Notif store
+  const makeNotification = useNotificationStore(
+    (state) => state.makeNotification
+  );
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const userList = await axios.get(`/users/followers`);
         console.log(userList);
-        setUsers(userList.data);
+        setUsers(userList.data.followers);
+        setFollowingList(userList.data.userFollowing);
       } catch (error) {
         console.log(error);
       }
     };
 
     fetchUsers();
-    setFollowingList(loggedInUser.following);
   }, []);
 
   // Unfollow user
@@ -62,13 +68,20 @@ const Followers = () => {
         );
       }
     } else {
+      makeNotification(
+        loggedInUser._id,
+        follower._id,
+        null,
+        "follow",
+        `just followed you!`
+      );
       followUser(follower);
       setFollowingList((prev) => [...prev, follower._id]);
     }
   };
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-2">
+    <div className="h-[calc(100vh-192px)] overflow-y-auto px-4 py-2">
       <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4 auto-rows-min">
         {users &&
           users?.map((user) => (

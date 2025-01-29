@@ -3,8 +3,8 @@ import moment from "moment";
 import useNotificationStore from "../stores/notificationStore";
 import useProfileStore from "../stores/profileStore";
 
-const Notification = ({ notification, readNotif, isRead }) => {
-  const [isNotificationRead, setIsNotificationRead] = useState(isRead);
+const Notification = ({ notification }) => {
+  const [isNotificationRead, setIsNotificationRead] = useState(false);
 
   const markAsRead = useNotificationStore((state) => state.markAsRead);
   const clearNotification = useNotificationStore(
@@ -29,7 +29,8 @@ const Notification = ({ notification, readNotif, isRead }) => {
     e.stopPropagation();
     clearNotification(notification._id);
     setIsNotificationRead(false);
-    setNotificationsCount();
+
+    !isNotificationRead && setNotificationsCount();
   };
   return (
     <div
@@ -59,7 +60,15 @@ const Notification = ({ notification, readNotif, isRead }) => {
               className="w-12 h-12 rounded-full object-cover"
             />
             <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] rounded-full flex items-center justify-center">
-              <i className="bx bx-user-plus text-white text-sm"></i>
+              <i
+                className={`bx bx-${
+                  notification.type === "follow"
+                    ? "user-plus"
+                    : notification.type === "like"
+                    ? "heart"
+                    : "comment"
+                } text-white text-sm`}
+              ></i>
             </div>
           </div>
           <div>

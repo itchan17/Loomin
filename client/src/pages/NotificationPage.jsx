@@ -26,6 +26,9 @@ const NotificationPage = () => {
   const setNotifications = useNotificationStore(
     (state) => state.setNotifications
   );
+  const notificationsCount = useNotificationStore(
+    (state) => state.notificationsCount
+  );
 
   // Chat store
   const setNewMessageNotif = useChatStore((state) => state.setNewMessageNotif);
@@ -108,11 +111,14 @@ const NotificationPage = () => {
           <div className="flex-none border-b border-gray-200">
             <div className="px-2 sm:px-6 py-4 flex justify-between items-center">
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold">Notifications</h1>
+                <h1 className="text-2xl md:text-3xl font-bold">
+                  Notifications
+                </h1>
                 <div className="flex items-center gap-2 text-gray-600 text-sm sm:text-base">
                   <span className="text-base">You have</span>
                   <span className="text-[#FF6F61] font-medium">
-                    {notifications ? notifications.length : "0"} Notifications
+                    {notificationsCount > 0 ? notificationsCount : "0"}{" "}
+                    Notifications
                   </span>
                 </div>
               </div>
@@ -121,7 +127,9 @@ const NotificationPage = () => {
                 onClick={handleClearAllNotifications}
                 className="px-3 py-1 sm:px-4 sm:py-1.5 bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] text-white rounded-full hover:opacity-90 transition md:w-auto"
               >
-                <span className="text-sm sm:text-base font-bold">Clear all</span>
+                <span className="text-sm sm:text-base font-bold">
+                  Clear all
+                </span>
               </button>
             </div>
           </div>

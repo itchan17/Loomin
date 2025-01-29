@@ -136,16 +136,16 @@ const ProfilePosts = () => {
   );
 
   return (
-    <div className="flex flex-col md:flex-row gap-8 bg-[#D9D9D9] px-4 md:px-8 max-w-7xl mx-auto">
+    <div className="flex flex-col lg:flex-row bg-[#D9D9D9] px-4 md:px-8 max-w-7xl mx-auto">
       {/* Left side - Details - Hidden on desktop */}
-      <div className="hidden md:block md:w-1/3 lg:w-1/4">
+      <div className="hidden lg:block md:w-1/3 lg:w-1/4">
         <DetailsCard />
       </div>
 
       {/* Right side - Posts */}
       <div className="flex-1 w-full max-w-3xl mx-auto">
         {/* Mobile Details Card */}
-        <div className="block md:hidden mb-4">
+        <div className="block lg:hidden max-w-2xl mb-4 mx-auto">
           <DetailsCard />
         </div>
 
@@ -157,19 +157,28 @@ const ProfilePosts = () => {
           scrollableTarget="posts-container"
           className="w-full"
           loader={
-            <div className="flex justify-center mb-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+            <div className="py-2 w-full text-center">
+              <div
+                class="inline-block h-6 w-6 animate-spin rounded-full border-[3px] border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] text-loomin-orange"
+                role="status"
+              >
+                <span class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                  Loading...
+                </span>
+              </div>
             </div>
           }
           endMessage={
             !posts.length ? (
               <div className="flex items-center justify-center p-4">
                 <div>
-                  <p className="text-center text-gray-500">No posts yet!</p>
+                  <p className="text-center font-bold text-gray-500">
+                    No posts yet!
+                  </p>
                 </div>
               </div>
             ) : (
-              <p className="text-center text-gray-500 border-black mb-4 p-4">
+              <p className="text-center font-bold text-gray-500 mb-4 p-4">
                 You've seen all posts!
               </p>
             )

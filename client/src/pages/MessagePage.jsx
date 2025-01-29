@@ -98,7 +98,7 @@ const MessagePage = () => {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-hidden bg-gray-50 pb-16 2xl:pb-0">
+        <main className="flex-1 overflow-hidden bg-gray-50">
           <Inbox />
         </main>
       </div>

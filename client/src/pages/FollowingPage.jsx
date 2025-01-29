@@ -193,16 +193,16 @@ const FollowingPage = () => {
   return (
     <div className="flex flex-col h-screen w-full overflow-hidden">
       <Header />
-      <div className="flex flex-1 bg-white overflow-hidden">
+      <div className="flex flex-1 bg-white h-[calc(100vh-4rem)]">
         {/* Left Sidebar */}
-        <div className="hidden md:block w-[320px]">
+        <div className="hidden xl:block w-[320px]">
           <LeftSidebar />
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 min-w-0 border-x border-gray-200 flex flex-col">
+        <div className="flex-1 min-w-0  flex flex-col ">
           {/* Fixed Header Section */}
-          <div className="flex-none">
+          <div className="flex-none border-x border-gray-200 h-full">
             {/* Page Header */}
             <div className="px-6 py-4 border-b border-gray-200">
               <h1 className="text-3xl font-bold text-gray-900">

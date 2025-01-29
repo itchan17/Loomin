@@ -15,8 +15,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../styles/slick-custom.css";
 import useProfileStore from "../stores/profileStore";
+import { useNavigate } from "react-router-dom";
 
 const Post = ({ post }) => {
+  const navigate = useNavigate();
   //Notification state
   const makeNotification = useNotificationStore(
     (state) => state.makeNotification
@@ -213,10 +215,12 @@ const Post = ({ post }) => {
             {`${comment.user_id.first_name} ${comment.user_id.last_name}`}
           </span>
           <span className="text-gray-500">{comment.comment}</span>
-          <div className="flex gap-6">
-            <p className="font-thin text-sm text-gray-400">11m</p>
+          <div className="flex gap-3 items-end">
+            <p className="font-thin text-sm text-gray-400">
+              {timeAgo(comment.createdAt)}
+            </p>
             {loggedInUser._id === comment.user_id._id ? (
-              <>
+              <div className="space-x-3">
                 <a
                   onClick={() => toggleEditComment(comment)}
                   className="font-thin text-sm text-gray-400 underline cursor-pointer"
@@ -229,7 +233,7 @@ const Post = ({ post }) => {
                 >
                   Delete
                 </a>
-              </>
+              </div>
             ) : (
               ""
             )}
@@ -276,14 +280,32 @@ const Post = ({ post }) => {
       </div>
     );
   };
+
+  const timeAgo = (timestamp) => {
+    const now = new Date();
+    const past = new Date(timestamp);
+    const diffMs = now - past;
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+
+    if (diffMinutes < 1) return "just now";
+    if (diffMinutes < 60) return `${diffMinutes}m`;
+    const diffHours = Math.floor(diffMinutes / 60);
+    if (diffHours < 24) return `${diffHours}h`;
+    const diffDays = Math.floor(diffHours / 24);
+    return `${diffDays}d`;
+  };
+
   return (
     <div
-      className="border-b md:border rounded-xl md:rounded-2xl w-[98%] mx-auto md:max-w-2xl mb-4 md:mb-6 bg-white shadow-md md:shadow-sm"
+      className="border-b md:border rounded-xl md:rounded-2xl mx-auto md:max-w-2xl mb-4 md:mb-6 bg-white shadow-md md:shadow-sm"
       key={post._id}
     >
       <div className="bg-white md:shadow-lg rounded-xl md:rounded-2xl w-full">
         <div className="flex items-center p-3 md:p-4">
           <img
+            onClick={() => {
+              navigate(`/profile/${post.creator.username}`);
+            }}
             src={
               loggedInUser._id === post.creator._id
                 ? profile?.profile_picture
@@ -300,7 +322,12 @@ const Post = ({ post }) => {
           />
           <div className="ml-2 flex flex-col">
             <div className="flex gap-1 items-center">
-              <span className="font-semibold cursor-pointer">{`${post.creator.first_name} ${post.creator.last_name}`}</span>
+              <span
+                onClick={() => {
+                  navigate(`/profile/${post.creator.username}`);
+                }}
+                className="font-semibold cursor-pointer hover:underline"
+              >{`${post.creator.first_name} ${post.creator.last_name}`}</span>
               {loggedInUser._id !== post.creator._id && (
                 <>
                   <span>·</span>
@@ -315,7 +342,12 @@ const Post = ({ post }) => {
                 </>
               )}
             </div>
-            <span className="-mt-1 text-sm cursor-pointer">{`@${post.creator.username}`}</span>
+            <span
+              onClick={() => {
+                navigate(`/profile/${post.creator.username}`);
+              }}
+              className="-mt-1 text-sm cursor-pointer hover:underline"
+            >{`@${post.creator.username}`}</span>
           </div>
           {post.creator._id === loggedInUser._id ? (
             <Dropdown post={post}></Dropdown>

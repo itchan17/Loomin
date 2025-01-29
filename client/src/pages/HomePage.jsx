@@ -80,25 +80,24 @@ const HomePage = () => {
     <div className="flex flex-col h-screen w-full overflow-hidden">
       <Header />
 
-      <div className="flex flex-1 h-[calc(100vh-4rem)]">
-        <aside className="hidden xl:block w-[320px] min-w-[320px] bg-loomin-white shadow-inner h-screen transition-transform border-r border-gray-200">
+      <div className="flex flex-1 h-[calc(100vh-4rem)] ">
+        <aside className="hidden xl:block w-[320px] min-w-[320px] bg-loomin-white shadow-inner h-full transition-transform border-r border-gray-200">
           <LeftSidebar />
         </aside>
 
         <main
           id="posts-container"
-          className="flex-1 overflow-y-auto bg-gray-50"
+          className="flex-1 h-screen lg:h-full overflow-y-auto bg-gray-50"
         >
           <div
-            className="w-full mx-auto px-4 pb-20 xl:pb-4 
-            max-w-[100%] md:max-w-[700px] xl:max-w-[650px] 
+            className="w-full px-4 pb-20 xl:pb-4 
             md:px-6 xl:px-4"
           >
             <Timeline />
           </div>
         </main>
 
-        <aside className="hidden xl:block w-[320px] min-w-[320px] bg-loomin-white shadow-inner h-screen transition-transform border-l border-gray-200">
+        <aside className="hidden xl:block w-[320px] min-w-[320px] bg-loomin-white shadow-inner h-full transition-transform overflow-y-auto">
           <RightSideBar />
         </aside>
       </div>
