@@ -81,7 +81,7 @@ const HomePage = () => {
       <Header />
 
       <div className="flex flex-1 h-[calc(100vh-4rem)]">
-        <aside className="hidden xl:block w-[320px] min-w-[320px] bg-loomin-white shadow-inner h-screen transition-transform border-r border-gray-200">
+        <aside className="hidden xl:block w-[320px] min-w-[320px] bg-loomin-white shadow-inner h-full transition-transform border-r border-gray-200">
           <LeftSidebar />
         </aside>
 
@@ -98,7 +98,7 @@ const HomePage = () => {
           </div>
         </main>
 
-        <aside className="hidden xl:block w-[320px] min-w-[320px] bg-loomin-white shadow-inner h-screen transition-transform border-l border-gray-200">
+        <aside className="hidden xl:block w-[320px] min-w-[320px] bg-loomin-white shadow-inner h-full transition-transform overflow-y-auto">
           <RightSideBar />
         </aside>
       </div>

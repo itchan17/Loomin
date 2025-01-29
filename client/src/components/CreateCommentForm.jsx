@@ -18,20 +18,22 @@ const CreateCommentForm = ({ post, setCommentsCount, setComments }) => {
   const handleCreateComment = async (e) => {
     e.preventDefault();
 
-    await createComment(post._id, comment, setComments);
-    setCommentsCount((prevCount) => prevCount + 1);
-    setComment("");
+    if (comment.trim()) {
+      await createComment(post._id, comment, setComments);
+      setCommentsCount((prevCount) => prevCount + 1);
+      setComment("");
 
-    // Make notification
+      // Make notification
 
-    if (loggedInUser._id !== post.creator._id) {
-      makeNotification(
-        loggedInUser._id,
-        post.creator._id,
-        post._id,
-        "comment",
-        `commented on your post.`
-      );
+      if (loggedInUser._id !== post.creator._id) {
+        makeNotification(
+          loggedInUser._id,
+          post.creator._id,
+          post._id,
+          "comment",
+          `commented on your post.`
+        );
+      }
     }
   };
 
@@ -50,11 +52,8 @@ const CreateCommentForm = ({ post, setCommentsCount, setComments }) => {
       />
 
       <button
-        disabled={comment ? false : true}
         type="submit"
-        className={`px-4 py-1 bg-loomin-yellow text-white rounded-3xl hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange ${
-          comment ? "" : "cursor-not-allowed"
-        }`}
+        className="px-4 py-1 bg-loomin-yellow text-white rounded-3xl hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange"
       >
         {"Comment"}
       </button>

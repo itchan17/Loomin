@@ -18,9 +18,11 @@ const EditCommentForm = ({
   const handleEditComment = async (e) => {
     e.preventDefault();
 
-    await editComment(postId, commentId, comment, setComments);
-    setEditComment((prevState) => false);
-    setComment("");
+    if (comment.trim()) {
+      await editComment(postId, commentId, comment, setComments);
+      setEditComment((prevState) => false);
+      setComment("");
+    }
   };
 
   const updateCommentField = (e) => {
@@ -33,7 +35,10 @@ const EditCommentForm = ({
     setEditComment((prevState) => false);
   };
   return (
-    <form onSubmit={handleEditComment} className="flex flex-col sm:flex-row gap-2">
+    <form
+      onSubmit={handleEditComment}
+      className="flex flex-col sm:flex-row gap-2"
+    >
       <input
         type="text"
         value={comment}
@@ -50,11 +55,8 @@ const EditCommentForm = ({
           Cancel
         </button>
         <button
-          disabled={comment ? false : true}
           type="submit"
-          className={`px-3 sm:px-4 py-1 bg-loomin-yellow text-white rounded-3xl hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange text-sm sm:text-base ${
-            comment ? "" : "cursor-not-allowed"
-          }`}
+          className="px-3 sm:px-4 py-1 bg-loomin-yellow text-white rounded-3xl hover:bg-gradient-to-r from-loomin-yellow to-loomin-orange text-sm sm:text-base"
         >
           Save
         </button>

@@ -12,6 +12,7 @@ import LogoutModal from "./LogoutModal";
 import axios from "axios";
 import debounce from "lodash.debounce";
 import useProfileStore from "../stores/profileStore";
+import Swal from "sweetalert2";
 
 const Header = ({ toggleSidebar }) => {
   const logout = useAuthStore((state) => state.logout);
@@ -52,16 +53,34 @@ const Header = ({ toggleSidebar }) => {
   }, []);
 
   const handleLogout = async () => {
-    try {
-      await logout();
-      clearUser();
-      clearActiveChat();
-      socket.disconnect();
-      navigate("/login");
-    } catch (error) {
-      console.error("Logout failed:", error);
+    const result = await Swal.fire({
+      title: "Logout?",
+      text: "Are you sure you want to logout?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#FF6F61",
+      cancelButtonColor: "#d1d5db",
+      confirmButtonText: "Confirm",
+      background: "#fff",
+      customClass: {
+        popup: "rounded-2xl",
+        title: "font-bold text-gray-900",
+        htmlContainer: "text-gray-600",
+        confirmButton: "rounded-full",
+        cancelButton: "rounded-full",
+      },
+    });
+    if (result.isConfirmed) {
+      try {
+        await logout();
+        clearUser();
+        clearActiveChat();
+        socket.disconnect();
+        navigate("/login");
+      } catch (error) {
+        console.error("Logout failed:", error);
+      }
     }
-    setIsLogoutModalOpen(false);
   };
 
   // Search functionality with debounce
@@ -236,17 +255,11 @@ const Header = ({ toggleSidebar }) => {
         {/* Logout Button */}
         <div className="flex items-center ml-auto">
           <button
-            onClick={() => setIsLogoutModalOpen(true)}
+            onClick={handleLogout}
             className="bx bx-log-out text-2xl text-white rotate-180 hover:bg-orange-700 px-5 py-2 rounded-full cursor-pointer"
           ></button>
         </div>
       </header>
-
-      <LogoutModal
-        isOpen={isLogoutModalOpen}
-        onClose={() => setIsLogoutModalOpen(false)}
-        onLogout={handleLogout}
-      />
     </div>
   );
 };

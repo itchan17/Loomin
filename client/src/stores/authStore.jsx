@@ -165,7 +165,7 @@ const useAuthStore = create((set) => ({
     }
   },
 
-  signup: async () => {
+  signup: async (setSignupSuccessful) => {
     const { signupForm, signupErrorMessage } = useAuthStore.getState();
     const nameRegex = /^[^\w\s]+$/;
 
@@ -288,6 +288,7 @@ const useAuthStore = create((set) => ({
       console.log(signupForm);
       const res = await axios.post("/signup", signupForm);
       console.log(res);
+      setSignupSuccessful(true);
       // Reset form state after successful signup
       set({
         signupForm: {

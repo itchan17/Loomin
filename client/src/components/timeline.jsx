@@ -45,7 +45,7 @@ const Timeline = () => {
   };
 
   return (
-    <div className="flex-auto bg-loomin-white flex-auto items-center px-auto px-6 pl-11 overflow-y-auto">
+    <div className="flex-auto bg-loomin-white flex-auto items-center px-auto px-6 pl-11">
       {/* Header of the timeline*/}
       <div className="w-full py-4 mb-2 flex items-center justify-between px-3 md:px-6">
         <h5 className="text-slate-800 text-4xl font-bold antialiased">Home</h5>
@@ -74,19 +74,28 @@ const Timeline = () => {
           hasMore={hasMore}
           scrollableTarget="posts-container"
           loader={
-            <div className="flex justify-center mb-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+            <div className="py-2 w-full text-center">
+              <div
+                class="inline-block h-6 w-6 animate-spin rounded-full border-[3px] border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] text-loomin-orange"
+                role="status"
+              >
+                <span class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                  Loading...
+                </span>
+              </div>
             </div>
           }
           endMessage={
             !posts.length ? (
               <div className="flex items-center justify-center">
                 <div>
-                  <p className="text-center text-gray-500">No posts yet!</p>
+                  <p className="text-center text-gray-500 font-bold">
+                    No posts yet!
+                  </p>
                 </div>
               </div>
             ) : (
-              <p className="text-center text-gray-500 border-black mb-4">
+              <p className="text-center font-bold text-gray-500 border-black mb-4">
                 You've seen all posts!
               </p>
             )

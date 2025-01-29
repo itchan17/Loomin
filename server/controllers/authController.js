@@ -57,7 +57,9 @@ const signup = async (req, res) => {
         subject: "Verify Your Email",
         html: `<h1>Email Verification</h1>
                <p>Please click the link below to verify your email address:</p>
-               <a href="${verificationUrl}">${verificationUrl}</a>
+               <a href="${verificationUrl}" style="display: inline-block; margin-top: 16px; padding: 8px 16px; background-color: #3b82f6; color: #ffffff; font-weight: 700; text-decoration: none; border-radius: 4px; text-align: center;">
+               Verify Email
+               </a>
                <p>This link will expire in 24 hours.</p>`,
       };
 
@@ -143,7 +145,9 @@ const resendVerification = async (req, res) => {
       subject: "Verify Your Email",
       html: `<h1>Email Verification</h1>
              <p>Please click the link below to verify your email address:</p>
-             <a href="${verificationUrl}">${verificationUrl}</a>
+             <a href="${verificationUrl}" style="display: inline-block; margin-top: 16px; padding: 8px 16px; background-color: #3b82f6; color: #ffffff; font-weight: 700; text-decoration: none; border-radius: 4px; text-align: center;">
+             Verify Email
+             </a>
              <p>This link will expire in 24 hours.</p>`,
     };
 
@@ -195,7 +199,9 @@ const login = async (req, res) => {
         subject: "Verify Your Email",
         html: `<h1>Email Verification</h1>
                <p>Please click the link below to verify your email address:</p>
-               <a href="${verificationUrl}">${verificationUrl}</a>
+               <a href="${verificationUrl}" style="display: inline-block; margin-top: 16px; padding: 8px 16px; background-color: #3b82f6; color: #ffffff; font-weight: 700; text-decoration: none; border-radius: 4px; text-align: center;">
+                Verify Email
+               </a>
                <p>This link will expire in 24 hours.</p>`,
       };
 

@@ -189,10 +189,9 @@ const fetchFollowers = async (req, res) => {
   try {
     // Fetch all the following of user
     const followers = await User.find({ following: { $in: [userId] } });
-    // .skip(skip)
-    // .limit(limit);
+    const userFollowing = await User.findById(userId);
 
-    res.status(200).json(followers);
+    res.status(200).json({ followers, userFollowing: userFollowing.following });
   } catch (error) {
     res.status(500).json(error);
   }

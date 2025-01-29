@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
@@ -20,12 +21,28 @@ const ForgotPasswordPage = () => {
       setIsLoading(true);
       const response = await axios.post("/forgot-password", { email });
       console.log(response);
-
       // Reset states
       setMessage(response.data.message);
       setErrorMessage("");
       setEmail("");
       setIsLoading(false);
+      if (response.status === 200) {
+        const result = await Swal.fire({
+          title: "Password Reset Sent!",
+          text: "Check your email for the reset link.",
+          icon: "success",
+          confirmButtonColor: "#FF6F61",
+          confirmButtonText: "Okay",
+          background: "#fff",
+          customClass: {
+            popup: "rounded-2xl",
+            title: "font-bold text-gray-900",
+            htmlContainer: "text-gray-600",
+            confirmButton: "rounded-full",
+            cancelButton: "rounded-full",
+          },
+        });
+      }
     } catch (error) {
       console.log(error);
       setErrorMessage(error.response.data.error);

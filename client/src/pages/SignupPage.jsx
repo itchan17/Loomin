@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useAuthStore from "../stores/AuthStore";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -20,17 +20,49 @@ const SignupPage = ({ onSwitch }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [signupSuccessful, setSignupSuccessful] = useState(false);
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () =>
     setShowConfirmPassword(!showConfirmPassword);
 
+  useEffect(() => {
+    const openModal = async () => {
+      if (signupSuccessful) {
+        const result = await Swal.fire({
+          title: "Sign Up Successful!",
+          text: "A verification link has been sent to your email.",
+          icon: "success",
+          confirmButtonColor: "#FF6F61",
+          confirmButtonText: "Okay",
+          background: "#fff",
+          customClass: {
+            popup: "rounded-2xl",
+            title: "font-bold text-gray-900",
+            htmlContainer: "text-gray-600",
+            confirmButton: "rounded-full",
+            cancelButton: "rounded-full",
+          },
+        });
+        if (result.isConfirmed) {
+          navigate("/login");
+          setSignupSuccessful(false);
+        }
+      }
+    };
+    openModal();
+  }, [signupSuccessful]);
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    await signup();
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      await signup(setSignupSuccessful);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
   };
 
   // Navigate to login page
