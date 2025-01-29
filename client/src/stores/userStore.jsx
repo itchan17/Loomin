@@ -21,11 +21,12 @@ const useUserStore = create((set) => ({
 
   profileInfo: {
     hometown: null,
-    education: null,
+    school: null,
     work: {
       company: null,
       position: null,
     },
+    birthday: null,
   },
 
   // Function to update profileInfo dynamically
@@ -65,11 +66,12 @@ const useUserStore = create((set) => ({
           },
           profileInfo: {
             hometown: res.data?.user?.hometown ?? null,
-            education: res.data?.user?.education ?? null,
+            school: res.data?.user?.school ?? null,
             work: {
               company: res.data?.user?.work?.company ?? null,
               position: res.data?.user?.work?.position ?? null,
             },
+            birthday: res.data?.user?.date_of_birth ?? null,
           },
         });
       }

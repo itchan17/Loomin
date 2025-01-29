@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import useUserStore from "../../stores/userStore";
 
 const Places = () => {
@@ -11,22 +11,24 @@ const Places = () => {
   const [locationForm, setLocationForm] = useState({ city: "" });
   const [showFromLocationForm, setShowFromLocationForm] = useState(false);
   const [toggleOption, setToggleOption] = useState(false);
-  const [homeTown, setHomeTown] = useState(profileInfo?.hometown || null);
+  const [homeTown, setHomeTown] = useState(profileInfo?.hometown ?? null);
 
   const onSaveLocation = () => {
-    const profileInfo = {
-      hometown: locationForm.city,
-      education: null,
-      work: {
-        company: null,
-        position: null,
-      },
-    };
-    setProfileInfo("hometown", locationForm.city);
-    setLocationForm({ city: "" });
-    setHomeTown(locationForm.city);
-    updateProfileInfo(profileInfo);
-    setShowFromLocationForm(false);
+    if (locationForm.city.trim()) {
+      const profileInfo = {
+        hometown: locationForm.city,
+        school: null,
+        work: {
+          company: null,
+          position: null,
+        },
+      };
+      setProfileInfo("hometown", locationForm.city);
+      setLocationForm({ city: "" });
+      setHomeTown(locationForm.city);
+      updateProfileInfo(profileInfo);
+      setShowFromLocationForm(false);
+    }
   };
 
   const onEditLocation = () => {
@@ -61,7 +63,7 @@ const Places = () => {
             <input
               type="text"
               placeholder={
-                setShowFromLocationForm && homeTown ? homeTown : "Hometown"
+                showFromLocationForm && homeTown ? homeTown : "Hometown"
               }
               value={locationForm.city}
               onChange={(e) =>
@@ -94,11 +96,11 @@ const Places = () => {
         <div className="mt-6 space-y-4">
           {homeTown && (
             <div className="flex items-center justify-between group">
-              <div className="flex items-center gap-3">
-                <i className="bx bx-location-plus text-gray-500 text-2xl"></i>
+              <div className="flex gap-3">
+                <i className="bx bxs-map text-gray-500 text-2xl font-medium font-bold"></i>
                 <div>
-                  <span className="text-gray-500 text-sm">Hometown</span>
                   <p className="text-gray-800 font-medium">{homeTown}</p>
+                  <span className="text-gray-500 text-sm">Hometown</span>
                 </div>
               </div>
               <div className="relative">

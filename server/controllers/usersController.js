@@ -201,7 +201,7 @@ const fetchFollowers = async (req, res) => {
 const updateUserInfo = async (req, res) => {
   const userId = req.user._id;
   console.log(req.body);
-  const { hometown, education, work } = req.body;
+  const { hometown, school, work, birthday } = req.body;
   console.log(hometown);
   try {
     // Find the user by ID and update the fields
@@ -214,11 +214,14 @@ const updateUserInfo = async (req, res) => {
     if (hometown) {
       updatedUser.hometown = hometown;
     }
-    if (education) {
-      updatedUser.education = education;
+    if (school) {
+      updatedUser.school = school;
     }
-    if (work) {
+    if (work.company && work.position) {
       updatedUser.work = work;
+    }
+    if (birthday) {
+      updatedUser.date_of_birth = birthday;
     }
 
     updatedUser.save();
@@ -232,7 +235,7 @@ const updateUserInfo = async (req, res) => {
 
 const deleteUserInfo = async (req, res) => {
   const userId = req.user._id; // Assuming the user ID is stored in req.user._id (from authentication)
-  const { field } = req.body; // The field to delete (e.g., "hometown", "education", or "work")
+  const { field } = req.body; // The field to delete (e.g., "hometown", "school", or "work")
 
   try {
     // Find the user by ID
@@ -243,7 +246,7 @@ const deleteUserInfo = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Delete the specified field (e.g., "hometown", "education", "work")
+    // Delete the specified field (e.g., "hometown", "school", "work")
     if (updatedUser[field] !== undefined) {
       updatedUser[field] = null; // Set the field to null
       await updatedUser.save();

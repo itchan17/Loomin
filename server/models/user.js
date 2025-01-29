@@ -80,7 +80,7 @@ const userSchema = new mongoose.Schema(
     hometown: {
       type: String,
     },
-    education: {
+    school: {
       type: String,
     },
   },

@@ -73,48 +73,64 @@ const ProfilePosts = () => {
     <div className="bg-white rounded-lg shadow p-4">
       <h2 className="text-xl font-bold mb-4">Details</h2>
       <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <i className="bx bxs-map text-gray-500 text-2xl font-medium font-bold"></i>
-          <div className="flex flex-col">
-            <span className="text-gray-600 font-medium font-semibold">
-              Amsterdam, Netherlands
-            </span>
-            <span className="text-sm text-gray-400 font-semibold">
-              Hometown
-            </span>
+        {userProfileData?.hometown && (
+          <div className="flex gap-2">
+            <i className="bx bxs-map text-gray-500 text-2xl font-medium font-bold"></i>
+            <div className="flex flex-col">
+              <span className="text-gray-600 font-medium font-semibold">
+                {userProfileData?.hometown}
+              </span>
+              <span className="text-sm text-gray-400 font-semibold">
+                Hometown
+              </span>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-2 ">
-          <i className="bx bxs-book text-gray-500 text-2xl font-medium font-bold"></i>
-          <div className="flex flex-col">
-            <span className="text-gray-600 font-medium font-semibold">
-              University of Amsterdam
-            </span>
-            <span className="text-sm text-gray-400 font-semibold">
-              Education
-            </span>
+        )}
+
+        {userProfileData?.school && (
+          <div className="flex gap-2 ">
+            <i className="bx bxs-book text-gray-500 text-2xl font-medium font-bold"></i>
+            <div className="flex flex-col">
+              <span className="text-gray-600 font-medium font-semibold">
+                {userProfileData?.school}
+              </span>
+              <span className="text-sm text-gray-400 font-semibold">
+                Education
+              </span>
+            </div>
           </div>
-        </div>
-        <div className="flex items-start gap-2">
-          <i className="bx bxs-briefcase text-gray-500 text-2xl font-medium font-bold"></i>
-          <div className="flex flex-col">
-            <span className="text-gray-600 font-medium font-semibold">
-              Fishball Chef
-            </span>
-            <span className="text-sm text-gray-400  font-semibold">Work</span>
+        )}
+        {userProfileData?.work?.position && (
+          <div className="flex gap-2 ">
+            <i className="bx bxs-briefcase text-gray-500 text-2xl font-medium font-bold"></i>
+            <div className="flex flex-col">
+              <span className="text-gray-600 font-medium font-semibold">
+                {userProfileData?.work?.position}
+              </span>
+              <span className="text-sm text-gray-400 font-semibold">Work</span>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <i className="bx bxs-cake text-gray-500 text-2xl font-medium font-bold"></i>
-          <div className="flex flex-col">
-            <span className="text-gray-600 font-medium font-semibold">
-              January 17, 1999
-            </span>
-            <span className="text-sm text-gray-400  font-semibold">
-              Birhday
-            </span>
+        )}
+        {userProfileData?.date_of_birth && (
+          <div className="flex gap-2 ">
+            <i className="bx bxs-cake text-gray-500 text-2xl font-medium font-bold"></i>
+            <div className="flex flex-col">
+              <p className="text-gray-800 font-medium">
+                {new Date(userProfileData.date_of_birth).toLocaleDateString(
+                  "en-US",
+                  {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  }
+                )}
+              </p>
+              <span className="text-sm text-gray-400 font-semibold">
+                Birthday
+              </span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
