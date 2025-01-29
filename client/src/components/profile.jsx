@@ -194,7 +194,9 @@ const Profile = () => {
       <div className="flex-1 px-4 2xl:px-6 py-4 bg-[#D9D9D9]">
         {activeTab === "posts" && <ProfilePosts />}
         {activeTab === "about" && <ProfileAbout />}
+
         {activeTab === "archive" && <ProfileArchive />}
+
       </div>
     </div>
   );

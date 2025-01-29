@@ -70,8 +70,8 @@ const ProfilePosts = () => {
   };
 
   const DetailsCard = () => (
-    <div className="bg-white rounded-lg shadow p-4">
-      <h2 className="text-xl font-bold mb-4">Details</h2>
+    <div className="bg-white rounded-lg shadow p-4 sticky top-4">
+      <h2 className="text-xl font-semibold mb-4">Details</h2>
       <div className="space-y-4">
         {userProfileData?.hometown && (
           <div className="flex gap-2">
@@ -136,14 +136,14 @@ const ProfilePosts = () => {
   );
 
   return (
-    <div className="flex flex-col md:flex-row gap-8 bg-[#D9D9D9]">
+    <div className="flex flex-col md:flex-row gap-8 bg-[#D9D9D9] px-4 md:px-8 max-w-7xl mx-auto">
       {/* Left side - Details - Hidden on desktop */}
-      <div className="hidden md:block w-1/3">
+      <div className="hidden md:block md:w-1/3 lg:w-1/4">
         <DetailsCard />
       </div>
 
       {/* Right side - Posts */}
-      <div className="flex-1">
+      <div className="flex-1 w-full max-w-3xl mx-auto">
         {/* Mobile Details Card */}
         <div className="block md:hidden mb-4">
           <DetailsCard />
@@ -155,6 +155,7 @@ const ProfilePosts = () => {
           next={loadMorePosts}
           hasMore={hasMore}
           scrollableTarget="posts-container"
+          className="w-full"
           loader={
             <div className="flex justify-center mb-4">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
@@ -162,19 +163,19 @@ const ProfilePosts = () => {
           }
           endMessage={
             !posts.length ? (
-              <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center p-4">
                 <div>
                   <p className="text-center text-gray-500">No posts yet!</p>
                 </div>
               </div>
             ) : (
-              <p className="text-center text-gray-500 border-black mb-4">
+              <p className="text-center text-gray-500 border-black mb-4 p-4">
                 You've seen all posts!
               </p>
             )
           }
         >
-          {displayPosts()}
+          <div className="space-y-4">{displayPosts()}</div>
         </InfiniteScroll>
       </div>
     </div>
