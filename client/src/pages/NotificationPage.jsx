@@ -96,126 +96,127 @@ const NotificationPage = () => {
   return (
     <div className="flex flex-col h-screen w-full overflow-hidden">
       <Header />
-      <div className="flex min-h-screen bg-white">
+      <div className="flex flex-1 bg-white overflow-hidden">
         {/* Left Sidebar - Hidden on mobile/tablet */}
-        <div className="hidden xl:block w-[320px] sticky top-0 h-screen">
+        <div className="hidden xl:block w-[320px]">
           <LeftSidebar />
         </div>
 
-        <div className="flex-1 min-w-0 border-x border-gray-200 2xl:border-x pb-16 2xl:pb-0">
-          {/* Notification Count */}
-          <div className="px-2 sm:px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold">Notifications</h1>
-              <div className="flex items-center gap-2 text-gray-600 text-sm sm:text-base">
-                <span className="text-base">You have</span>
-                <span className="text-[#FF6F61] font-medium">
-                  {notifications ? notifications.length : "0"} Notifications
-                </span>
+        {/* Main Content */}
+        <div className="flex-1 min-w-0 border-x border-gray-200 flex flex-col">
+          {/* Fixed Header Section */}
+          <div className="flex-none border-b border-gray-200">
+            <div className="px-2 sm:px-6 py-4 flex justify-between items-center">
+              <div>
+                <h1 className="text-2xl md:text-3xl font-bold">Notifications</h1>
+                <div className="flex items-center gap-2 text-gray-600 text-sm sm:text-base">
+                  <span className="text-base">You have</span>
+                  <span className="text-[#FF6F61] font-medium">
+                    {notifications ? notifications.length : "0"} Notifications
+                  </span>
+                </div>
               </div>
-            </div>
 
-            <button
-              onClick={handleClearAllNotifications}
-              className="px-3 py-1 sm:px-4 sm:py-1.5 bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] text-white rounded-full hover:opacity-90 transition md:w-auto"
-            >
-              <span className="text-sm sm:text-base font-bold">Clear all</span>
-            </button>
+              <button
+                onClick={handleClearAllNotifications}
+                className="px-3 py-1 sm:px-4 sm:py-1.5 bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] text-white rounded-full hover:opacity-90 transition md:w-auto"
+              >
+                <span className="text-sm sm:text-base font-bold">Clear all</span>
+              </button>
+            </div>
           </div>
 
-          {/* Main Content */}
-          <main className="flex-1 h-full overflow-y-auto">
-            <div className="bg-white">
-              <div className="divide-y divide-gray-200">
-                {notifications && displayNotifications()}
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto">
+            <div className="divide-y divide-gray-200">
+              {notifications && displayNotifications()}
 
-                {notifications?.length === 0 && (
-                  <div className="px-6 py-12 text-center">
-                    <div className="w-16 h-16 bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] bg-opacity-10 rounded-full mx-auto flex items-center justify-center mb-4">
-                      <i className="bx bx-bell text-3xl bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] bg-clip-text text-transparent"></i>
-                    </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-1">
-                      No notifications yet
-                    </h3>
-                    <p className="text-gray-500">
-                      We'll notify you when something arrives!
-                    </p>
+              {notifications?.length === 0 && (
+                <div className="px-6 py-12 text-center">
+                  <div className="w-16 h-16 bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] bg-opacity-10 rounded-full mx-auto flex items-center justify-center mb-4">
+                    <i className="bx bx-bell text-3xl bg-gradient-to-r from-[#FFD23F] to-[#FF6F61] bg-clip-text text-transparent"></i>
                   </div>
-                )}
-              </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-1">
+                    No notifications yet
+                  </h3>
+                  <p className="text-gray-500">
+                    We'll notify you when something arrives!
+                  </p>
+                </div>
+              )}
             </div>
-          </main>
+          </div>
         </div>
 
-        {/* Right Sidebar - Hidden on mobile/tablet */}
-        <div className="hidden 2xl:block w-[320px] sticky top-0 h-screen overflow-y-auto">
+        {/* Right Sidebar */}
+        <div className="hidden 2xl:block w-[320px]">
           <RightSidebar />
         </div>
+      </div>
 
-        {/* Mobile Navigation */}
-        <div className="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 xl:hidden">
-          <div className="grid h-full max-w-lg grid-cols-5 mx-auto">
-            <Link
-              to="/"
-              className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group"
-            >
-              <i
-                className={`bx bxs-home-heart text-2xl ${
-                  location.pathname === "/"
-                    ? "text-loomin-orange"
-                    : "text-gray-500"
-                }`}
-              ></i>
-            </Link>
-            <Link
-              to={`/profile/${loggedInUser?.username}`}
-              className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group"
-            >
-              <i
-                className={`bx bx-user text-2xl ${
-                  location.pathname.includes("/profile")
-                    ? "text-loomin-orange"
-                    : "text-gray-500"
-                }`}
-              ></i>
-            </Link>
-            <Link
-              to="/following"
-              className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group"
-            >
-              <i
-                className={`bx bx-group text-2xl ${
-                  location.pathname === "/following"
-                    ? "text-loomin-orange"
-                    : "text-gray-500"
-                }`}
-              ></i>
-            </Link>
-            <Link
-              to="/inbox"
-              className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group"
-            >
-              <i
-                className={`bx bx-message-dots text-2xl ${
-                  location.pathname === "/inbox"
-                    ? "text-loomin-orange"
-                    : "text-gray-500"
-                }`}
-              ></i>
-            </Link>
-            <Link
-              to="/notifications"
-              className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group"
-            >
-              <i
-                className={`bx bx-notification text-2xl ${
-                  location.pathname === "/notifications"
-                    ? "text-loomin-orange"
-                    : "text-gray-500"
-                }`}
-              ></i>
-            </Link>
-          </div>
+      {/* Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 z-50 w-full h-16 bg-white border-t border-gray-200 xl:hidden">
+        <div className="grid h-full max-w-lg grid-cols-5 mx-auto">
+          <Link
+            to="/"
+            className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group"
+          >
+            <i
+              className={`bx bxs-home-heart text-2xl ${
+                location.pathname === "/"
+                  ? "text-loomin-orange"
+                  : "text-gray-500"
+              }`}
+            ></i>
+          </Link>
+          <Link
+            to={`/profile/${loggedInUser?.username}`}
+            className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group"
+          >
+            <i
+              className={`bx bx-user text-2xl ${
+                location.pathname.includes("/profile")
+                  ? "text-loomin-orange"
+                  : "text-gray-500"
+              }`}
+            ></i>
+          </Link>
+          <Link
+            to="/following"
+            className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group"
+          >
+            <i
+              className={`bx bx-group text-2xl ${
+                location.pathname === "/following"
+                  ? "text-loomin-orange"
+                  : "text-gray-500"
+              }`}
+            ></i>
+          </Link>
+          <Link
+            to="/inbox"
+            className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group"
+          >
+            <i
+              className={`bx bx-message-dots text-2xl ${
+                location.pathname === "/inbox"
+                  ? "text-loomin-orange"
+                  : "text-gray-500"
+              }`}
+            ></i>
+          </Link>
+          <Link
+            to="/notifications"
+            className="inline-flex flex-col items-center justify-center px-5 hover:bg-gray-50 group"
+          >
+            <i
+              className={`bx bx-notification text-2xl ${
+                location.pathname === "/notifications"
+                  ? "text-loomin-orange"
+                  : "text-gray-500"
+              }`}
+            ></i>
+          </Link>
         </div>
       </div>
     </div>

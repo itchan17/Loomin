@@ -66,7 +66,7 @@ const RightSideBar = () => {
   };
 
   return (
-    <div className="flex flex-col h-full p-6">
+    <div className="flex flex-col h-full p-6 overflow-y-auto">
       {/* Recommended Users Section */}
       <div className="relative flex flex-col mb-4 bg-white shadow-sm border border-slate-200 rounded-lg">
         <div className="p-4">
@@ -75,7 +75,7 @@ const RightSideBar = () => {
               Recommended for you
             </h5>
           </div>
-          <div className="divide-y divide-slate-200">
+          <div className="divide-y divide-slate-200 max-h-[600px] overflow-y-auto scrollbar-hide">
             {displaySuggestedUser()}
           </div>
         </div>
@@ -87,7 +87,7 @@ const RightSideBar = () => {
           <div className="mb-2 flex items-center justify-between">
             <h5 className="text-slate-800 text-xl font-bold">Following</h5>
           </div>
-          <div className="divide-y divide-slate-200">
+          <div className="divide-y divide-slate-200 max-h-[600px] overflow-y-auto scrollbar-hide">
             {displayFollowing()}
           </div>
         </div>

@@ -264,127 +264,126 @@ const Post = ({ post }) => {
     );
   };
   return (
-    <div
-      className="border-b md:border rounded-xl md:rounded-2xl w-[98%] mx-auto md:max-w-2xl mb-4 md:mb-6 bg-white shadow-md md:shadow-sm"
-      key={post._id}
-    >
-      <div className="bg-white md:shadow-lg rounded-xl md:rounded-2xl w-full">
-        <div className="flex items-center p-3 md:p-4">
-          <img
-            src={
-              post.creator.profile_picture
-                ? `http://localhost:3000/${post.creator.profile_picture}`
-                : null // Add default image here
-            }
-            alt={`${post.creator.first_name} ${post.creator.last_name}`}
-            className="w-10 h-10 rounded-full cursor-pointer object-cover"
-          />
-          <div className="ml-2 flex flex-col">
-            <div className="flex gap-1 items-center">
-              <span className="font-semibold cursor-pointer">{`${post.creator.first_name} ${post.creator.last_name}`}</span>
-              {loggedInUser._id !== post.creator._id && (
-                <>
-                  <span>·</span>
-                  <span
-                    onClick={toggleFollow}
-                    className="text-sm text-loomin-orange font-semibold cursor-pointer"
-                  >
-                    {following.includes(post.creator._id)
-                      ? "Following"
-                      : "Follow"}
-                  </span>
-                </>
-              )}
-            </div>
-            <span className="-mt-1 text-sm cursor-pointer">{`@${post.creator.username}`}</span>
-          </div>
-          {post.creator._id === loggedInUser._id ? (
-            <Dropdown post={post}></Dropdown>
-          ) : (
-            ""
-          )}
-        </div>
-        <p className="mt-1 px-4 md:px-6 mb-2 text-semibold antialiased break-words whitespace-pre-wrap">
-          {post.content}
-        </p>
-        <div className="relative" onDoubleClick={handleDoubleTap}>
-          {post.images.length > 0 ? (
-            <div className="w-full">
-              <SimpleSlider />
-            </div>
-          ) : null}
-          <AnimatePresence>
-            {showHeart && (
-              <motion.div
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="absolute inset-0 flex items-center justify-center"
-              >
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 0.3 }}
+    <div className="bg-white md:shadow-lg rounded-2xl w-full mx-auto px-0 md:px-0 mb-4">
+      <div className="flex items-center p-3 md:p-4">
+        <img
+          src={
+            post.creator.profile_picture
+              ? `http://localhost:3000/${post.creator.profile_picture}`
+              : null // Add default image here
+          }
+          alt={`${post.creator.first_name} ${post.creator.last_name}`}
+          className="w-10 h-10 rounded-full cursor-pointer object-cover"
+        />
+        <div className="ml-2 flex flex-col">
+          <div className="flex gap-1 items-center">
+            <span className="font-semibold cursor-pointer">{`${post.creator.first_name} ${post.creator.last_name}`}</span>
+            {loggedInUser._id !== post.creator._id && (
+              <>
+                <span>·</span>
+                <span
+                  onClick={toggleFollow}
+                  className="text-sm text-loomin-orange font-semibold cursor-pointer"
                 >
-                  <i className="bx bxs-heart text-6xl text-red-500 opacity-80"></i>
-                </motion.div>
-              </motion.div>
+                  {following.includes(post.creator._id)
+                    ? "Following"
+                    : "Follow"}
+                </span>
+              </>
             )}
-          </AnimatePresence>
+          </div>
+          <span className="-mt-1 text-sm cursor-pointer">{`@${post.creator.username}`}</span>
         </div>
+        {post.creator._id === loggedInUser._id ? (
+          <Dropdown post={post}></Dropdown>
+        ) : (
+          ""
+        )}
+      </div>
+      <p className="mt-1 px-4 md:px-6 mb-2 text-semibold antialiased break-words whitespace-pre-wrap">
+        {post.content}
+      </p>
+      <div className="relative" onDoubleClick={handleDoubleTap}>
+        {post.images.length > 0 ? (
+          <div className="w-full">
+            <SimpleSlider />
+          </div>
+        ) : null}
+        <AnimatePresence>
+          {showHeart && (
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              <motion.div
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 0.3 }}
+              >
+                <i className="bx bxs-heart text-6xl text-red-500 opacity-80"></i>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
-        <div className="px-4 md:px-6 py-3">
-          <div className="flex gap-4">
-            <div className="flex items-center gap-1">
-              <button onClick={handleLike}>
-                <i
-                  className={`bx ${
-                    isLiked ? "bxs-heart text-red-500" : "bx-heart"
-                  } text-2xl`}
-                ></i>
-              </button>
-              {likesCount > 0 ? <span>{formatNumber(likesCount)}</span> : ""}
-            </div>
-            <div className="flex items-center gap-1">
-              <button onClick={toggleCommentBtn}>
-                <i className="bx bx-comment text-2xl"></i>
-              </button>
-              {commentsCount > 0 ? (
-                <span>{formatNumber(commentsCount)}</span>
-              ) : (
-                ""
-              )}
-            </div>
+      <div className="px-4 md:px-6 py-3">
+        <div className="flex gap-4">
+          <div className="flex items-center gap-1">
+            <button onClick={handleLike}>
+              <i
+                className={`bx ${
+                  isLiked ? "bxs-heart text-red-500" : "bx-heart"
+                } text-2xl`}
+              ></i>
+            </button>
+            {likesCount > 0 ? <span>{formatNumber(likesCount)}</span> : ""}
+          </div>
+          <div className="flex items-center gap-1">
+            <button onClick={toggleCommentBtn}>
+              <i className="bx bx-comment text-2xl"></i>
+            </button>
+            {commentsCount > 0 ? (
+              <span>{formatNumber(commentsCount)}</span>
+            ) : (
+              ""
+            )}
           </div>
         </div>
-        {/* Comments section */}
-        {showComments && (
-          <div className="px-4 md:px-6 pb-4">
-            <div
-              id="comments-container"
-              className="max-h-40 overflow-y-auto mb-4"
+      </div>
+      {/* Comments section */}
+      {showComments && (
+        <div className="px-4 pb-4">
+          <div
+            id="comments-container"
+            className="max-h-40 overflow-y-auto mb-4 w-full"
+          >
+            <InfiniteScroll
+              dataLength={comments.length}
+              next={loadMoreComments}
+              hasMore={hasMore}
+              scrollableTarget="comments-container"
+              className="p-3"
+              loader={
+                <div className="flex justify-center mb-2">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                </div>
+              }
             >
-              <InfiniteScroll
-                dataLength={comments.length}
-                next={loadMoreComments}
-                hasMore={hasMore}
-                scrollableTarget="comments-container"
-                loader={
-                  <div className="flex justify-center mb-2">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-                  </div>
-                }
-              >
-                {displayComments()}
-              </InfiniteScroll>
-            </div>
+              {displayComments()}
+            </InfiniteScroll>
+          </div>
 
+          {/* Comment Form */}
+          <div className="w-full">
             {!editComment ? (
               <CreateCommentForm
                 post={post}
                 setCommentsCount={setCommentsCount}
                 setComments={setComments}
-              ></CreateCommentForm>
+              />
             ) : (
               <EditCommentForm
                 postId={post._id}
@@ -392,11 +391,11 @@ const Post = ({ post }) => {
                 commentToEdit={commentToEdit}
                 setEditComment={setEditComment}
                 setComments={setComments}
-              ></EditCommentForm>
+              />
             )}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

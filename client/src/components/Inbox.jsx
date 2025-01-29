@@ -101,7 +101,7 @@ const Inbox = () => {
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto bg-white">
         {/* Mobile and Tablet Inbox View */}
-        <div className={`2xl:hidden flex flex-col w-full h-full ${showMobileChat ? 'hidden' : 'flex'}`}>
+        <div className={`xl:hidden flex flex-col w-full h-full ${showMobileChat ? 'hidden' : 'flex'}`}>
           <div className="flex flex-col p-4">
             <h1 className="font-bold text-3xl mb-4">Messages</h1>
             <div className="relative flex items-center mb-6">
@@ -135,7 +135,7 @@ const Inbox = () => {
         </div>
 
         {/* Mobile and Tablet Chat View */}
-        <div className={`2xl:hidden ${showMobileChat ? 'block' : 'hidden'} h-full`}>
+        <div className={`xl:hidden ${showMobileChat ? 'block' : 'hidden'} h-full`}>
           {activeChat ? (
             <ChatBox onBack={handleBackToInbox} />
           ) : (
@@ -149,7 +149,7 @@ const Inbox = () => {
         </div>
 
         {/* Desktop View */}
-        <div className="hidden 2xl:flex w-full h-full">
+        <div className="hidden xl:flex w-full h-full">
           {/* Desktop Inbox List */}
           <div className="w-3/5 border-r border-[#A4A4A4] h-full overflow-y-auto">
             <div className="px-4 py-10">
