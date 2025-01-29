@@ -8,8 +8,6 @@ import SearchResult from "./SearchResult";
 import useSocketStore from "../stores/socketStore";
 import axios from "axios";
 import debounce from "lodash.debounce";
-import { Link, useLocation } from "react-router-dom";
-import Header from "./header";
 
 const Inbox = () => {
   // Chat states
@@ -101,7 +99,9 @@ const Inbox = () => {
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto bg-white">
         {/* Mobile and Tablet Inbox View */}
+
         <div className={`xl:hidden flex flex-col w-full h-full ${showMobileChat ? 'hidden' : 'flex'}`}>
+
           <div className="flex flex-col p-4">
             <h1 className="font-bold text-3xl mb-4">Messages</h1>
             <div className="relative flex items-center mb-6">
@@ -135,12 +135,16 @@ const Inbox = () => {
         </div>
 
         {/* Mobile and Tablet Chat View */}
+
         <div className={`xl:hidden ${showMobileChat ? 'block' : 'hidden'} h-full`}>
+
           {activeChat ? (
             <ChatBox onBack={handleBackToInbox} />
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center p-4">
-              <h1 className="font-bold text-2xl text-center">Select a conversation</h1>
+              <h1 className="font-bold text-2xl text-center">
+                Select a conversation
+              </h1>
               <p className="font-semibold text-center">
                 Choose from your existing conversations or start a new one.
               </p>
@@ -190,7 +194,9 @@ const Inbox = () => {
               <ChatBox onBack={null} />
             ) : (
               <div className="w-full h-full flex flex-col items-center justify-center p-4 bg-gray-50">
-                <h1 className="font-bold text-2xl text-center">Select a conversation</h1>
+                <h1 className="font-bold text-2xl text-center">
+                  Select a conversation
+                </h1>
                 <p className="font-semibold text-center">
                   Choose from your existing conversations or start a new one.
                 </p>

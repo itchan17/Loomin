@@ -43,19 +43,35 @@ const fetchLoggedInUser = async (req, res) => {
 
 const followUser = async (req, res) => {
   const userId = req.user._id;
-  const followedUser = req.params.id;
+  const followedUserId = req.params.id;
   try {
     const user = await User.findById({ _id: userId });
+    const followedUser = await User.findById({ _id: followedUserId });
 
-    if (user.following.includes(followedUser)) {
+    // Check if the user is already in the following
+    if (user.following.includes(followedUserId)) {
+      // Remove from the followers list
+      followedUser.followers = followedUser.followers.filter(
+        (user) => user.toString() !== userId.toString()
+      );
+
+      await followedUser.save();
+
+      // Remove to the following list
       user.following = user.following.filter(
-        (user) => user.toString() !== followedUser.toString()
+        (user) => user.toString() !== followedUserId.toString()
       );
       const updated = await user.save();
 
       res.status(200).json({ updatedFollowing: updated.following });
     } else {
-      user.following.push(followedUser);
+      // Add in the followers list
+      followedUser.followers.push(userId);
+
+      await followedUser.save();
+
+      // Add in the following list
+      user.following.push(followedUserId);
       const updated = await user.save();
 
       res.status(200).json({ updatedFollowing: updated.following });
@@ -146,10 +162,48 @@ const editProfile = async (req, res) => {
   }
 };
 
+const fetchFollowing = async (req, res) => {
+  const userId = req.user._id;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  try {
+    // Fetch all the following of user
+    const following = await User.find({ followers: { $in: [userId] } });
+    // .skip(skip)
+    // .limit(limit);
+
+    res.status(200).json(following);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+const fetchFollowers = async (req, res) => {
+  const userId = req.user._id;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  try {
+    // Fetch all the following of user
+    const followers = await User.find({ following: { $in: [userId] } });
+    // .skip(skip)
+    // .limit(limit);
+
+    res.status(200).json(followers);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 module.exports = {
   fetchLoggedInUser,
   followUser,
   fetchUser,
   searchUser,
   editProfile,
+  fetchFollowing,
+  fetchFollowers,
 };

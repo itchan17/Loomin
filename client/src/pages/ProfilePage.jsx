@@ -30,6 +30,9 @@ const ProfilePage = () => {
   const fetchUserProfileData = useProfileStore(
     (state) => state.fetchUserProfileData
   );
+  const clearUserProfileData = useProfileStore(
+    (state) => state.clearUserProfileData
+  );
 
   //Notif store
   const setNotifications = useNotificationStore(
@@ -42,6 +45,10 @@ const ProfilePage = () => {
   // Fetch the data of logged in user
   useEffect(() => {
     fetchLoggedInUser();
+
+    return () => {
+      clearUserProfileData();
+    };
   }, []);
 
   // Fetch the data user with the username in the params

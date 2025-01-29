@@ -2,6 +2,7 @@ import useUserStore from "../stores/UserStore";
 import React, { useState, useEffect } from "react";
 import useChatStore from "../stores/chatStore";
 import moment from "moment";
+import useProfileStore from "../stores/profileStore";
 
 const Chat = ({ chat, setActiveMessage, activeMessage }) => {
   // Chat store states
@@ -20,6 +21,11 @@ const Chat = ({ chat, setActiveMessage, activeMessage }) => {
 
   const [recipientUser, setRecipientUser] = useState({});
   const [latestMessage, setLatestMessage] = useState([]);
+
+  // Profile store
+  const defaultProfileImages = useProfileStore(
+    (state) => state.defaultProfileImages
+  );
 
   const handleClick = (chatId, recipientUser) => {
     selectChat(chatId, recipientUser);
@@ -86,8 +92,9 @@ const Chat = ({ chat, setActiveMessage, activeMessage }) => {
     >
       <img
         src={
-          recipientUser.profile_picture ||
-          "https://i.pinimg.com/736x/58/7b/57/587b57f888b1cdcc0e895cbdcfde1c1e.jpg"
+          recipientUser?.profile_picture
+            ? `http://localhost:3000/${recipientUser.profile_picture}`
+            : defaultProfileImages.profile
         }
         alt={"Profile"}
         className="w-16 rounded-full flex-shrink-0"

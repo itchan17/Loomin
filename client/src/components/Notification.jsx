@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import moment from "moment";
 import useNotificationStore from "../stores/notificationStore";
+import useProfileStore from "../stores/profileStore";
 
 const Notification = ({ notification, readNotif, isRead }) => {
   const [isNotificationRead, setIsNotificationRead] = useState(isRead);
@@ -9,16 +10,26 @@ const Notification = ({ notification, readNotif, isRead }) => {
   const clearNotification = useNotificationStore(
     (state) => state.clearNotification
   );
+  const setNotificationsCount = useNotificationStore(
+    (state) => state.setNotificationsCount
+  );
+
+  // Profile store
+  const defaultProfileImages = useProfileStore(
+    (state) => state.defaultProfileImages
+  );
 
   const handleNotificationClick = () => {
     markAsRead(notification._id);
     setIsNotificationRead(true);
+    setNotificationsCount();
   };
 
   const handleClearNotifcation = (e) => {
     e.stopPropagation();
     clearNotification(notification._id);
     setIsNotificationRead(false);
+    setNotificationsCount();
   };
   return (
     <div
@@ -42,7 +53,7 @@ const Notification = ({ notification, readNotif, isRead }) => {
               src={
                 notification.senderId?.profile_picture
                   ? `http://localhost:3000/${notification.senderId.profile_picture}`
-                  : null
+                  : defaultProfileImages.profile
               }
               alt=""
               className="w-12 h-12 rounded-full object-cover"

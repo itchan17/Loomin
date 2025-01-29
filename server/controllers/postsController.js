@@ -256,6 +256,43 @@ const fetchProfilePosts = async (req, res) => {
   }
 };
 
+const fetchArchivedPosts = async (req, res) => {
+  const userId = req.params.id;
+  console.log("User: " + userId);
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+    // Fetch all the post
+    const posts = await Post.find({ isArchived: true, creator: userId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate({
+        path: "creator",
+        select: "first_name last_name profile_picture username",
+      });
+
+    const totalPosts = await Post.countDocuments({
+      isArchived: true,
+      creator: userId,
+    });
+
+    const hasMore = totalPosts > skip + posts.length;
+
+    // Send post to the client
+    res.json({
+      posts,
+      hasMore,
+      currentPage: page,
+      totalPosts,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to fetch post." });
+  }
+};
+
 module.exports = {
   createPost,
   editPost,
@@ -264,4 +301,5 @@ module.exports = {
   likeUnlikePost,
   archivePost,
   fetchProfilePosts,
+  fetchArchivedPosts,
 };
