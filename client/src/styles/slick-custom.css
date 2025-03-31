@@ -1,0 +1,33 @@
+.slick-prev, .slick-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 32px;
+  height: 32px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5) !important;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.slick-prev {
+  left: 8px;
+}
+
+.slick-next {
+  right: 8px;
+}
+
+.slick-prev:hover, .slick-next:hover {
+  background: rgba(0, 0, 0, 0.7) !important;
+}
+
+.group:hover .slick-prev,
+.group:hover .slick-next {
+  opacity: 1;
+} 

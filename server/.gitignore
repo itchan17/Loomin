@@ -1,2 +1,5 @@
 node_modules
 .env
+/public/images/profile/*
+/public/images/background/*
+/public/images/posts/*
